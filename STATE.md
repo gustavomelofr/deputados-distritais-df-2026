@@ -1,11 +1,11 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-23T23:35:00.000Z
+Last run: 2026-07-23T23:50:00.000Z
 Status: 🟢 Última alteração aprovada
 
 ## Última ação
-Sem feedback REJECT no STATE.md (status 🟢). Melhoria aplicada: os chips de partido na página `/deputados-distritais` agora são clicáveis e filtram a lista via query param `?partido=XX`, com botão "Todos" e indicador de filtro ativo. TypeScript compila sem erros.
+Melhoria visual no perfil individual do deputado: contatos (Instagram, Twitter/X, email) agora são chips coloridos com ícones SVG inline e link mailto no email. Antes eram apenas links de texto azul.
 
 ## Ciclo
 - Intervalo: 15 min
-- Próximo: 2026-07-23T23:50:00.000Z
+- Próximo: 2026-07-24T00:05:00.000Z

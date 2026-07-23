@@ -1,7 +1,20 @@
 import Link from 'next/link';
 import { deputados, partidos } from '@/data/deputados';
 
-export default function DeputadosPage() {
+interface Props {
+  searchParams: Promise<{ partido?: string }>;
+}
+
+export default async function DeputadosPage({ searchParams }: Props) {
+  const { partido: filtroPartido } = await searchParams;
+  const partidoValido = filtroPartido
+    ? partidos.find((p) => p === filtroPartido)
+    : null;
+
+  const deputadosFiltrados = partidoValido
+    ? deputados.filter((d) => d.partido === partidoValido)
+    : deputados;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       {/* Header */}
@@ -16,17 +29,36 @@ export default function DeputadosPage() {
       </div>
 
       {/* Filter by party */}
-      <div className="mb-8 flex flex-wrap gap-2">
-        <span className="text-sm font-medium text-zinc-500 mr-2 self-center">
+      <div className="mb-8 flex flex-wrap gap-2 items-center">
+        <span className="text-sm font-medium text-zinc-500 mr-2">
           Partidos:
         </span>
+        <Link
+          href="/deputados-distritais"
+          className={`rounded-full text-xs font-medium px-3 py-1 transition ${
+            !partidoValido
+              ? 'bg-blue-600 text-white'
+              : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
+          }`}
+        >
+          Todos
+        </Link>
         {partidos.map((p) => (
-          <span
+          <Link
             key={p}
-            className="rounded-full bg-blue-50 text-blue-700 text-xs font-medium px-3 py-1"
+            href={
+              partidoValido === p
+                ? '/deputados-distritais'
+                : `/deputados-distritais?partido=${encodeURIComponent(p)}`
+            }
+            className={`rounded-full text-xs font-medium px-3 py-1 transition ${
+              partidoValido === p
+                ? 'bg-blue-600 text-white'
+                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+            }`}
           >
             {p}
-          </span>
+          </Link>
         ))}
       </div>
 
@@ -55,8 +87,17 @@ export default function DeputadosPage() {
       </div>
 
       {/* Grid of deputies */}
+      {partidoValido && (
+        <p className="text-sm text-zinc-500 mb-4">
+          Mostrando {deputadosFiltrados.length} deputado
+          {deputadosFiltrados.length !== 1 ? 's' : ''} de {partidoValido}.{' '}
+          <Link href="/deputados-distritais" className="text-blue-600 hover:underline">
+            Ver todos
+          </Link>
+        </p>
+      )}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {deputados.map((dep) => (
+        {deputadosFiltrados.map((dep) => (
           <Link
             key={dep.id}
             href={`/deputados-distritais/${dep.slug}`}

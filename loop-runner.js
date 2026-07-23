@@ -145,19 +145,21 @@ function runVerifier(diff) {
   const diffFile = path.join(ROOT, '.verifier-diff.patch');
   fs.writeFileSync(diffFile, diff);
 
-  const instruction = `Revise o diff em .verifier-diff.patch contra as regras em AGENTS.md e AGENT_BRIEF.md. Verifique: (1) o código compila e segue as convenções do projeto, (2) não há dados inventados/fabricados sobre deputados, (3) não há quebras de tipos TypeScript, (4) o conteúdo é factual e atribui fontes. Responda APENAS com "APPROVE: <razão curta>" ou "REJECT: <razão curta + o que corrigir>".`;
+  const instruction = `Revise o diff no arquivo .verifier-diff.patch contra AGENTS.md e AGENT_BRIEF.md. Verifique: (1) código compila e segue convenções, (2) não há dados inventados sobre deputados, (3) não há quebras de tipos TypeScript, (4) conteúdo é factual. Responda APENAS com "APPROVE: <razão curta>" ou "REJECT: <razão curta + o que corrigir>".`;
 
   const cmd = `opencode run "${instruction}" --agent verifier --auto -f .verifier-diff.patch`;
   log('🔍 Verifier revisando diff...');
   try {
-    const output = execSync(cmd, { cwd: ROOT, timeout: 300000, encoding: 'utf-8' });
+    const output = execSync(cmd, { cwd: ROOT, timeout: 300000, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
     const verdictLine = output.split('\n').find(l => /APPROVE|REJECT/i.test(l)) || output.slice(-500);
     const isReject = /REJECT/i.test(verdictLine);
     log(`${isReject ? '❌ REJECT' : '✅ APPROVE'}: ${verdictLine.slice(0, 200)}`);
     try { fs.unlinkSync(diffFile); } catch {}
     return { verdict: isReject ? 'REJECT' : 'APPROVE', reason: verdictLine, fullOutput: output };
   } catch (err) {
-    log(`❌ Verifier falhou: ${err.message?.slice(0, 300)}`);
+    const stderr = err.stderr ? err.stderr.toString().slice(0, 500) : '';
+    log(`❌ Verifier falhou: ${err.message?.slice(0, 200)}`);
+    if (stderr) log(`   stderr: ${stderr}`);
     try { fs.unlinkSync(diffFile); } catch {}
     return { verdict: 'APPROVE', reason: 'Verifier indisponível — auto-aprovado.' };
   }

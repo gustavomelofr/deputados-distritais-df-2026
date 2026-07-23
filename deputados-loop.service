@@ -13,7 +13,8 @@ RestartSec=30
 StandardOutput=journal
 StandardError=journal
 Environment=NODE_ENV=production
-# Sem limite de tokens — o agente roda sem restrições
+Environment=HOME=/root
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 [Install]
 WantedBy=multi-user.target

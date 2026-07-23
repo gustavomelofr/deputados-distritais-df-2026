@@ -29,3 +29,4 @@ Trabalhe no site de deputados distrit |
 | 2026-07-23 | 21:05:06 | Falha — Command failed: opencode run "Leia STATE.md. Se houver feedback REJECT, corrija os pontos apontados. |
 | 2026-07-23 | 21:15:53 | Sucesso — Sem feedback REJECT no STATE.md (status 🟢). Melhoria aplicada: a página `/monitor-instagram` já existia mas era órfã — adicionei o link "Instagram" na navbar e transformei o card "Redes Sociais" da h... |
 | 2026-07-23 | 21:35:16 | Sucesso — Melhoria rápida e útil: a lista de deputados mostra os partidos como chips estáticos (não filtram). Vou torná-los clicáveis com filtro por partido via query param `?partido=XX`. É uma melhoria pequena... |
+| 2026-07-23 | 21:51:24 | Sucesso — Status: 🟢 Última alteração aprovada. Não há feedback REJECT. Vou fazer uma pequena melhoria. Deixa eu ver a estrutura do projeto. · Vou adicionar ícones sociais (Instagram/Twitter) ao perfil individu... |

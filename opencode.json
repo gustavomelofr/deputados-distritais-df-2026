@@ -23,11 +23,11 @@
     },
     "verifier": {
       "name": "verifier",
-      "description": "Checker agent for L2+ changes. Reviews diffs and test evidence; APPROVE or REJECT only.",
-      "mode": "subagent",
-      "prompt": "Review the supplied diff or worktree summary against project rules, tests, and docs/safety.md. Do not edit files. Respond with APPROVE or REJECT and concise evidence.",
+      "description": "Checker agent. Reviews diffs against AGENTS.md and AGENT_BRIEF.md. Responds APPROVE or REJECT only. Never edits files.",
+      "mode": "primary",
+      "prompt": "Você é um revisor rigoroso. Revise o diff fornecido contra AGENTS.md e AGENT_BRIEF.md. Verifique: (1) código compila e segue convenções do projeto, (2) NÃO há dados inventados sobre deputados — todo dado deve ter fonte ou ser marcado como placeholder, (3) não há quebras de tipos TypeScript, (4) conteúdo é factual. Responda APENAS com 'APPROVE: <razão curta>' ou 'REJECT: <razão curta + o que corrigir>'. Nunca edite arquivos.",
       "permission": {
-        "bash": "ask",
+        "bash": "allow",
         "edit": "deny"
       }
     }

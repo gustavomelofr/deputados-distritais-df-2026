@@ -109,17 +109,16 @@ function runOpencode(instruction) {
   }
 }
 
-function gitPush() {
+function gitPush(commitMsg) {
   try {
-    // Verifica se há mudanças
     const status = execSync('git status --porcelain', { cwd: ROOT, encoding: 'utf-8' });
     if (!status.trim()) {
       log('ℹ️  Nada pra commitar');
       return true;
     }
-    
+
     execSync('git add -A', { cwd: ROOT, timeout: 30000 });
-    execSync('git commit -m "🤖 auto: atualização do agente contínuo"', { cwd: ROOT, timeout: 30000 });
+    execSync(`git commit -m "${commitMsg || '🤖 auto: atualização do agente contínuo'}"`, { cwd: ROOT, timeout: 30000 });
     execSync('git push origin main', { cwd: ROOT, timeout: 60000 });
     log('✅ Push GitHub feito');
     return true;
@@ -127,6 +126,61 @@ function gitPush() {
     log(`❌ Git push falhou: ${err.message?.slice(0, 300)}`);
     return false;
   }
+}
+
+function getGitDiff() {
+  try {
+    return execSync('git diff HEAD', { cwd: ROOT, encoding: 'utf-8', timeout: 30000 });
+  } catch {
+    return '';
+  }
+}
+
+function runVerifier(diff) {
+  if (!diff || !diff.trim()) {
+    log('ℹ️  Sem diff — verifier pulado');
+    return { verdict: 'APPROVE', reason: 'Nenhuma alteração para revisar.' };
+  }
+
+  const diffFile = path.join(ROOT, '.verifier-diff.patch');
+  fs.writeFileSync(diffFile, diff);
+
+  const instruction = `Revise o diff em .verifier-diff.patch contra as regras em AGENTS.md e AGENT_BRIEF.md. Verifique: (1) o código compila e segue as convenções do projeto, (2) não há dados inventados/fabricados sobre deputados, (3) não há quebras de tipos TypeScript, (4) o conteúdo é factual e atribui fontes. Responda APENAS com "APPROVE: <razão curta>" ou "REJECT: <razão curta + o que corrigir>".`;
+
+  const cmd = `opencode run "${instruction}" --agent verifier --auto -f .verifier-diff.patch`;
+  log('🔍 Verifier revisando diff...');
+  try {
+    const output = execSync(cmd, { cwd: ROOT, timeout: 300000, encoding: 'utf-8' });
+    const verdictLine = output.split('\n').find(l => /APPROVE|REJECT/i.test(l)) || output.slice(-500);
+    const isReject = /REJECT/i.test(verdictLine);
+    log(`${isReject ? '❌ REJECT' : '✅ APPROVE'}: ${verdictLine.slice(0, 200)}`);
+    try { fs.unlinkSync(diffFile); } catch {}
+    return { verdict: isReject ? 'REJECT' : 'APPROVE', reason: verdictLine, fullOutput: output };
+  } catch (err) {
+    log(`❌ Verifier falhou: ${err.message?.slice(0, 300)}`);
+    try { fs.unlinkSync(diffFile); } catch {}
+    return { verdict: 'APPROVE', reason: 'Verifier indisponível — auto-aprovado.' };
+  }
+}
+
+function applyVerifierFeedback(verdict, reason) {
+  if (verdict !== 'REJECT') return;
+  const feedback = reason.replace(/^REJECT:?\s*/i, '').trim();
+  const state = `# Loop State — Deputados Distritais DF 2026
+
+Last run: ${new Date().toISOString()}
+Status: 🔴 Última alteração REJEITADA pelo verifier
+
+## Feedback do Verifier (corrigir no próximo ciclo)
+${feedback}
+
+## Ação requerida
+- Refaça a alteração anterior corrigindo os pontos acima
+- Não invente dados — se não tem fonte, marque como placeholder
+- Verifique tipos TypeScript antes de commitar
+`;
+  updateState(state);
+  log(`📝 Feedback gravado em STATE.md para próximo ciclo`);
 }
 
 // --- Ciclo Principal ---
@@ -143,24 +197,30 @@ async function mainLoop() {
   // 2. Processa resultado
   let summary = '';
   if (result.ok) {
-    // Extrai as últimas 3 linhas como resumo (convenção do prompt)
     const lines = result.output.trim().split('\n').slice(-5);
     summary = lines.filter(l => l.trim()).join(' · ');
-    
     if (summary.length > 200) summary = summary.slice(0, 200) + '...';
-    
     log(`📝 Resumo do agente: ${summary}`);
     appendRunLog(`Sucesso — ${summary}`);
 
-    // 3. Push se houver mudanças
-    gitPush();
+    // 3. Verifier revisa o diff antes do push (maker/checker)
+    const diff = getGitDiff();
+    const verification = runVerifier(diff);
+    applyVerifierFeedback(verification.verdict, verification.reason);
 
-    // 4. Notifica Telegram se houver novidades
-    if (summary.toLowerCase().includes('nov') || 
-        summary.toLowerCase().includes('atualiz') || 
-        summary.toLowerCase().includes('encontrei') ||
-        summary.toLowerCase().includes('adicionei')) {
-      telegramNotify(`🤖 *Agente Deputados Distritais*\n${summary}`);
+    if (verification.verdict === 'REJECT') {
+      log('🚫 Push cancelado — verifier REJECT. Feedback gravado para próximo ciclo.');
+      telegramNotify(`🚫 *Verifier REJECT*\n${verification.reason.slice(0, 300)}`);
+      appendRunLog(`REJECT — ${verification.reason.slice(0, 100)}`);
+    } else {
+      // 4. Push só se APPROVE
+      gitPush();
+      if (summary.toLowerCase().includes('nov') ||
+          summary.toLowerCase().includes('atualiz') ||
+          summary.toLowerCase().includes('encontrei') ||
+          summary.toLowerCase().includes('adicionei')) {
+        telegramNotify(`🤖 *Agente Deputados Distritais*\n${summary}`);
+      }
     }
 
   } else {
@@ -168,10 +228,13 @@ async function mainLoop() {
     appendRunLog(`Falha — ${result.error?.slice(0, 100)}`);
   }
 
-  // 5. Atualiza STATE.md com último run
-  const state = `# Loop State — Deputados Distritais DF 2026
+  // 5. Atualiza STATE.md com último run (preserva feedback se REJECT)
+  const currentState = fs.existsSync(STATE_FILE) ? fs.readFileSync(STATE_FILE, 'utf-8') : '';
+  if (!currentState.includes('Status: 🔴')) {
+    const state = `# Loop State — Deputados Distritais DF 2026
 
 Last run: ${new Date().toISOString()}
+Status: 🟢 Última alteração aprovada
 
 ## Última ação
 ${summary || 'Nenhuma ação neste ciclo'}
@@ -180,7 +243,8 @@ ${summary || 'Nenhuma ação neste ciclo'}
 - Intervalo: ${POLL_INTERVAL_MS / 60000} min
 - Próximo: ${new Date(Date.now() + POLL_INTERVAL_MS).toISOString()}
 `;
-  updateState(state);
+    updateState(state);
+  }
 
   log('💤 ============= FIM DO CICLO =============');
 }

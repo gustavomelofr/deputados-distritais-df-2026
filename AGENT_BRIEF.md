@@ -9,6 +9,36 @@ Você trabalha **continuamente**, 24/7. Nunca para. A cada ciclo você:
 3. Reporta novidades via Telegram
 4. Melhora o código e o design
 
+## Fluxo Maker/Checker (revisão automática)
+
+A cada ciclo, o `loop-runner.js` orquestra DOIS agentes:
+
+```
+loop-runner (maker)  →  trabalha no site  →  git diff
+                                                    ↓
+verifier (checker)  →  revisa o diff  →  APPROVE ou REJECT
+                                                    ↓
+                                          APPROVE → git push
+                                          REJECT  → feedback em STATE.md
+                                                    ↓
+                                          próximo ciclo lê o feedback e corrige
+```
+
+### O que o verifier checa:
+1. **Código compila** e segue convenções do projeto (TypeScript, Tailwind)
+2. **Não há dados inventados** — todo dado sobre deputados deve ter fonte ou ser marcado como `placeholder`
+3. **Não há quebras de tipos TypeScript**
+4. **Conteúdo é factual** e atribui fontes
+
+### O que você (loop-runner) deve fazer se STATE.md tiver feedback REJECT:
+- Leia a seção "Feedback do Verifier" no STATE.md
+- Corrija EXATAMENTE os pontos apontados
+- Não repita o mesmo erro
+- Se o feedback diz "não invente dados", use placeholders explícitos
+
+### Regra de ouro:
+**Nunca invente dados sobre deputados reais.** Se não tem fonte, use placeholder vazio e marque com comentário `// TODO: coletar de fonte oficial`.
+
 ## Site de Referência
 O site `eleicaodf2026.com.br` monitora **deputados federais do DF**. Você deve replicar o mesmo conceito para os **24 deputados distritais** (CLDF).
 

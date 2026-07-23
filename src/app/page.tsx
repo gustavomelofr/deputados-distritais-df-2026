@@ -86,28 +86,35 @@ export default function Home() {
                 status: "ativo",
               },
               {
-                title: "Redes Sociais",
-                desc: "Monitoramento de Instagram e outras redes para acompanhamento da atividade pública dos deputados distritais.",
-                status: "em breve",
+                title: "Instagram Radar",
+                desc: "Monitoramento da atividade pública dos deputados distritais no Instagram: frequência de posts, temas e engajamento.",
+                status: "ativo",
+                href: "/monitor-instagram",
               },
-            ].map((item) => (
-              <div
-                key={item.title}
-                className="rounded-xl border border-zinc-200 p-6 hover:border-zinc-300 transition"
-              >
-                <div className="flex items-center justify-between mb-3">
-                  <h3 className="font-semibold text-zinc-900">{item.title}</h3>
-                  <span className={`rounded-full text-xs font-medium px-2.5 py-0.5 ${
-                    item.status === 'ativo'
-                      ? 'bg-green-100 text-green-700'
-                      : 'bg-amber-100 text-amber-700'
-                  }`}>
-                    {item.status === 'ativo' ? 'ativo' : 'em breve'}
-                  </span>
+            ].map((item) => {
+              const card = (
+                <div className="rounded-xl border border-zinc-200 p-6 hover:border-zinc-300 transition h-full">
+                  <div className="flex items-center justify-between mb-3">
+                    <h3 className="font-semibold text-zinc-900">{item.title}</h3>
+                    <span className={`rounded-full text-xs font-medium px-2.5 py-0.5 ${
+                      item.status === 'ativo'
+                        ? 'bg-green-100 text-green-700'
+                        : 'bg-amber-100 text-amber-700'
+                    }`}>
+                      {item.status === 'ativo' ? 'ativo' : 'em breve'}
+                    </span>
+                  </div>
+                  <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
                 </div>
-                <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>
-              </div>
-            ))}
+              );
+              return item.href ? (
+                <Link key={item.title} href={item.href} className="block h-full">
+                  {card}
+                </Link>
+              ) : (
+                <div key={item.title} className="h-full">{card}</div>
+              );
+            })}
           </div>
         </div>
       </section>

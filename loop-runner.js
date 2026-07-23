@@ -145,7 +145,7 @@ function runVerifier(diff) {
   const diffFile = path.join(ROOT, '.verifier-diff.patch');
   fs.writeFileSync(diffFile, diff);
 
-  const instruction = `Revise o diff no arquivo .verifier-diff.patch contra AGENTS.md e AGENT_BRIEF.md. Verifique: (1) código compila e segue convenções, (2) não há dados inventados sobre deputados, (3) não há quebras de tipos TypeScript, (4) conteúdo é factual. Responda APENAS com "APPROVE: <razão curta>" ou "REJECT: <razão curta + o que corrigir>".`;
+  const instruction = `Revise o diff no arquivo .verifier-diff.patch contra AGENTS.md e AGENT_BRIEF.md. Verifique: (1) código compila e segue convenções, (2) não há dados inventados sobre deputados, (3) não há quebras de tipos TypeScript, (4) conteúdo é factual. Responda APENAS com APPROVE seguido de uma razão curta, ou REJECT seguido da razão e o que corrigir.`;
 
   const cmd = `opencode run "${instruction}" --agent verifier --auto -f .verifier-diff.patch`;
   log('🔍 Verifier revisando diff...');

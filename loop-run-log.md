@@ -23,3 +23,4 @@ Append one entry per run. Prune entries older than 30 days.
 Trabalhe no site de deputados distrit |
 | 2026-07-23 | 20:08:11 | Falha — Command failed: opencode run "Leia AGENT_BRIEF.md e STATE.md.. Trabalhe no site de deputados distrit |
 | 2026-07-23 | 20:13:31 | Falha — spawnSync /bin/sh ETIMEDOUT |
+| 2026-07-23 | 20:23:23 | Sucesso — </think> · Tudo em ordem. O commit foi feito com sucesso. · **Resumo:** Refatorei `/noticias` removendo o mapa hardcoded slug→nome (14 entradas frágeis) e adicionei filtro por deputado via search para... |

@@ -76,6 +76,9 @@ export default function RootLayout({
               Dados públicos organizados para fins informativos e analíticos.
               Não é página oficial da CLDF ou de órgão público.
             </p>
+            <p className="mt-4 text-zinc-400 text-[11px]">
+              Última atualização: 24/07/2026 às 00:48 (agente autônomo)
+            </p>
             <p className="mt-3">
               <a
                 href="https://github.com/gustavomelofr/deputados-distritais-df-2026"

@@ -190,7 +190,7 @@ async function mainLoop() {
   log(`📋 Brief: ${BRIEF_FILE}`);
 
   // 1. Executa opencode com instrução baseada no brief
-  const instruction = 'Leia AGENT_BRIEF.md e STATE.md. Faça UM avanço tangível no site: crie/atualize uma página, implemente um componente, colete dados de uma fonte, ou melhore o código. Ao final, produza um resumo de 1-2 linhas do que fez. Se não houver nada a fazer, apenas confirme que está monitorando.';
+  const instruction = 'Leia STATE.md. Se houver feedback REJECT, corrija os pontos apontados. Senão, faça UMA pequena melhoria no site (um componente, uma página, ou um dado). Trabalhe rápido — máximo 5 minutos. Ao final, produza um resumo de 1-2 linhas.';
 
   const result = runOpencode(instruction);
 

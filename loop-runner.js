@@ -100,7 +100,7 @@ function runOpencode(instruction) {
   const cmd = `opencode run "${instruction}" --agent loop-runner --auto`;
   log(`▶️ opencode run...`);
   try {
-    const output = execSync(cmd, { cwd: ROOT, timeout: 300000, encoding: 'utf-8' });
+    const output = execSync(cmd, { cwd: ROOT, timeout: 600000, encoding: 'utf-8' });
     log(`✅ opencode concluído (${output.length} chars)`);
     return { ok: true, output };
   } catch (err) {
@@ -136,16 +136,7 @@ async function mainLoop() {
   log(`📋 Brief: ${BRIEF_FILE}`);
 
   // 1. Executa opencode com instrução baseada no brief
-  const instruction = [
-    'Leia AGENT_BRIEF.md e STATE.md.',
-    'Trabalhe no site de deputados distritais do DF:',
-    '1. Verifique as fontes de dados P1 (CLDF e Google News RSS)',
-    '2. Se encontrou dados novos, atualize o site (páginas, dados, componentes)',
-    '3. Se não encontrou nada novo, foque em melhorar o código/design do site',
-    '4. Mantenha AGENTS.md, STATE.md e LOOP.md atualizados',
-    '5. Commit sua alteração com mensagem descritiva',
-    '6. No final, produza um resumo de 3 linhas do que fez e se há novidades para reportar',
-  ].join('. ');
+  const instruction = 'Leia AGENT_BRIEF.md e STATE.md. Faça UM avanço tangível no site: crie/atualize uma página, implemente um componente, colete dados de uma fonte, ou melhore o código. Ao final, produza um resumo de 1-2 linhas do que fez. Se não houver nada a fazer, apenas confirme que está monitorando.';
 
   const result = runOpencode(instruction);
 

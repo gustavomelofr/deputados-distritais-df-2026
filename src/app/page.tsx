@@ -1,4 +1,6 @@
 import Link from "next/link";
+import { deputados } from "@/data/deputados";
+import { noticias } from "@/data/noticias";
 
 export default function Home() {
   return (
@@ -37,19 +39,23 @@ export default function Home() {
         <div className="mx-auto max-w-5xl px-4 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div>
-              <p className="text-3xl font-bold text-blue-600">24</p>
+              <p className="text-3xl font-bold text-blue-600">{deputados.length}</p>
               <p className="text-sm text-zinc-500 mt-1">Deputados em exercício</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-blue-600">—</p>
-              <p className="text-sm text-zinc-500 mt-1">Nomes no cenário 2026</p>
+              <p className="text-3xl font-bold text-blue-600">
+                {new Set(deputados.map((d) => d.partido)).size}
+              </p>
+              <p className="text-sm text-zinc-500 mt-1">Partidos representados</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-blue-600">—</p>
+              <p className="text-3xl font-bold text-blue-600">
+                {deputados.reduce((a, d) => a + d.proposicoes.length, 0)}
+              </p>
               <p className="text-sm text-zinc-500 mt-1">Proposições monitoradas</p>
             </div>
             <div>
-              <p className="text-3xl font-bold text-blue-600">—</p>
+              <p className="text-3xl font-bold text-blue-600">{noticias.length}</p>
               <p className="text-sm text-zinc-500 mt-1">Notícias organizadas</p>
             </div>
           </div>
@@ -71,17 +77,17 @@ export default function Home() {
             {[
               {
                 title: "CLDF",
-                desc: "Proposições, votações e presença dos 24 deputados distritais diretamente da Câmara Legislativa.",
-                status: "em breve",
+                desc: "Perfis dos 24 deputados distritais com biografia, foto, comissões e contatos, extraídos diretamente da Câmara Legislativa.",
+                status: "ativo",
               },
               {
                 title: "Notícias",
-                desc: "Cobertura jornalística sobre a CLDF e cada deputado, agregada de fontes abertas.",
-                status: "em breve",
+                desc: "Cobertura jornalística sobre a CLDF e cada deputado, agregada do Google News RSS de veículos como G1, Correio Braziliense, Brasil de Fato e outros.",
+                status: "ativo",
               },
               {
                 title: "Redes Sociais",
-                desc: "Monitoramento de Instagram e outras redes para acompanhamento da atividade pública.",
+                desc: "Monitoramento de Instagram e outras redes para acompanhamento da atividade pública dos deputados distritais.",
                 status: "em breve",
               },
             ].map((item) => (
@@ -91,8 +97,12 @@ export default function Home() {
               >
                 <div className="flex items-center justify-between mb-3">
                   <h3 className="font-semibold text-zinc-900">{item.title}</h3>
-                  <span className="rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5">
-                    {item.status}
+                  <span className={`rounded-full text-xs font-medium px-2.5 py-0.5 ${
+                    item.status === 'ativo'
+                      ? 'bg-green-100 text-green-700'
+                      : 'bg-amber-100 text-amber-700'
+                  }`}>
+                    {item.status === 'ativo' ? 'ativo' : 'em breve'}
                   </span>
                 </div>
                 <p className="text-sm text-zinc-500 leading-relaxed">{item.desc}</p>

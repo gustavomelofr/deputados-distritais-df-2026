@@ -41,6 +41,9 @@ export default function RootLayout({
               <a href="/noticias" className="hover:text-zinc-900 transition">
                 Notícias
               </a>
+              <a href="/cenario-2026" className="hover:text-zinc-900 transition">
+                Cenário 2026
+              </a>
               <a href="/metodologia" className="hover:text-zinc-900 transition">
                 Metodologia
               </a>

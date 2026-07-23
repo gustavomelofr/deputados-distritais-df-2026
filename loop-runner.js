@@ -100,7 +100,7 @@ function runOpencode(instruction) {
   const cmd = `opencode run "${instruction}" --agent loop-runner --auto`;
   log(`▶️ opencode run...`);
   try {
-    const output = execSync(cmd, { cwd: ROOT, timeout: 600000, encoding: 'utf-8' });
+    const output = execSync(cmd, { cwd: ROOT, timeout: 900000, encoding: 'utf-8' });
     log(`✅ opencode concluído (${output.length} chars)`);
     return { ok: true, output };
   } catch (err) {

@@ -5,6 +5,26 @@ interface Props {
   searchParams: Promise<{ partido?: string }>;
 }
 
+// Mapa de cores por partido para identidade visual consistente nos cards.
+// Cores baseadas na identidade histórica de cada legenda (aproximada).
+const partidoCores: Record<string, string> = {
+  PT: 'bg-red-100 text-red-700',
+  MDB: 'bg-green-100 text-green-700',
+  PSB: 'bg-yellow-100 text-yellow-700',
+  Republicanos: 'bg-blue-100 text-blue-700',
+  'União Brasil': 'bg-cyan-100 text-cyan-700',
+  PSOL: 'bg-orange-100 text-orange-700',
+  PL: 'bg-emerald-100 text-emerald-700',
+  Democrata: 'bg-indigo-100 text-indigo-700',
+  PP: 'bg-rose-100 text-rose-700',
+  PSDB: 'bg-sky-100 text-sky-700',
+  Podemos: 'bg-lime-100 text-lime-700',
+  PSD: 'bg-teal-100 text-teal-700',
+};
+
+const corPartido = (partido: string): string =>
+  partidoCores[partido] ?? 'bg-zinc-100 text-zinc-700';
+
 export default async function DeputadosPage({ searchParams }: Props) {
   const { partido: filtroPartido } = await searchParams;
   const partidoValido = filtroPartido
@@ -116,7 +136,11 @@ export default async function DeputadosPage({ searchParams }: Props) {
                 <h2 className="font-semibold text-zinc-900 truncate group-hover:text-blue-600 transition">
                   {dep.nome}
                 </h2>
-                <p className="text-sm text-zinc-500">{dep.partido}</p>
+                <span
+                  className={`inline-block mt-1 rounded-full text-xs font-semibold px-2 py-0.5 ${corPartido(dep.partido)}`}
+                >
+                  {dep.partido}
+                </span>
               </div>
             </div>
             <p className="mt-3 text-sm text-zinc-500 line-clamp-2 leading-relaxed">

@@ -31,9 +31,21 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900">
         <header className="border-b border-zinc-200 bg-white">
           <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
-            <a href="/" className="text-lg font-bold tracking-tight text-zinc-900">
-              Deputados Distritais <span className="text-blue-600">DF 2026</span>
-            </a>
+            <div className="flex items-center gap-3">
+              <a href="/" className="text-lg font-bold tracking-tight text-zinc-900">
+                Deputados Distritais <span className="text-blue-600">DF 2026</span>
+              </a>
+              <span
+                className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20"
+                title="Agente autônomo monitorando fontes públicas continuamente"
+              >
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75"></span>
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                </span>
+                agente ativo
+              </span>
+            </div>
             <div className="flex items-center gap-6 text-sm font-medium text-zinc-600">
               <a href="/deputados-distritais" className="hover:text-zinc-900 transition">
                 Deputados

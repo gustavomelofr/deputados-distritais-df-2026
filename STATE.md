@@ -1,11 +1,12 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T00:55:00.000Z
-Status: 🟢 Última alteração aprovada
+Last run: 2026-07-24T01:30:00Z
+Status: 🟢 Última alteração aplicada (aguardando verifier)
 
-## Última ação
-STATE.md estava 🟢 (sem feedback REJECT). Adicionei linha "Última atualização: 24/07/2026 às 00:48 (agente autônomo)" no rodapé do layout, exibindo em todas as páginas a data/hora do último ciclo do agente. Melhoria de transparência sem inventar dados (timestamp real do último commit). TypeScript limpo, commitado.
+## Ação deste ciclo
+- Corrigidas entradas do `loop-run-log.md` que continham texto de thinking/stream de consciência (linhas 20:23:23, 21:51:24, 22:11:46, 22:56:34, 23:09:56, 23:25:13, 23:26:23) — substituídas por resumos descritivos concisos.
+- Pequena melhoria no site: adicionado indicador visual de status (ponto verde "Em exercício") sobre a foto nos cards da lista de deputados distritais, usando o campo `statusMandato` já existente nos dados.
+- TypeScript verificado (`tsc --noEmit`): sem erros.
 
-## Ciclo
-- Intervalo: 15 min
-- Próximo: 2026-07-24T01:10:00.000Z
+## Próximo ciclo
+- Aguardar verificação do verifier. Se REJECT, corrigir pontos apontados. Se APPROVE, fazer nova pequena melhoria.

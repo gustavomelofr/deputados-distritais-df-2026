@@ -124,13 +124,22 @@ export default async function DeputadosPage({ searchParams }: Props) {
             className="group rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100/50 transition-all"
           >
             <div className="flex items-center gap-4">
-              <div className="h-14 w-14 rounded-full overflow-hidden bg-zinc-100 flex-shrink-0 ring-2 ring-zinc-100 group-hover:ring-blue-200 transition">
-                <img
-                  src={dep.foto}
-                  alt={dep.nome}
-                  className="h-full w-full object-cover"
-                  loading="lazy"
-                />
+              <div className="relative h-14 w-14 flex-shrink-0">
+                <div className="h-14 w-14 rounded-full overflow-hidden bg-zinc-100 ring-2 ring-zinc-100 group-hover:ring-blue-200 transition">
+                  <img
+                    src={dep.foto}
+                    alt={dep.nome}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
+                </div>
+                {dep.statusMandato === 'exercicio' && (
+                  <span
+                    title="Em exercício"
+                    aria-label="Em exercício"
+                    className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full bg-green-500 border-2 border-white"
+                  />
+                )}
               </div>
               <div className="min-w-0">
                 <h2 className="font-semibold text-zinc-900 truncate group-hover:text-blue-600 transition">

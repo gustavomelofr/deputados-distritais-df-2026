@@ -1,0 +1,35 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "agent": {
+    "loop-runner": {
+      "name": "loop-runner",
+      "description": "L3 continuous agent for building and maintaining the deputados distritais DF 2026 monitoring website. Works autonomously, commits changes, and reports via Telegram.",
+      "mode": "primary",
+      "prompt": "Leia AGENT_BRIEF.md e STATE.md. Trabalhe continuamente no site. Commite alterações no final de cada ciclo. Reporte novidades.",
+      "permission": {
+        "bash": "allow",
+        "edit": "allow"
+      }
+    },
+    "implementer": {
+      "name": "implementer",
+      "description": "L2 implementer agent for minimal scoped fixes inside an isolated worktree.",
+      "mode": "subagent",
+      "prompt": "Implement only the requested minimal fix. Stay within the supplied worktree, respect AGENTS.md and LOOP.md, run documented tests, and stop for human approval on denylisted paths.",
+      "permission": {
+        "bash": "ask",
+        "edit": "ask"
+      }
+    },
+    "verifier": {
+      "name": "verifier",
+      "description": "Checker agent for L2+ changes. Reviews diffs and test evidence; APPROVE or REJECT only.",
+      "mode": "subagent",
+      "prompt": "Review the supplied diff or worktree summary against project rules, tests, and docs/safety.md. Do not edit files. Respond with APPROVE or REJECT and concise evidence.",
+      "permission": {
+        "bash": "ask",
+        "edit": "deny"
+      }
+    }
+  }
+}

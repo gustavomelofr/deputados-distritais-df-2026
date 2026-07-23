@@ -1,0 +1,85 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Deputados Distritais DF 2026 — Monitor Independente",
+  description:
+    "Monitoramento independente dos 24 deputados distritais do Distrito Federal. Proposições, votações, presença, gastos e cobertura jornalística organizados com contexto editorial.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="pt-BR"
+      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900">
+        <header className="border-b border-zinc-200 bg-white">
+          <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
+            <a href="/" className="text-lg font-bold tracking-tight text-zinc-900">
+              Deputados Distritais <span className="text-blue-600">DF 2026</span>
+            </a>
+            <div className="flex items-center gap-6 text-sm font-medium text-zinc-600">
+              <a href="/deputados-distritais" className="hover:text-zinc-900 transition">
+                Deputados
+              </a>
+              <a href="/noticias" className="hover:text-zinc-900 transition">
+                Notícias
+              </a>
+              <a href="/metodologia" className="hover:text-zinc-900 transition">
+                Metodologia
+              </a>
+            </div>
+          </nav>
+        </header>
+        <main className="flex-1">{children}</main>
+        <footer className="border-t border-zinc-200 bg-zinc-100 py-8 text-xs text-zinc-500">
+          <div className="mx-auto max-w-6xl px-4 text-center">
+            <p className="font-semibold text-zinc-700 text-sm mb-2">
+              Deputados Distritais DF 2026
+            </p>
+            <p>Monitor independente dos 24 deputados distritais do Distrito Federal.</p>
+            <p className="mt-2">
+              Dados públicos organizados para fins informativos e analíticos.
+              Não é página oficial da CLDF ou de órgão público.
+            </p>
+            <p className="mt-3">
+              <a
+                href="https://github.com/gustavomelofr/deputados-distritais-df-2026"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-zinc-700"
+              >
+                GitHub
+              </a>
+              <span className="mx-2">·</span>
+              <a
+                href="https://www.cl.df.gov.br"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-zinc-700"
+              >
+                CLDF
+              </a>
+            </p>
+          </div>
+        </footer>
+      </body>
+    </html>
+  );
+}

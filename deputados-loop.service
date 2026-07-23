@@ -1,0 +1,19 @@
+[Unit]
+Description=Agente Contínuo — Deputados Distritais DF 2026
+Documentation=https://github.com/gustavomelofr/deputados-distritais-df-2026
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=/root/deputados-distritais-df-2026
+ExecStart=/usr/bin/node /root/deputados-distritais-df-2026/loop-runner.js
+Restart=always
+RestartSec=30
+StandardOutput=journal
+StandardError=journal
+Environment=NODE_ENV=production
+# Sem limite de tokens — o agente roda sem restrições
+
+[Install]
+WantedBy=multi-user.target

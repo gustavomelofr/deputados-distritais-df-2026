@@ -53,7 +53,7 @@ A página inicial deve comunicar: atividade legislativa do DF, deputados distrit
 
 ## Fila de melhorias priorizada
 
-Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. Marque um item como concluído somente quando os critérios de aceite forem atendidos e o PR tiver sido integrado.
+Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. Comece sempre pelo primeiro checkbox não concluído de P0 antes de considerar P1, P2 ou P3. Evite exploração ampla: leia apenas os arquivos necessários para a tarefa escolhida e comece a implementação. Marque um item como concluído somente quando os critérios de aceite forem atendidos e o PR tiver sido integrado.
 
 ### P0 — Confiança editorial e dados
 

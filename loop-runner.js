@@ -146,7 +146,7 @@ function removeWorktree(worktree) {
 function runAgent(agent, instruction, cwd, files = []) {
   const args = ['run', instruction, '--agent', agent, '--auto', '--title', `loop-${agent}`];
   for (const file of files) args.push('--file', file);
-  const timeout = agent === 'verifier' ? 3 * 60 * 1000 : 5 * 60 * 1000;
+  const timeout = agent === 'verifier' ? 3 * 60 * 1000 : 12 * 60 * 1000;
   try {
     const output = run('opencode', args, { cwd, timeout });
     return { ok: true, output };
@@ -229,7 +229,7 @@ function commitAndOpenPR(worktree, branch, runId, task) {
 
 function buildTask(state) {
   if (state.pendingFeedback) return state.pendingFeedback;
-  return 'Leia AGENT_BRIEF.md. Escolha UMA melhoria pequena, concreta e verificável para o site ou uma atualização factual baseada em fonte oficial. Não invente dados. Não faça commit, push, merge ou alteração fora do worktree. Não rode TypeScript, build ou testes pesados: o orquestrador validará a mudança depois. Reporte objetivamente os arquivos alterados.';
+  return 'Leia AGENT_BRIEF.md e execute SOMENTE o primeiro item não concluído da seção Fila de melhorias priorizada, começando por P0. Não faça exploração ampla, não narre plano e não pesquise tarefas alternativas: leia apenas os arquivos diretamente necessários para esse item e comece a editar. Atenda todos os critérios de aceite com dados reais ou estados honestos de indisponibilidade. Ao concluir, marque o checkbox correspondente como [x] no AGENT_BRIEF.md. Não faça commit, push ou merge. Não rode TypeScript, build ou testes pesados: o orquestrador validará a mudança depois. Reporte objetivamente os arquivos alterados.';
 }
 
 function updateRuntime(statePatch, ledgerPatch) {

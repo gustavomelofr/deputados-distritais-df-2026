@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { deputados, partidos } from '@/data/deputados';
 
 interface Props {
-  searchParams: Promise<{ partido?: string }>;
+  searchParams: Promise<{ partido?: string; q?: string }>;
 }
 
 // Mapa de cores por partido para identidade visual consistente nos cards.
@@ -26,19 +26,25 @@ const corPartido = (partido: string): string =>
   partidoCores[partido] ?? 'bg-zinc-100 text-zinc-700';
 
 export default async function DeputadosPage({ searchParams }: Props) {
-  const { partido: filtroPartido } = await searchParams;
+  const { partido: filtroPartido, q: busca } = await searchParams;
   const partidoValido = filtroPartido
     ? partidos.find((p) => p === filtroPartido)
     : null;
 
-  const deputadosFiltrados = partidoValido
-    ? deputados.filter((d) => d.partido === partidoValido)
-    : deputados;
+  const termoBusca = (busca ?? '').trim().toLowerCase();
+  const deputadosFiltrados = deputados.filter((d) => {
+    if (partidoValido && d.partido !== partidoValido) return false;
+    if (termoBusca) {
+      const alvo = `${d.nome} ${d.nomeCompleto ?? ''} ${d.biografia}`.toLowerCase();
+      if (!alvo.includes(termoBusca)) return false;
+    }
+    return true;
+  });
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
       {/* Header */}
-      <div className="mb-10">
+      <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-zinc-900">
           Deputados Distritais
         </h1>
@@ -47,6 +53,31 @@ export default async function DeputadosPage({ searchParams }: Props) {
           2023–2026. Clique em cada perfil para ver detalhes.
         </p>
       </div>
+
+      {/* Busca por nome */}
+      <form className="mb-6" action="/deputados-distritais" method="GET" role="search">
+        <div className="relative max-w-md">
+          <input
+            type="search"
+            name="q"
+            defaultValue={busca ?? ''}
+            placeholder="Buscar por nome ou biografia…"
+            aria-label="Buscar deputado distrital por nome"
+            className="w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+          />
+          <svg
+            viewBox="0 0 24 24"
+            className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="7" />
+            <path d="m21 21-4.3-4.3" />
+          </svg>
+        </div>
+      </form>
 
       {/* Filter by party */}
       <div className="mb-8 flex flex-wrap gap-2 items-center">
@@ -107,15 +138,30 @@ export default async function DeputadosPage({ searchParams }: Props) {
       </div>
 
       {/* Grid of deputies */}
-      {partidoValido && (
+      {(partidoValido || termoBusca) && (
         <p className="text-sm text-zinc-500 mb-4">
           Mostrando {deputadosFiltrados.length} deputado
-          {deputadosFiltrados.length !== 1 ? 's' : ''} de {partidoValido}.{' '}
+          {deputadosFiltrados.length !== 1 ? 's' : ''}
+          {partidoValido ? ` de ${partidoValido}` : ''}
+          {termoBusca ? ` para "${busca}"` : ''}.{' '}
           <Link href="/deputados-distritais" className="text-blue-600 hover:underline">
-            Ver todos
+            Limpar filtros
           </Link>
         </p>
       )}
+      {deputadosFiltrados.length === 0 ? (
+        <div className="rounded-xl border border-dashed border-zinc-300 bg-zinc-50 p-12 text-center">
+          <p className="text-zinc-500">
+            Nenhum deputado encontrado com os filtros atuais.
+          </p>
+          <Link
+            href="/deputados-distritais"
+            className="mt-3 inline-block text-sm font-semibold text-blue-600 hover:underline"
+          >
+            Limpar filtros
+          </Link>
+        </div>
+      ) : (
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {deputadosFiltrados.map((dep) => (
           <Link
@@ -200,6 +246,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
           </Link>
         ))}
       </div>
+      )}
     </div>
   );
 }

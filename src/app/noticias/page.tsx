@@ -116,7 +116,7 @@ export default async function NoticiasPage({ searchParams }: Props) {
               <p className="text-zinc-400 text-sm mt-2">
                 {filtroDeputado
                   ? 'Tente remover o filtro para ver todas as notícias.'
-                  : 'As notícias serão carregadas automaticamente das fontes.'}
+                  : 'As notícias são agregadas do Google News RSS (P1) e serão exibidas assim que coletadas.'}
               </p>
             </div>
           ) : (

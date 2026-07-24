@@ -116,7 +116,18 @@ export default function Home() {
             </Link>
           </div>
           <div className="grid md:grid-cols-3 gap-4">
-            {[...noticias]
+            {noticias.length === 0 ? (
+              <div className="md:col-span-3 rounded-xl border border-zinc-200 p-8 text-center">
+                <p className="text-zinc-400">
+                  Nenhuma notícia coletada ainda.
+                </p>
+                <p className="text-zinc-400 text-sm mt-1">
+                  As notícias são agregadas do Google News RSS (P1) e serão
+                  exibidas assim que coletadas.
+                </p>
+              </div>
+            ) : (
+            [...noticias]
               .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
               .slice(0, 3)
               .map((n) => (
@@ -144,7 +155,8 @@ export default function Home() {
                     {n.resumo}
                   </p>
                 </a>
-              ))}
+              ))
+            )}
           </div>
         </div>
       </section>

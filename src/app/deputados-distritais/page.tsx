@@ -234,7 +234,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
                 </span>
               ) : (
                 <span className="text-zinc-400 italic">
-                  sem proposições monitoradas
+                  proposições ainda não coletadas
                 </span>
               )}
             </div>

@@ -133,7 +133,11 @@ export default async function DeputadoPage({ params }: Props) {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-zinc-400">Nenhuma comissão registrada.</p>
+            <p className="text-sm text-zinc-400">
+              Nenhuma comissão registrada na fonte oficial. Se o deputado
+              participa de comissão não listada, a atualização será feita na
+              próxima coleta da CLDF.
+            </p>
           )}
           <p className="text-xs text-zinc-400 mt-4">
             Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF</a> — Legislatura 2023–2026

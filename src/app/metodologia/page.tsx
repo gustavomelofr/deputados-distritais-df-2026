@@ -89,6 +89,7 @@ export default function MetodologiaPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 underline"
+                  aria-label="DivulgaCand/TSE — dados oficiais de candidatura e prestação de contas (abre em nova aba)"
                 >
                   divulgacandcontas.tse.jus.br
                 </a>

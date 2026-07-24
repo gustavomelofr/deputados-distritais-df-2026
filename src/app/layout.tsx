@@ -1,6 +1,31 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { execSync } from "node:child_process";
 import "./globals.css";
+
+// Data da última atualização do site, derivada do último commit do git.
+// Calculada em build time — sempre factual, nunca hardcoded.
+function getUltimaAtualizacao(): string {
+  try {
+    const iso = execSync("git log -1 --format=%cI", {
+      encoding: "utf-8",
+      timeout: 5000,
+    }).trim();
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return "";
+    return d.toLocaleString("pt-BR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  } catch {
+    return "";
+  }
+}
+
+const ultimaAtualizacao = getUltimaAtualizacao();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,7 +102,9 @@ export default function RootLayout({
               Não é página oficial da CLDF ou de órgão público.
             </p>
             <p className="mt-4 text-zinc-400 text-[11px]">
-              Última atualização: 24/07/2026 às 00:48 (agente autônomo)
+              {ultimaAtualizacao
+                ? `Última atualização: ${ultimaAtualizacao} (agente autônomo)`
+                : "Atualizado continuamente por agente autônomo"}
             </p>
             <p className="mt-3">
               <a

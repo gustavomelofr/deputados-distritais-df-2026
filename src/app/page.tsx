@@ -5,17 +5,21 @@ import { noticias } from "@/data/noticias";
 export default function Home() {
   return (
     <div className="flex flex-col">
-      {/* Hero */}
+      {/* Hero editorial */}
       <section className="bg-gradient-to-b from-blue-950 via-blue-900 to-zinc-900 text-white">
         <div className="mx-auto max-w-5xl px-4 py-20 md:py-28 text-center">
+          <p className="text-xs md:text-sm font-semibold uppercase tracking-[0.2em] text-blue-300 mb-4">
+            Atividade legislativa do Distrito Federal
+          </p>
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-            Monitor Independente dos{" "}
-            <span className="text-blue-400">Deputados Distritais</span> do DF
+            O que a{" "}
+            <span className="text-blue-400">Câmara Legislativa do DF</span> está fazendo
           </h1>
           <p className="mt-6 text-lg md:text-xl text-blue-200 max-w-2xl mx-auto leading-relaxed">
-            Os 24 deputados da Câmara Legislativa do Distrito Federal em exercício,
-            movimentações para 2026, proposições, votações e atividade pública.
-            Cada dado com recorte, data e limite de interpretação.
+            Monitoramento independente dos 24 deputados distritais em exercício:
+            proposições, votações, presença em sessões, atividade pública e
+            movimentações para as eleições de 2026. Cada dado tem recorte, data
+            de coleta e limite de interpretação declarados.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
@@ -31,6 +35,13 @@ export default function Home() {
               className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
             >
               Últimas notícias
+            </Link>
+            <Link
+              href="/metodologia"
+              aria-label="Ver a metodologia e as fontes de dados do monitor"
+              className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
+            >
+              Metodologia e fontes
             </Link>
           </div>
         </div>

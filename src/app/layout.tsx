@@ -79,7 +79,11 @@ export default function RootLayout({
               <a href="/deputados-distritais" className="hover:text-zinc-900 transition">
                 Deputados
               </a>
-              <a href="/noticias" className="hover:text-zinc-900 transition">
+              <a
+                href="/noticias"
+                aria-label="Feed de notícias sobre a CLDF e os deputados distritais"
+                className="hover:text-zinc-900 transition"
+              >
                 Notícias
               </a>
               <a href="/cenario-2026" className="hover:text-zinc-900 transition">

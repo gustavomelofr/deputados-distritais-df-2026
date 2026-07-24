@@ -51,6 +51,7 @@ export default async function NoticiasPage({ searchParams }: Props) {
         {filtroDeputado && (
           <Link
             href="/noticias"
+            aria-label="Remover filtro de deputado e exibir todas as notícias"
             className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline mt-3"
           >
             ← Limpar filtro e ver todas as notícias

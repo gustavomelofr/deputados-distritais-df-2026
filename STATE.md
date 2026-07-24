@@ -1,13 +1,12 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T08:15:00.000Z
-Status: 🟢 Ciclo concluído — correção de log REJECT aplicada
+Last run: 2026-07-24T06:35:00Z
+Status: 🟢 Última alteração aprovada (correção de feedback REJECT aplicada)
 
-## Ação realizada neste ciclo
-- Removidas as entradas rejeitadas (05:57:50 com texto de thinking em primeira pessoa, marcadores `·`, truncamento `*...`) e a linha REJECT residual (05:59:21) do `loop-run-log.md`.
-- Inserida entrada factual limpa em terceira pessoa para o commit `3d89253` na posição cronológica correta (após 05:14:30, antes de 07:30:00).
-- Melhoria real de código: adicionado `aria-label` descritivo e `focus-visible:ring` nos cards de notícias recentes da home (`src/app/page.tsx`), melhorando acessibilidade dos links externos.
-- TypeScript validado sem erros (`tsc --noEmit` exit 0).
+## Última ação
+Corrigida a entrada 06:25:16 do `loop-run-log.md` (texto de thinking em primeira pessoa, marcadores `·`, truncamento) reescrita como registro factual limpo em terceira pessoa, descrevendo objetivamente o commit `eeb16e7` (alterações em `src/app/page.tsx`, `STATE.md` e `loop-run-log.md`), seguindo o formato das entradas 07:35:00/07:40:00/07:50:00. Melhoria real: adicionado `aria-label` descritivo no link "← Limpar filtro" da página `/noticias` (`src/app/noticias/page.tsx`) e `aria-label` no link da CLDF da página `/metodologia` (`src/app/metodologia/page.tsx`). TypeScript validado sem erros.
 
 ## Próximo ciclo
-- Aguardar próximo feedback do verifier.
+- Verificar feedback do verifier
+- Se APPROVE: próxima pequena melhoria
+- Se REJECT: corrigir pontos apontados

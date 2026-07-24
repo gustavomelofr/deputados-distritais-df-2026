@@ -51,6 +51,7 @@ export default function MetodologiaPage() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-blue-600 underline"
+                  aria-label="Lista oficial dos deputados distritais 2023-2026 no site da CLDF (abre em nova aba)"
                 >
                   cl.df.gov.br
                 </a>

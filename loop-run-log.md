@@ -133,3 +133,4 @@ Trabalhe no site de deputados distrit |
 | 2026-07-24 | 11:22:27 | Falha — spawnSync /bin/sh ETIMEDOUT |
 | 2026-07-24 | 11:37:27 | Falha — spawnSync /bin/sh ETIMEDOUT |
 | 2026-07-24 | 13:35:00 | Sucesso — Adicionados `focus-visible:ring` nos links da página de perfil individual do deputado (`/deputados-distritais/[slug]`): link "← Todos os deputados", botões sociais (Instagram/Twitter/email) e cards de notícias relacionadas, padronizando a acessibilidade de foco com os demais links do site. TypeScript validado sem erros. |
+| 2026-07-24 | 11:51:12 | Sucesso — Encontrei a melhoria: a página de perfil individual do deputado (`/deputados-distritais/[slug]`) tem vários links sem `focus-visible:ring` — o link "← Todos os deputados", os botões sociais (Instagram... |

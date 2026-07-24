@@ -43,6 +43,70 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Caminhos de navegação */}
+      <section className="bg-white border-b border-zinc-200">
+        <div className="mx-auto max-w-5xl px-4 py-14">
+          <h2 className="text-2xl font-bold text-zinc-900 text-center mb-2">
+            O que você quer acompanhar?
+          </h2>
+          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-10">
+            Três caminhos para explorar o monitoramento da Câmara Legislativa
+            do Distrito Federal.
+          </p>
+          <div className="grid md:grid-cols-3 gap-5">
+            <Link
+              href="/deputados-distritais"
+              aria-label="Acessar a lista dos 24 deputados distritais em exercício"
+              className="group rounded-xl border border-zinc-200 p-6 hover:border-blue-300 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 transition">
+                Deputados em exercício
+              </h3>
+              <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                Os 24 deputados da CLDF na legislatura 2023–2026, com perfil,
+                partido, comissões e contatos extraídos da fonte oficial.
+              </p>
+              <span className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-500 transition">
+                Ver deputados →
+              </span>
+            </Link>
+            <Link
+              href="/noticias"
+              aria-label="Acessar a atividade legislativa: notícias e proposições da CLDF"
+              className="group rounded-xl border border-zinc-200 p-6 hover:border-blue-300 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 transition">
+                Atividade legislativa
+              </h3>
+              <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                Notícias, proposições e votações da CLDF. Proposições ainda
+                não foram coletadas; a cobertura jornalística já está
+                disponível via Google News RSS.
+              </p>
+              <span className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-500 transition">
+                Ver atividade →
+              </span>
+            </Link>
+            <Link
+              href="/cenario-2026"
+              aria-label="Acessar o cenário eleitoral de 2026 para o Distrito Federal"
+              className="group rounded-xl border border-zinc-200 p-6 hover:border-blue-300 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 transition">
+                Cenário eleitoral de 2026
+              </h3>
+              <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
+                Pré-candidaturas e movimentações políticas para as eleições
+                distritais de 2026, com recorte por partido e posição.
+              </p>
+              <span className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-500 transition">
+                Ver cenário 2026 →
+              </span>
+            </Link>
+          </div>
+        </div>
+      </section>
+
       {/* Stats */}
       <section className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-12">

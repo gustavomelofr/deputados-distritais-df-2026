@@ -1,11 +1,11 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T14:30:00.000Z
+Last run: 2026-07-24T12:37:27.986Z
 Status: 🟢 Última alteração aprovada
 
 ## Última ação
-Adicionada navegação anterior/próximo deputado no perfil individual (`/deputados-distritais/[slug]`), com links acessíveis e labels ARIA.
+Nenhuma ação neste ciclo
 
 ## Ciclo
 - Intervalo: 15 min
-- Próximo: 2026-07-24T14:45:00.000Z
+- Próximo: 2026-07-24T12:52:27.987Z

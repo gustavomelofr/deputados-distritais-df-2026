@@ -168,14 +168,14 @@ export default async function DeputadoPage({ params }: Props) {
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-500">Proposições</span>
-              <span className="text-zinc-700">
-                {dep.proposicoes.length} registradas
+              <span className="text-zinc-400 text-sm italic">
+                ainda não coletado
               </span>
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-500">Presenças</span>
-              <span className="text-zinc-700">
-                {dep.presenca.length} sessões registradas
+              <span className="text-zinc-400 text-sm italic">
+                ainda não coletado
               </span>
             </div>
           </div>

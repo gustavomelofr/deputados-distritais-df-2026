@@ -4,6 +4,9 @@
 - Serviço: `deputados-loop.service`;
 - Runtime: `node loop-runner.js`;
 - Cadência: 15 minutos após o fim do ciclo anterior;
+- Implementer: até 45 minutos; verifier: até 3 minutos;
+- Timeout com diff: worktree e patch em `.loop/partial/` são retomados no ciclo seguinte;
+- Escalonamento: dois timeouts ou 24h de trabalho parcial;
 - Modelo: configurado no OpenCode;
 - Tentativas: no máximo 2 por tarefa;
 - Custo: sem teto diário por decisão do operador; duração e resultados ficam em `.loop/run-log.jsonl`.

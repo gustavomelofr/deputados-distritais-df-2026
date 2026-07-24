@@ -12,8 +12,13 @@ const ROOT = __dirname;
 const BASE_BRANCH = process.env.LOOP_BASE_BRANCH || 'main';
 const POLL_INTERVAL_MS = Number(process.env.LOOP_INTERVAL_MS || 15 * 60 * 1000);
 const MAX_ATTEMPTS = 2;
+const MAX_TIMEOUTS = 2;
+const IMPLEMENTER_TIMEOUT_MS = 45 * 60 * 1000;
+const VERIFIER_TIMEOUT_MS = 3 * 60 * 1000;
+const PARTIAL_TTL_MS = 24 * 60 * 60 * 1000;
 const WORKTREE_ROOT = path.join(path.dirname(ROOT), 'deputados-loop-worktrees');
 const RUNTIME_DIR = path.join(ROOT, '.loop');
+const PARTIAL_DIR = path.join(RUNTIME_DIR, 'partial');
 const RUNTIME_STATE = path.join(RUNTIME_DIR, 'state.json');
 const LEDGER_FILE = path.join(RUNTIME_DIR, 'ledger.json');
 const RUN_LOG = path.join(RUNTIME_DIR, 'run-log.jsonl');
@@ -49,6 +54,7 @@ function writeJson(file, value) {
 
 function ensureRuntime() {
   fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+  fs.mkdirSync(PARTIAL_DIR, { recursive: true });
   fs.mkdirSync(WORKTREE_ROOT, { recursive: true });
   if (!fs.existsSync(RUNTIME_STATE)) {
     writeJson(RUNTIME_STATE, {
@@ -128,6 +134,38 @@ function listChangedFiles(worktree) {
   return [...new Set([...changed, ...untracked])];
 }
 
+
+function makePatch(worktree) {
+  const untracked = git(worktree, ['ls-files', '--others', '--exclude-standard']).split('\n').filter(Boolean);
+  if (untracked.length) run('git', ['add', '-N', '--', ...untracked], { cwd: worktree });
+  return git(worktree, ['diff', '--binary', 'HEAD']);
+}
+
+function partialPaths(runId) {
+  return { patch: path.join(PARTIAL_DIR, `${runId}.patch`), meta: path.join(PARTIAL_DIR, `${runId}.json`) };
+}
+
+function preserveTimeout(active, worktree, branch, runId, task, attempt) {
+  const files = listChangedFiles(worktree);
+  if (!files.length) return false;
+  const timeouts = (active?.timeouts || 0) + 1;
+  const partial = partialPaths(runId);
+  fs.writeFileSync(partial.patch, makePatch(worktree));
+  const saved = { runId, task, branch, worktree, status: 'timed_out', attempt, timeouts, timedOutAt: new Date().toISOString(), partialPatch: partial.patch };
+  fs.writeFileSync(partial.meta, `${JSON.stringify(saved, null, 2)}\n`);
+  if (timeouts >= MAX_TIMEOUTS) {
+    appendRun({ runId, outcome: 'escalated', task, reason: `Implementer atingiu ${timeouts} timeouts`, partialPatch: partial.patch });
+    updateRuntime({ status: 'escalated', lastError: `Implementer atingiu ${timeouts} timeouts.` }, { lastOutcome: 'escalated', active: null });
+    notify(`⚠️ Loop escalado após ${timeouts} timeouts\nTarefa: ${task}\nPatch salvo: ${partial.patch}`);
+    removeWorktree(worktree);
+    return true;
+  }
+  appendRun({ runId, outcome: 'partial_saved', task, timeouts, partialPatch: partial.patch });
+  updateRuntime({ status: 'timed_out', lastAction: task, partialPatch: partial.patch }, { lastOutcome: 'timed_out', active: saved });
+  log(`Timeout com diff: patch salvo e worktree preservado (${timeouts}/${MAX_TIMEOUTS}).`);
+  return true;
+}
+
 function createWorktree(runId) {
   git(ROOT, ['fetch', 'origin', BASE_BRANCH]);
   const branch = `loop/${runId}`;
@@ -146,13 +184,17 @@ function removeWorktree(worktree) {
 function runAgent(agent, instruction, cwd, files = []) {
   const args = ['run', instruction, '--agent', agent, '--auto', '--title', `loop-${agent}`];
   for (const file of files) args.push('--file', file);
-  const timeout = agent === 'verifier' ? 3 * 60 * 1000 : 12 * 60 * 1000;
+  const timeout = agent === 'verifier' ? VERIFIER_TIMEOUT_MS : IMPLEMENTER_TIMEOUT_MS;
   try {
     const output = run('opencode', args, { cwd, timeout });
     return { ok: true, output };
   } catch (error) {
     const detail = `${error.stderr || ''}\n${error.stdout || ''}\n${error.message || ''}`.slice(-2000);
-    return { ok: false, error: detail };
+    return {
+      ok: false,
+      timedOut: error?.code === 'ETIMEDOUT' || /ETIMEDOUT|timed out/i.test(`${error?.message || ''} ${error?.stderr || ''}`),
+      error: detail,
+    };
   }
 }
 
@@ -257,25 +299,39 @@ async function mainLoop() {
   syncServingCheckout();
   const state = readJson(RUNTIME_STATE, {});
   const ledger = readJson(LEDGER_FILE, {});
-  const runId = new Date().toISOString().replace(/[:.]/g, '-');
-  const task = buildTask(state);
-  updateRuntime({ status: 'running', lastRun: runId }, { totalRuns: (ledger.totalRuns || 0) + 1, active: { runId, task, attempt: 0 } });
-  let worktree;
+  const previous = ledger.active;
+  if (previous?.status === 'timed_out' && (!fs.existsSync(previous.worktree) || Date.now() - Date.parse(previous.timedOutAt || 0) >= PARTIAL_TTL_MS)) {
+    appendRun({ runId: previous.runId, outcome: 'escalated', task: previous.task, reason: 'Trabalho parcial expirou após 24h', partialPatch: previous.partialPatch });
+    updateRuntime({ status: 'escalated', lastError: 'Trabalho parcial expirou após 24h.' }, { lastOutcome: 'escalated', active: null });
+    notify(`⚠️ Loop escalado: trabalho parcial expirou após 24h\nPatch: ${previous.partialPatch}`);
+    if (fs.existsSync(previous.worktree)) removeWorktree(previous.worktree);
+    return;
+  }
+  const resumable = previous?.status === 'timed_out' && fs.existsSync(previous.worktree) && (previous.timeouts || 0) < MAX_TIMEOUTS ? previous : null;
+  const runId = resumable?.runId || new Date().toISOString().replace(/[:.]/g, '-');
+  const task = resumable?.task || buildTask(state);
+  const created = resumable || createWorktree(runId);
+  const worktree = created.worktree;
+  const branch = created.branch;
+  const firstAttempt = resumable?.attempt || 1;
+  updateRuntime({ status: resumable ? 'resuming' : 'running', lastRun: new Date().toISOString() }, { totalRuns: (ledger.totalRuns || 0) + 1, active: { ...(resumable || {}), runId, task, branch, worktree, status: 'running', attempt: firstAttempt, timeouts: resumable?.timeouts || 0 } });
   try {
-    const created = createWorktree(runId);
-    worktree = created.worktree;
-    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
-      updateRuntime({}, { active: { runId, task, attempt } });
-      const prompt = attempt === 1
-        ? task
-        : readJson(RUNTIME_STATE, {}).pendingFeedback;
+    for (let attempt = firstAttempt; attempt <= MAX_ATTEMPTS; attempt += 1) {
+      const active = readJson(LEDGER_FILE, {}).active;
+      updateRuntime({}, { active: { ...(active || {}), runId, task, branch, worktree, status: 'running', attempt } });
+      const prompt = resumable && attempt === firstAttempt
+        ? `Continue exatamente a tarefa já iniciada: ${task}\n\nLeia o diff atual e o patch em ${resumable.partialPatch}. Preserve alterações válidas, complete apenas os critérios pendentes, não inicie outra tarefa e não rode testes/build.`
+        : (attempt === 1 ? task : readJson(RUNTIME_STATE, {}).pendingFeedback);
       const implementation = runAgent('implementer', prompt, worktree);
-      if (!implementation.ok) throw new Error(`Implementer falhou: ${implementation.error.slice(-500)}`);
+      if (!implementation.ok) {
+        if (implementation.timedOut && preserveTimeout(active, worktree, branch, runId, task, attempt)) return;
+        throw new Error(`Implementer falhou: ${implementation.error.slice(-700)}`);
+      }
       const tests = runTests(worktree);
       const verdict = review(worktree, runId, task, tests);
       log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
       if (verdict.verdict === 'APPROVE') {
-        const prUrl = commitAndOpenPR(worktree, created.branch, runId, task);
+        const prUrl = commitAndOpenPR(worktree, branch, runId, task);
         updateRuntime({ status: 'approved', lastAction: task, pendingFeedback: null, prUrl }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
         appendRun({ runId, outcome: 'approved', attempt, task, prUrl, tests });
         notify(`✅ Loop aprovado\nPR: ${prUrl}\nTentativas: ${attempt}\nAuto-merge ativado após CI.`);
@@ -304,7 +360,7 @@ async function mainLoop() {
 
 async function start() {
   ensureRuntime();
-  log(`Loop L3 seguro iniciado; intervalo ${POLL_INTERVAL_MS / 60000} min; máximo ${MAX_ATTEMPTS} tentativas.`);
+  log(`Loop L3 seguro iniciado; intervalo ${POLL_INTERVAL_MS / 60000} min; implementer ${IMPLEMENTER_TIMEOUT_MS / 60000} min; máximo ${MAX_TIMEOUTS} timeouts.`);
   while (true) {
     await mainLoop();
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));

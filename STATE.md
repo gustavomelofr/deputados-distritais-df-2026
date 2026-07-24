@@ -1,12 +1,13 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T02:30:00Z
-Status: 🟢 Corrigido feedback REJECT anterior
+Last run: 2026-07-24T02:50:00Z
+Status: 🟢 Ciclo concluído — feedback REJECT corrigido
 
-## Ação do ciclo
-- Corrigidas as 5 entradas do `loop-run-log.md` apontadas pelo verifier: removido texto de thinking/raciocínio, corrigida entrada malformada (23:44:16) e preenchida entrada sem descrição (23:53:15).
-- Melhoria de código: barras da "Distribuição partidária" na home agora são clicáveis e linkam para `/deputados-distritais?partido=XX`, conectando com o filtro já existente.
-- TypeScript compila sem erros (`tsc --noEmit`).
+## Ação realizada neste ciclo
+- Corrigida entrada 00:27:58 do `loop-run-log.md` (texto de thinking, ruído, descrição truncada, ordem cronológica).
+- Pequena melhoria no site: adicionado link "Ver metodologia e fontes →" na seção "Como funciona" da home, conectando a página `/metodologia` (órfã) à home.
+- TypeScript validado sem erros (`tsc --noEmit`).
+- Commit: b50254d.
 
 ## Próximo ciclo
-- Aguardar novo feedback do verifier.
+- Aguardar próximo feedback do verifier.

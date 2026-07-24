@@ -65,6 +65,8 @@ export default function RootLayout({
                 Deputados Distritais <span className="text-blue-600">DF 2026</span>
               </a>
               <span
+                aria-label="Agente autônomo ativo: monitoramento contínuo de fontes públicas"
+                role="status"
                 className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20"
                 title="Agente autônomo monitorando fontes públicas continuamente"
               >

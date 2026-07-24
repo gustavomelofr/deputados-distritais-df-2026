@@ -151,7 +151,7 @@ export default function Home() {
           </h2>
           <p className="text-zinc-500 text-center max-w-xl mx-auto mb-10">
             Composição da CLDF por partido. Cada barra representa o número de
-            deputados distritais em exercício filiados àquenda legenda.
+            deputados distritais em exercício filiados àquela legenda.
           </p>
           <div className="space-y-3">
             {Object.entries(

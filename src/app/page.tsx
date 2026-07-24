@@ -50,12 +50,18 @@ export default function Home() {
                 Deputados em exercício
               </p>
             </Link>
-            <div>
-              <p className="text-3xl font-bold text-blue-600">
+            <Link
+              href="/deputados-distritais"
+              className="group rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label="Ver lista de deputados distritais por partido"
+            >
+              <p className="text-3xl font-bold text-blue-600 group-hover:text-blue-500 transition">
                 {new Set(deputados.map((d) => d.partido)).size}
               </p>
-              <p className="text-sm text-zinc-500 mt-1">Partidos representados</p>
-            </div>
+              <p className="text-sm text-zinc-500 mt-1 group-hover:text-blue-600 transition">
+                Partidos representados
+              </p>
+            </Link>
             <div>
               <p className="text-3xl font-bold text-blue-600">
                 {deputados.reduce((a, d) => a + d.proposicoes.length, 0)}

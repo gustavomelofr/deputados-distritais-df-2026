@@ -111,6 +111,7 @@ export default function RootLayout({
                 href="https://github.com/gustavomelofr/deputados-distritais-df-2026"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Repositório do projeto no GitHub (abre em nova aba)"
                 className="underline hover:text-zinc-700"
               >
                 GitHub
@@ -120,6 +121,7 @@ export default function RootLayout({
                 href="https://www.cl.df.gov.br"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Site oficial da Câmara Legislativa do Distrito Federal (abre em nova aba)"
                 className="underline hover:text-zinc-700"
               >
                 CLDF

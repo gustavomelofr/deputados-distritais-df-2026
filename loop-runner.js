@@ -238,9 +238,22 @@ function updateRuntime(statePatch, ledgerPatch) {
   writeJson(LEDGER_FILE, ledger);
 }
 
+function syncServingCheckout() {
+  const dirty = git(ROOT, ['status', '--porcelain']);
+  if (dirty.trim()) throw new Error('Checkout principal está sujo; recusa sincronização automática.');
+  git(ROOT, ['fetch', 'origin', BASE_BRANCH]);
+  const local = git(ROOT, ['rev-parse', 'HEAD']);
+  const remote = git(ROOT, ['rev-parse', `origin/${BASE_BRANCH}`]);
+  if (local !== remote) {
+    run('git', ['reset', '--hard', remote], { cwd: ROOT, timeout: 60000 });
+    log(`Checkout do site sincronizado para ${remote.slice(0, 7)}.`);
+  }
+}
+
 async function mainLoop() {
   ensureRuntime();
   if (fs.existsSync(PAUSE_FILE)) { log('Loop pausado por .loop-pause.'); return; }
+  syncServingCheckout();
   const state = readJson(RUNTIME_STATE, {});
   const ledger = readJson(LEDGER_FILE, {});
   const runId = new Date().toISOString().replace(/[:.]/g, '-');

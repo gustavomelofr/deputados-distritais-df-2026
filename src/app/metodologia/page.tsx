@@ -26,6 +26,7 @@ export default function MetodologiaPage() {
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 underline"
+              aria-label="Repositório do projeto no GitHub (abre em nova aba)"
             >
               GitHub
             </a>

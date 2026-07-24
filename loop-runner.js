@@ -1,289 +1,302 @@
 #!/usr/bin/env node
 /**
- * Loop Runner — Agente Contínuo Always-On
- * 
- * Este script é o CORAÇÃO do loop. Ele:
- * 1. Lê AGENT_BRIEF.md e STATE.md
- * 2. Num ciclo infinito, checka fontes e chama opencode
- * 3. Reporta via Telegram quando há novidades
- * 4. Commita mudanças no GitHub
- * 
- * systemd mantém isso rodando pra sempre com Restart=always
+ * L3 loop orchestrator: isolated maker/checker workflow.
+ * The model never commits or pushes. Only this process delivers approved work.
  */
-
-const { execSync, spawn } = require('child_process');
+const { execFileSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const https = require('https');
 
 const ROOT = __dirname;
-const POLL_INTERVAL_MS = 15 * 60 * 1000; // 15 min entre ciclos
+const BASE_BRANCH = process.env.LOOP_BASE_BRANCH || 'main';
+const POLL_INTERVAL_MS = Number(process.env.LOOP_INTERVAL_MS || 15 * 60 * 1000);
+const MAX_ATTEMPTS = 2;
+const WORKTREE_ROOT = path.join(path.dirname(ROOT), 'deputados-loop-worktrees');
+const RUNTIME_DIR = path.join(ROOT, '.loop');
+const RUNTIME_STATE = path.join(RUNTIME_DIR, 'state.json');
+const LEDGER_FILE = path.join(RUNTIME_DIR, 'ledger.json');
+const RUN_LOG = path.join(RUNTIME_DIR, 'run-log.jsonl');
 const LOG_FILE = path.join(ROOT, 'loop-runner.log');
-const BRIEF_FILE = path.join(ROOT, 'AGENT_BRIEF.md');
-const STATE_FILE = path.join(ROOT, 'STATE.md');
-const ENV_FILE = path.join(ROOT, '.env');
-const RUN_LOG = path.join(ROOT, 'loop-run-log.md');
+const PAUSE_FILE = path.join(ROOT, '.loop-pause');
+const GATE_FILE = path.join(ROOT, 'loop-gate.json');
+const REPO = 'gustavomelofr/deputados-distritais-df-2026';
 
-// --- Utils ---
-
-function log(msg) {
-  const line = `[${new Date().toISOString()}] ${msg}`;
+function log(message) {
+  const line = `[${new Date().toISOString()}] ${message}`;
   console.log(line);
-  try { fs.appendFileSync(LOG_FILE, line + '\n'); } catch {}
+  fs.appendFileSync(LOG_FILE, `${line}\n`);
+}
+
+function run(bin, args, options = {}) {
+  return execFileSync(bin, args, {
+    cwd: options.cwd || ROOT,
+    encoding: 'utf8',
+    timeout: options.timeout || 120000,
+    stdio: ['ignore', 'pipe', 'pipe'],
+  });
+}
+
+function readJson(file, fallback) {
+  try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; }
+}
+
+function writeJson(file, value) {
+  const temp = `${file}.tmp`;
+  fs.writeFileSync(temp, `${JSON.stringify(value, null, 2)}\n`);
+  fs.renameSync(temp, file);
+}
+
+function ensureRuntime() {
+  fs.mkdirSync(RUNTIME_DIR, { recursive: true });
+  fs.mkdirSync(WORKTREE_ROOT, { recursive: true });
+  if (!fs.existsSync(RUNTIME_STATE)) {
+    writeJson(RUNTIME_STATE, {
+      lastRun: null,
+      status: 'ready',
+      lastAction: null,
+      pendingFeedback: null,
+    });
+  }
+  if (!fs.existsSync(LEDGER_FILE)) {
+    writeJson(LEDGER_FILE, {
+      version: 1,
+      totalRuns: 0,
+      consecutiveFailures: 0,
+      lastOutcome: null,
+      active: null,
+    });
+  }
+}
+
+function appendRun(entry) {
+  fs.appendFileSync(RUN_LOG, `${JSON.stringify({ at: new Date().toISOString(), ...entry })}\n`);
 }
 
 function loadEnv() {
-  if (!fs.existsSync(ENV_FILE)) return;
-  const content = fs.readFileSync(ENV_FILE, 'utf-8');
-  content.split('\n').forEach(line => {
-    const [key, ...rest] = line.split('=');
-    if (key && rest.length) process.env[key.trim()] = rest.join('=').trim();
-  });
+  const file = path.join(ROOT, '.env');
+  if (!fs.existsSync(file)) return;
+  for (const line of fs.readFileSync(file, 'utf8').split('\n')) {
+    const index = line.indexOf('=');
+    if (index > 0 && !line.trim().startsWith('#')) {
+      process.env[line.slice(0, index).trim()] = line.slice(index + 1).trim();
+    }
+  }
 }
 
-function loadState() {
-  try { return fs.readFileSync(STATE_FILE, 'utf-8'); } catch { return '# State not found'; }
-}
-
-function updateState(content) {
-  try { fs.writeFileSync(STATE_FILE, content); } catch {}
-}
-
-function appendRunLog(entry) {
-  try {
-    const line = `| ${new Date().toISOString().slice(0, 10)} | ${new Date().toISOString().slice(11, 19)} | ${entry} |\n`;
-    fs.appendFileSync(RUN_LOG, line);
-  } catch {}
-}
-
-function telegramNotify(message) {
+function notify(message) {
   loadEnv();
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  
-  if (!token || token === 'cole_aqui_seu_token' || !chatId || chatId === 'cole_aqui_seu_chat_id') {
-    log('⚠️  Telegram não configurado. Pulei notificação.');
+  if (!token || !chatId) {
+    log('Telegram não configurado; notificação registrada somente no log.');
     return;
   }
-
-  // Escape markdown
   const escaped = message.replace(/([_*\[\]()~`>#+\-=|{}.!])/g, '\\$1');
-  const payload = JSON.stringify({
-    chat_id: chatId,
-    text: escaped,
-    parse_mode: 'MarkdownV2',
-    disable_web_page_preview: false,
-  });
-
-  const req = https.request({
-    hostname: 'api.telegram.org',
-    path: `/bot${token}/sendMessage`,
-    method: 'POST',
+  const payload = JSON.stringify({ chat_id: chatId, text: escaped, parse_mode: 'MarkdownV2', disable_web_page_preview: true });
+  const request = https.request({
+    hostname: 'api.telegram.org', path: `/bot${token}/sendMessage`, method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Content-Length': Buffer.byteLength(payload) },
-  }, (res) => {
-    let data = '';
-    res.on('data', chunk => data += chunk);
-    res.on('end', () => {
-      const parsed = JSON.parse(data);
-      log(parsed.ok ? '✅ Telegram enviado' : `❌ Telegram erro: ${parsed.description}`);
-    });
   });
-  req.on('error', (err) => log(`❌ Telegram erro conexão: ${err.message}`));
-  req.write(payload);
-  req.end();
+  request.on('error', (error) => log(`Telegram falhou: ${error.message}`));
+  request.write(payload);
+  request.end();
 }
 
-// --- Core Logic ---
+function git(cwd, args, timeout = 120000) {
+  return run('git', args, { cwd, timeout }).trim();
+}
 
-function runOpencode(instruction) {
-  // Chama opencode run com auto-approve para modo unattended
-  const cmd = `opencode run "${instruction}" --agent loop-runner --auto`;
-  log(`▶️ opencode run...`);
+function getGate() {
+  return readJson(GATE_FILE, { denyPaths: [] });
+}
+
+function violatesGate(file) {
+  const normalized = file.replace(/^\.\//, '');
+  const gate = getGate();
+  return gate.denyPaths.some((rule) => {
+    if (rule.endsWith('/**')) return normalized.startsWith(rule.slice(0, -3));
+    if (rule.startsWith('*.')) return normalized.endsWith(rule.slice(1));
+    if (rule.endsWith('*')) return normalized.startsWith(rule.slice(0, -1));
+    return normalized === rule;
+  });
+}
+
+function listChangedFiles(worktree) {
+  const changed = git(worktree, ['diff', '--name-only', 'HEAD']).split('\n').filter(Boolean);
+  const untracked = git(worktree, ['ls-files', '--others', '--exclude-standard']).split('\n').filter(Boolean);
+  return [...new Set([...changed, ...untracked])];
+}
+
+function createWorktree(runId) {
+  git(ROOT, ['fetch', 'origin', BASE_BRANCH]);
+  const branch = `loop/${runId}`;
+  const worktree = path.join(WORKTREE_ROOT, runId);
+  run('git', ['worktree', 'add', '-b', branch, worktree, `origin/${BASE_BRANCH}`], { cwd: ROOT, timeout: 120000 });
+  const sourceModules = path.join(ROOT, 'node_modules');
+  const targetModules = path.join(worktree, 'node_modules');
+  if (fs.existsSync(sourceModules) && !fs.existsSync(targetModules)) fs.symlinkSync(sourceModules, targetModules, 'dir');
+  return { branch, worktree };
+}
+
+function removeWorktree(worktree) {
+  try { run('git', ['worktree', 'remove', '--force', worktree], { cwd: ROOT, timeout: 60000 }); } catch (error) { log(`Limpeza de worktree falhou: ${error.message}`); }
+}
+
+function runAgent(agent, instruction, cwd, files = []) {
+  const args = ['run', instruction, '--agent', agent, '--auto', '--title', `loop-${agent}`];
+  for (const file of files) args.push('--file', file);
   try {
-    const output = execSync(cmd, { cwd: ROOT, timeout: 900000, encoding: 'utf-8' });
-    log(`✅ opencode concluído (${output.length} chars)`);
+    const output = run('opencode', args, { cwd, timeout: 15 * 60 * 1000 });
     return { ok: true, output };
-  } catch (err) {
-    log(`❌ opencode falhou: ${err.stderr?.slice(0, 500) || err.message}`);
-    return { ok: false, error: err.message };
+  } catch (error) {
+    const detail = `${error.stderr || ''}\n${error.stdout || ''}\n${error.message || ''}`.slice(-2000);
+    return { ok: false, error: detail };
   }
 }
 
-function gitPush(commitMsg) {
-  try {
-    const status = execSync('git status --porcelain', { cwd: ROOT, encoding: 'utf-8' });
-    if (!status.trim()) {
-      log('ℹ️  Nada pra commitar');
-      return true;
+function runTests(worktree) {
+  const results = [];
+  for (const test of [
+    { name: 'TypeScript', bin: 'npx', args: ['tsc', '--noEmit'], timeout: 180000 },
+    { name: 'Build', bin: 'npm', args: ['run', 'build'], timeout: 300000 },
+  ]) {
+    try {
+      const output = run(test.bin, test.args, { cwd: worktree, timeout: test.timeout });
+      results.push({ name: test.name, passed: true, output: output.slice(-1200) });
+    } catch (error) {
+      const output = `${error.stdout || ''}\n${error.stderr || ''}\n${error.message || ''}`.slice(-1800);
+      results.push({ name: test.name, passed: false, output });
+      break;
     }
-
-    execSync('git add -A', { cwd: ROOT, timeout: 30000 });
-    execSync(`git commit -m "${commitMsg || '🤖 auto: atualização do agente contínuo'}"`, { cwd: ROOT, timeout: 30000 });
-    execSync('git push origin main', { cwd: ROOT, timeout: 60000 });
-    log('✅ Push GitHub feito');
-    return true;
-  } catch (err) {
-    log(`❌ Git push falhou: ${err.message?.slice(0, 300)}`);
-    return false;
   }
+  return results;
 }
 
-function getGitDiff() {
-  try {
-    return execSync('git diff HEAD', { cwd: ROOT, encoding: 'utf-8', timeout: 30000 });
-  } catch {
-    return '';
+function extractReview(output) {
+  const candidates = [];
+  const fenced = output.match(/```(?:json)?\s*([\s\S]*?)```/gi) || [];
+  for (const block of fenced) candidates.push(block.replace(/^```(?:json)?\s*/i, '').replace(/```$/, '').trim());
+  const objectMatches = output.match(/\{[\s\S]*\}/g) || [];
+  candidates.push(...objectMatches.reverse());
+  for (const candidate of candidates) {
+    try {
+      const parsed = JSON.parse(candidate);
+      if (['APPROVE', 'REJECT'].includes(parsed.verdict) && typeof parsed.reason === 'string') {
+        if (parsed.verdict === 'REJECT' && typeof parsed.next_prompt !== 'string') continue;
+        return parsed;
+      }
+    } catch {}
   }
+  return null;
 }
 
-function runVerifier(diff) {
-  if (!diff || !diff.trim()) {
-    log('ℹ️  Sem diff — verifier pulado');
-    return { verdict: 'APPROVE', reason: 'Nenhuma alteração para revisar.' };
-  }
+function review(worktree, runId, task, tests) {
+  const changed = listChangedFiles(worktree);
+  const blocked = changed.filter(violatesGate);
+  if (blocked.length) return { verdict: 'REJECT', reason: `Caminhos protegidos alterados: ${blocked.join(', ')}`, next_prompt: 'Desfaça as alterações em caminhos protegidos. Trabalhe somente em arquivos de produto permitidos.' };
+  if (!changed.length) return { verdict: 'REJECT', reason: 'Nenhuma alteração de produto foi produzida.', next_prompt: 'Implemente uma alteração mínima e verificável para a tarefa atual. Não modifique apenas arquivos de estado ou log.' };
 
-  const diffFile = path.join(ROOT, '.verifier-diff.patch');
-  fs.writeFileSync(diffFile, diff);
-
-  const instruction = `Revise o diff no arquivo .verifier-diff.patch contra AGENTS.md e AGENT_BRIEF.md. Verifique: (1) código compila e segue convenções, (2) não há dados inventados sobre deputados, (3) não há quebras de tipos TypeScript, (4) conteúdo é factual. Responda APENAS com APPROVE seguido de uma razão curta, ou REJECT seguido da razão e o que corrigir.`;
-
-  const cmd = `opencode run "${instruction}" --agent verifier --auto -f .verifier-diff.patch`;
-  log('🔍 Verifier revisando diff...');
-  try {
-    const output = execSync(cmd, { cwd: ROOT, timeout: 300000, encoding: 'utf-8', stdio: ['pipe', 'pipe', 'pipe'] });
-    const verdictLine = output.split('\n').find(l => /APPROVE|REJECT/i.test(l)) || output.slice(-500);
-    const isReject = /REJECT/i.test(verdictLine);
-    log(`${isReject ? '❌ REJECT' : '✅ APPROVE'}: ${verdictLine.slice(0, 200)}`);
-    try { fs.unlinkSync(diffFile); } catch {}
-    return { verdict: isReject ? 'REJECT' : 'APPROVE', reason: verdictLine, fullOutput: output };
-  } catch (err) {
-    const stderr = err.stderr ? err.stderr.toString().slice(0, 500) : '';
-    log(`❌ Verifier falhou: ${err.message?.slice(0, 200)}`);
-    if (stderr) log(`   stderr: ${stderr}`);
-    try { fs.unlinkSync(diffFile); } catch {}
-    return { verdict: 'APPROVE', reason: 'Verifier indisponível — auto-aprovado.' };
-  }
+  const untracked = git(worktree, ['ls-files', '--others', '--exclude-standard']).split('\n').filter(Boolean);
+  if (untracked.length) run('git', ['add', '-N', '--', ...untracked], { cwd: worktree });
+  const patch = git(worktree, ['diff', '--binary', 'HEAD']);
+  const patchFile = path.join(RUNTIME_DIR, `${runId}.patch`);
+  fs.writeFileSync(patchFile, patch);
+  const testEvidence = tests.map((item) => `${item.name}: ${item.passed ? 'PASSOU' : 'FALHOU'}\n${item.output}`).join('\n\n');
+  const instruction = `Você é o reviewer independente. Tarefa: ${task}. Revise o diff anexado e esta evidência de testes:\n${testEvidence}\n\nRegras: não edite arquivos; rejeite caminhos protegidos, dados não atribuídos sobre deputados, regressões de TypeScript, mudanças fora de escopo, testes falhos e alterações sem valor de produto. Responda EXCLUSIVAMENTE com JSON válido em uma única linha: {"verdict":"APPROVE"|"REJECT","reason":"...","next_prompt":null|"instrução objetiva de correção"}. Para REJECT, next_prompt é obrigatório e deve pedir correção apenas dos problemas apontados.`;
+  const result = runAgent('verifier', instruction, worktree, [patchFile]);
+  if (!result.ok) return { verdict: 'REJECT', reason: `Verifier indisponível: ${result.error.slice(-300)}`, next_prompt: 'Não faça novas mudanças. Aguarde escalonamento humano.' };
+  const parsed = extractReview(result.output);
+  if (!parsed) return { verdict: 'REJECT', reason: 'Verifier respondeu em formato inválido; falha fechada.', next_prompt: 'Não faça novas mudanças. Aguarde escalonamento humano.' };
+  return parsed;
 }
 
-function applyVerifierFeedback(verdict, reason) {
-  if (verdict !== 'REJECT') return;
-  const feedback = reason.replace(/^REJECT:?\s*/i, '').trim();
-  const state = `# Loop State — Deputados Distritais DF 2026
-
-Last run: ${new Date().toISOString()}
-Status: 🔴 Última alteração REJEITADA pelo verifier
-
-## Feedback do Verifier (corrigir no próximo ciclo)
-${feedback}
-
-## Ação requerida
-- Refaça a alteração anterior corrigindo os pontos acima
-- Não invente dados — se não tem fonte, marque como placeholder
-- Verifique tipos TypeScript antes de commitar
-`;
-  updateState(state);
-  log(`📝 Feedback gravado em STATE.md para próximo ciclo`);
+function commitAndOpenPR(worktree, branch, runId, task) {
+  const files = listChangedFiles(worktree);
+  const blocked = files.filter(violatesGate);
+  if (blocked.length) throw new Error(`Gate bloqueou entrega: ${blocked.join(', ')}`);
+  run('git', ['add', '--', ...files], { cwd: worktree });
+  run('git', ['commit', '-m', `feat(loop): atualização aprovada ${runId}`], { cwd: worktree, timeout: 60000 });
+  run('git', ['push', '--set-upstream', 'origin', branch], { cwd: worktree, timeout: 120000 });
+  const title = `🤖 Loop: ${task.slice(0, 72)}`;
+  const body = `Mudança criada pelo loop autônomo.\n\n- Run: \`${runId}\`\n- Verifier: aprovado\n- Testes: TypeScript e build executados\n- Entrega: auto-merge solicitado após CI.`;
+  const url = run('gh', ['pr', 'create', '--repo', REPO, '--base', BASE_BRANCH, '--head', branch, '--title', title, '--body', body], { cwd: worktree, timeout: 120000 }).split('\n').find((line) => line.startsWith('https://'));
+  if (!url) throw new Error('PR criado sem URL identificável.');
+  run('gh', ['pr', 'merge', url, '--auto', '--squash'], { cwd: worktree, timeout: 120000 });
+  return url;
 }
 
-// --- Ciclo Principal ---
+function buildTask(state) {
+  if (state.pendingFeedback) return state.pendingFeedback;
+  return 'Leia AGENT_BRIEF.md. Escolha UMA melhoria pequena, concreta e verificável para o site ou uma atualização factual baseada em fonte oficial. Não invente dados. Não faça commit, push, merge ou alteração fora do worktree. Rode TypeScript e reporte objetivamente a alteração realizada.';
+}
+
+function updateRuntime(statePatch, ledgerPatch) {
+  const state = { ...readJson(RUNTIME_STATE, {}), ...statePatch, updatedAt: new Date().toISOString() };
+  const ledger = { ...readJson(LEDGER_FILE, {}), ...ledgerPatch, updatedAt: new Date().toISOString() };
+  writeJson(RUNTIME_STATE, state);
+  writeJson(LEDGER_FILE, ledger);
+}
 
 async function mainLoop() {
-  log('🚀 ============= INÍCIO DO CICLO =============');
-  log(`📋 Brief: ${BRIEF_FILE}`);
-
-  // 1. Executa opencode com instrução baseada no brief
-  const instruction = 'Leia STATE.md. Se houver feedback REJECT, corrija os pontos apontados. Senão, faça UMA pequena melhoria no site (um componente, uma página, ou um dado). Trabalhe rápido — máximo 5 minutos. Ao final, produza um resumo de 1-2 linhas.';
-
-  const result = runOpencode(instruction);
-
-  // 2. Processa resultado
-  let summary = '';
-  if (result.ok) {
-    const lines = result.output.trim().split('\n').slice(-5);
-    summary = lines.filter(l => l.trim()).join(' · ');
-    if (summary.length > 200) summary = summary.slice(0, 200) + '...';
-    log(`📝 Resumo do agente: ${summary}`);
-    appendRunLog(`Sucesso — ${summary}`);
-
-    // 3. Verifier revisa o diff antes do push (maker/checker)
-    const diff = getGitDiff();
-    const verification = runVerifier(diff);
-    applyVerifierFeedback(verification.verdict, verification.reason);
-
-    if (verification.verdict === 'REJECT') {
-      log('🚫 Push cancelado — verifier REJECT. Feedback gravado para próximo ciclo.');
-      telegramNotify(`🚫 *Verifier REJECT*\n${verification.reason.slice(0, 300)}`);
-      appendRunLog(`REJECT — ${verification.reason.slice(0, 100)}`);
-    } else {
-      // 4. Push só se APPROVE
-      gitPush();
-      if (summary.toLowerCase().includes('nov') ||
-          summary.toLowerCase().includes('atualiz') ||
-          summary.toLowerCase().includes('encontrei') ||
-          summary.toLowerCase().includes('adicionei')) {
-        telegramNotify(`🤖 *Agente Deputados Distritais*\n${summary}`);
+  ensureRuntime();
+  if (fs.existsSync(PAUSE_FILE)) { log('Loop pausado por .loop-pause.'); return; }
+  const state = readJson(RUNTIME_STATE, {});
+  const ledger = readJson(LEDGER_FILE, {});
+  const runId = new Date().toISOString().replace(/[:.]/g, '-');
+  const task = buildTask(state);
+  updateRuntime({ status: 'running', lastRun: runId }, { totalRuns: (ledger.totalRuns || 0) + 1, active: { runId, task, attempt: 0 } });
+  let worktree;
+  try {
+    const created = createWorktree(runId);
+    worktree = created.worktree;
+    for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt += 1) {
+      updateRuntime({}, { active: { runId, task, attempt } });
+      const prompt = attempt === 1
+        ? task
+        : readJson(RUNTIME_STATE, {}).pendingFeedback;
+      const implementation = runAgent('implementer', prompt, worktree);
+      if (!implementation.ok) throw new Error(`Implementer falhou: ${implementation.error.slice(-500)}`);
+      const tests = runTests(worktree);
+      const verdict = review(worktree, runId, task, tests);
+      log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
+      if (verdict.verdict === 'APPROVE') {
+        const prUrl = commitAndOpenPR(worktree, created.branch, runId, task);
+        updateRuntime({ status: 'approved', lastAction: task, pendingFeedback: null, prUrl }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
+        appendRun({ runId, outcome: 'approved', attempt, task, prUrl, tests });
+        notify(`✅ Loop aprovado\nPR: ${prUrl}\nTentativas: ${attempt}\nAuto-merge ativado após CI.`);
+        removeWorktree(worktree);
+        return;
+      }
+      updateRuntime({ status: 'review_rejected', pendingFeedback: verdict.next_prompt, lastReview: verdict.reason }, { lastOutcome: 'review_rejected', active: { runId, task, attempt, review: verdict.reason } });
+      if (attempt === MAX_ATTEMPTS) {
+        const patch = path.join(RUNTIME_DIR, `${runId}.patch`);
+        const evidence = fs.existsSync(patch) ? ` Diff salvo em ${patch}.` : '';
+        appendRun({ runId, outcome: 'escalated', attempt, task, reason: verdict.reason, tests });
+        updateRuntime({ status: 'escalated' }, { consecutiveFailures: (ledger.consecutiveFailures || 0) + 1, lastOutcome: 'escalated', active: null });
+        notify(`⚠️ Loop escalado após ${MAX_ATTEMPTS} tentativas\nMotivo: ${verdict.reason.slice(0, 500)}.${evidence}`);
+        removeWorktree(worktree);
+        return;
       }
     }
-
-  } else {
-    log(`⚠️  opencode não completou. Tentando de novo no próximo ciclo.`);
-    appendRunLog(`Falha — ${result.error?.slice(0, 100)}`);
+  } catch (error) {
+    log(`Ciclo falhou: ${error.message}`);
+    appendRun({ runId, outcome: 'failed', error: error.message.slice(0, 1000) });
+    updateRuntime({ status: 'failed', lastError: error.message }, { consecutiveFailures: (ledger.consecutiveFailures || 0) + 1, lastOutcome: 'failed', active: null });
+    notify(`❌ Loop falhou sem enviar código\n${error.message.slice(0, 500)}`);
+    if (worktree) removeWorktree(worktree);
   }
-
-  // 5. Atualiza STATE.md com último run (preserva feedback se REJECT)
-  const currentState = fs.existsSync(STATE_FILE) ? fs.readFileSync(STATE_FILE, 'utf-8') : '';
-  if (!currentState.includes('Status: 🔴')) {
-    const state = `# Loop State — Deputados Distritais DF 2026
-
-Last run: ${new Date().toISOString()}
-Status: 🟢 Última alteração aprovada
-
-## Última ação
-${summary || 'Nenhuma ação neste ciclo'}
-
-## Ciclo
-- Intervalo: ${POLL_INTERVAL_MS / 60000} min
-- Próximo: ${new Date(Date.now() + POLL_INTERVAL_MS).toISOString()}
-`;
-    updateState(state);
-  }
-
-  log('💤 ============= FIM DO CICLO =============');
 }
-
-// --- Bootstrap ---
 
 async function start() {
-  log('');
-  log('🔥🔥🔥 LOOP RUNNER INICIADO 🔥🔥🔥');
-  log(`📁 Projeto: ${ROOT}`);
-  log(`⏱️  Intervalo: ${POLL_INTERVAL_MS / 60000} min`);
-  log(`📄 Log: ${LOG_FILE}`);
-
-  // Primeiro ciclo imediato
-  await mainLoop();
-
-  // Loop infinito
-  setInterval(async () => {
-    try {
-      await mainLoop();
-    } catch (err) {
-      log(`❌ Erro CRÍTICO no ciclo: ${err.message}`);
-      log('🔄 Reiniciando ciclo...');
-    }
-  }, POLL_INTERVAL_MS);
-
-  log(`✅ Primeiro ciclo concluído. Próximo em ${POLL_INTERVAL_MS / 60000} min.`);
+  ensureRuntime();
+  log(`Loop L3 seguro iniciado; intervalo ${POLL_INTERVAL_MS / 60000} min; máximo ${MAX_ATTEMPTS} tentativas.`);
+  while (true) {
+    await mainLoop();
+    await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
+  }
 }
 
-// Tratamento de erros fatais — nunca morre
-process.on('uncaughtException', (err) => {
-  log(`💀 Uncaught Exception: ${err.message}`);
-  log('🔄 Continuando...');
-});
-process.on('unhandledRejection', (reason) => {
-  log(`💀 Unhandled Rejection: ${reason}`);
-  log('🔄 Continuando...');
-});
-
+process.on('uncaughtException', (error) => log(`Uncaught exception: ${error.stack || error.message}`));
+process.on('unhandledRejection', (error) => log(`Unhandled rejection: ${error}`));
 start();

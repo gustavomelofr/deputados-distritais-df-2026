@@ -1,11 +1,9 @@
-# Loop State — Deputados Distritais DF 2026
+# Estado do Projeto — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T12:37:27.986Z
-Status: 🟢 Última alteração aprovada
+O estado operacional do loop L3 agora fica em `.loop/state.json` e `.loop/ledger.json`, que não são enviados ao Git.
 
-## Última ação
-Nenhuma ação neste ciclo
+## Entrega
+Toda mudança de produto passa por worktree, testes, reviewer independente, PR e auto-merge após a CI do GitHub.
 
-## Ciclo
-- Intervalo: 15 min
-- Próximo: 2026-07-24T12:52:27.987Z
+## Pausa de emergência
+Crie o arquivo `.loop-pause` na raiz do projeto para impedir novos ciclos.

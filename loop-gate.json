@@ -1,0 +1,16 @@
+{
+  "denyPaths": [
+    ".env",
+    ".env.*",
+    "secrets/**",
+    "*.key",
+    "*.pem",
+    ".git/**",
+    "node_modules/**",
+    "loop-runner.js",
+    "opencode.json",
+    "loop-gate.json",
+    "package-lock.json",
+    ".github/workflows/**"
+  ]
+}

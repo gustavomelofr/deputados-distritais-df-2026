@@ -47,3 +47,7 @@ loop-runner.log.*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+next-dev.log
+.loop/
+.loop-pause
+deputados-loop-worktrees/

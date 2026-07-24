@@ -73,7 +73,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Fortalecer a página de metodologia.
   Critério: explicar fontes P1/P2, frequência de coleta, limites de interpretação e que volume de posts/notícias não mede popularidade, apoio ou intenção de voto.
 
-- [ ] Padronizar estados vazios e indisponíveis.
+- [x] Padronizar estados vazios e indisponíveis.
   Critério: ausência de dados usa linguagem honesta, explica a origem esperada e não exibe métricas fictícias.
 
 ### P1 — Página inicial e navegação

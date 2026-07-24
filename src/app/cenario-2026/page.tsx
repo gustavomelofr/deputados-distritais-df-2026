@@ -17,8 +17,10 @@ export default function Cenario2026Page() {
         Cenário 2026
       </h1>
       <p className="text-lg text-zinc-500 mb-10">
-        Movimentações políticas, pré-candidaturas e análise do cenário eleitoral
-        para as eleições de 2026 no Distrito Federal.
+        Composição atual da Câmara Legislativa do DF e acompanhamento do
+        cenário eleitoral de 2026. Informações sobre pré-candidaturas e
+        movimentações serão adicionadas conforme as fontes oficiais são
+        integradas.
       </p>
 
       {/* Overview */}
@@ -28,14 +30,19 @@ export default function Cenario2026Page() {
         </h2>
         <p className="text-zinc-600 leading-relaxed">
           As 24 cadeiras da Câmara Legislativa do Distrito Federal estarão em
-          disputa nas eleições de 2026. Dos atuais 24 deputados distritais, vários
-          devem buscar reeleição, enquanto outros podem migrar para candidaturas
-          à Câmara Federal ou ao Senado.
+          disputa nas eleições de 2026. A composição atual da CLDF — base dos
+          possíveis candidatos à reeleição — está listada abaixo com fonte na
+          Câmara Legislativa.
         </p>
         <p className="text-zinc-600 leading-relaxed mt-3">
-          Partidos como MDB (maior bancada atual, com 5 deputados), PL (4),
-          PT (3), PSOL (2) e Republicanos (2) já articulam suas nominatas.
-          Partidos menores como Avante e Republicanos miram crescimento.
+          Informações sobre pré-candidaturas declaradas, movimentações públicas
+          e intenções de candidatura ainda não foram coletadas. Quando
+          disponíveis, serão apresentadas por estágio de evidência, cada uma
+          com fonte e data.
+        </p>
+        <p className="text-xs text-zinc-400 mt-4">
+          Fonte prevista: DivulgaCand/TSE (P2) e Google News RSS (P1) — ainda
+          não coletado.
         </p>
       </section>
 
@@ -44,6 +51,10 @@ export default function Cenario2026Page() {
         <h2 className="text-xl font-semibold text-zinc-900 mb-4">
           Composição atual da CLDF
         </h2>
+        <p className="text-sm text-zinc-500 mb-4">
+          Distribuição dos 24 deputados distritais em exercício por partido,
+          base da possível composição eleitoral de 2026.
+        </p>
         <div className="space-y-4">
           {Object.entries(partidosAgrupados)
             .sort(([, a], [, b]) => b.length - a.length)
@@ -71,6 +82,9 @@ export default function Cenario2026Page() {
               </div>
             ))}
         </div>
+        <p className="text-xs text-zinc-400 mt-5">
+          Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026.
+        </p>
       </section>
 
       {/* Key topics */}
@@ -78,33 +92,17 @@ export default function Cenario2026Page() {
         <h2 className="text-xl font-semibold text-zinc-900 mb-3">
           Temas em destaque
         </h2>
-        <div className="space-y-4 text-sm text-zinc-600">
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 h-2 w-2 rounded-full bg-blue-500 flex-shrink-0" />
-            <div>
-              <span className="font-medium text-zinc-800">BRB e finanças públicas:</span>{' '}
-              A capitalização do BRB e o caso Master dominaram a pauta da CLDF no
-              primeiro semestre de 2026, gerando embate entre base e oposição.
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 h-2 w-2 rounded-full bg-blue-500 flex-shrink-0" />
-            <div>
-              <span className="font-medium text-zinc-800">Reeleição de deputados:</span>{' '}
-              Pelo menos 18 dos 24 atuais deputados devem disputar a reeleição. Os
-              demais podem concorrer a outros cargos ou se aposentar.
-            </div>
-          </div>
-          <div className="flex items-start gap-3">
-            <span className="mt-0.5 h-2 w-2 rounded-full bg-blue-500 flex-shrink-0" />
-            <div>
-              <span className="font-medium text-zinc-800">Novos partidos:</span>{' '}
-              Partidos como Avante, Republicanos e PSD buscam ampliar suas bancadas
-              na CLDF, enquanto federações partidárias podem alterar a correlação de
-              forças.
-            </div>
-          </div>
-        </div>
+        <p className="text-sm text-zinc-500 leading-relaxed">
+          A análise temática do cenário eleitoral de 2026 ainda não foi
+          coletada. Quando disponível, cada tema será apresentado com a fonte
+          e a data da informação, e o volume de menções será declarado
+          explicitamente como atividade registrada — não como popularidade,
+          apoio ou intenção de voto.
+        </p>
+        <p className="text-xs text-zinc-400 mt-4">
+          Fonte prevista: Google News RSS (P1) e CLDF — SAPL (P1) — ainda
+          não coletado.
+        </p>
       </section>
     </div>
   );

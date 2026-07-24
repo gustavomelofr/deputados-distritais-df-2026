@@ -1,11 +1,11 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T04:25:00.000Z
-Status: 🟢 Última alteração aprovada
+Last run: 2026-07-24T02:45:00.000Z
+Status: 🟢 Última alteração corrigida
 
 ## Última ação
-Footer tinha "última atualização" hardcoded (24/07 00:48), que fica desatualizado. Tornei a data dinâmica: derivada do último commit git em build time via `execSync("git log -1 --format=%cI")` no layout. Factual, nunca inventado — alinhado à regra de ouro do brief. TypeScript e build passam; HTML gerado confirma a data real do commit.
+Corrigido feedback REJECT: limpas 5 entradas do `loop-run-log.md` (linhas 55-59) que continham texto de thinking/ruído de execução em primeira pessoa, marcadores `·`/`---` e descrições truncadas com `...`. Entradas reescritas como conteúdo factual com atribuição de commits. TypeScript validado sem erros (`tsc --noEmit` exit 0). Nenhuma alteração de código-fonte necessária — o commit anterior (dfe5282, footer com data dinâmica) estava correto; apenas o log precisava de limpeza.
 
 ## Ciclo
 - Intervalo: 15 min
-- Próximo: 2026-07-24T04:40:00.000Z
+- Próximo: 2026-07-24T03:00:00.000Z

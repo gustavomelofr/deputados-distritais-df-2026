@@ -79,12 +79,12 @@ export default function Home() {
                 Atividade legislativa
               </h3>
               <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
-                Notícias, proposições e votações da CLDF. Proposições ainda
-                não foram coletadas; a cobertura jornalística já está
-                disponível via Google News RSS.
+                Cobertura jornalística da CLDF via Google News RSS, com
+                notícias organizadas por deputado. Proposições e votações
+                ainda não foram coletadas.
               </p>
               <span className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-500 transition">
-                Ver atividade →
+                Ver notícias →
               </span>
             </Link>
             <Link

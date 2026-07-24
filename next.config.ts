@@ -5,9 +5,6 @@ const nextConfig: NextConfig = {
     workerThreads: false,
     cpus: 1,
   },
-  turbopack: {
-    root: __dirname,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },

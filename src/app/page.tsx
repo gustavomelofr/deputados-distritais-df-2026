@@ -76,6 +76,58 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Notícias recentes */}
+      <section className="bg-white border-b border-zinc-200">
+        <div className="mx-auto max-w-5xl px-4 py-12">
+          <div className="flex items-end justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-zinc-900">
+                Últimas notícias
+              </h2>
+              <p className="text-sm text-zinc-500 mt-1">
+                Cobertura jornalística da CLDF, atualizada automaticamente.
+              </p>
+            </div>
+            <Link
+              href="/noticias"
+              className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition whitespace-nowrap"
+            >
+              Ver todas →
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            {[...noticias]
+              .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+              .slice(0, 3)
+              .map((n) => (
+                <a
+                  key={n.id}
+                  href={n.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col rounded-xl border border-zinc-200 p-5 hover:border-blue-200 hover:shadow-sm transition-all"
+                >
+                  <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+                    <span className="font-medium text-zinc-600">{n.fonte}</span>
+                    <time dateTime={n.data}>
+                      {new Date(n.data).toLocaleDateString('pt-BR', {
+                        day: '2-digit',
+                        month: 'short',
+                      })}
+                    </time>
+                  </div>
+                  <h3 className="font-semibold text-zinc-900 text-sm leading-snug line-clamp-3">
+                    {n.titulo}
+                  </h3>
+                  <p className="mt-2 text-xs text-zinc-500 leading-relaxed line-clamp-2">
+                    {n.resumo}
+                  </p>
+                </a>
+              ))}
+          </div>
+        </div>
+      </section>
+
       {/* Distribuição por partido */}
       <section className="bg-zinc-50 border-b border-zinc-200">
         <div className="mx-auto max-w-5xl px-4 py-12">

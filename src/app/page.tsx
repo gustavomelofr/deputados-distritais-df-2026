@@ -245,7 +245,12 @@ export default function Home() {
                 </div>
               );
               return item.href ? (
-                <Link key={item.title} href={item.href} className="block h-full">
+                <Link
+                  key={item.title}
+                  href={item.href}
+                  aria-label={`${item.title}: ${item.desc}`}
+                  className="block h-full rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                >
                   {card}
                 </Link>
               ) : (

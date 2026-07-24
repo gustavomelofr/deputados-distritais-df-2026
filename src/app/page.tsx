@@ -89,6 +89,9 @@ export default function Home() {
               </p>
             </Link>
           </div>
+          <p className="text-xs text-zinc-400 text-center mt-6">
+            Deputados: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF</a> (Legislatura 2023–2026) &middot; Notícias: Google News RSS (P1)
+          </p>
         </div>
       </section>
 
@@ -101,7 +104,7 @@ export default function Home() {
                 Últimas notícias
               </h2>
               <p className="text-sm text-zinc-500 mt-1">
-                Cobertura jornalística da CLDF, atualizada automaticamente.
+                Cobertura jornalística da CLDF, atualizada automaticamente via Google News RSS.
               </p>
             </div>
             <Link

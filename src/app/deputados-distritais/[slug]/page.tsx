@@ -212,6 +212,52 @@ export default async function DeputadoPage({ params }: Props) {
           base de dados da CLDF nas próximas atualizações do sistema.
         </p>
       </section>
+
+      {/* Navegação entre deputados */}
+      <nav
+        aria-label="Navegação entre perfis de deputados"
+        className="mt-8 flex items-center justify-between gap-4 border-t border-zinc-200 pt-6"
+      >
+        {(() => {
+          const idx = deputados.findIndex((d) => d.slug === dep.slug);
+          const anterior = idx > 0 ? deputados[idx - 1] : null;
+          const proximo = idx < deputados.length - 1 ? deputados[idx + 1] : null;
+          return (
+            <>
+              {anterior ? (
+                <Link
+                  href={`/deputados-distritais/${anterior.slug}`}
+                  className="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-600 hover:text-blue-600 hover:bg-blue-50 transition flex-1 min-w-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  aria-label={`Perfil anterior: ${anterior.nome} (${anterior.partido})`}
+                >
+                  <span className="text-zinc-400 group-hover:text-blue-500 transition" aria-hidden="true">←</span>
+                  <span className="min-w-0">
+                    <span className="block text-xs text-zinc-400">Anterior</span>
+                    <span className="block truncate font-medium">{anterior.nome}</span>
+                  </span>
+                </Link>
+              ) : (
+                <span className="flex-1" aria-hidden="true" />
+              )}
+              {proximo ? (
+                <Link
+                  href={`/deputados-distritais/${proximo.slug}`}
+                  className="group flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-zinc-600 hover:text-blue-600 hover:bg-blue-50 transition flex-1 min-w-0 text-right justify-end focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  aria-label={`Próximo perfil: ${proximo.nome} (${proximo.partido})`}
+                >
+                  <span className="min-w-0">
+                    <span className="block text-xs text-zinc-400">Próximo</span>
+                    <span className="block truncate font-medium">{proximo.nome}</span>
+                  </span>
+                  <span className="text-zinc-400 group-hover:text-blue-500 transition" aria-hidden="true">→</span>
+                </Link>
+              ) : (
+                <span className="flex-1" aria-hidden="true" />
+              )}
+            </>
+          );
+        })()}
+      </nav>
     </div>
   );
 }

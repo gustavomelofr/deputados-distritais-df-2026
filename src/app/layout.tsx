@@ -148,7 +148,7 @@ export default function RootLayout({
               >
                 GitHub
               </a>
-              <span className="mx-2">·</span>
+              <span className="mx-2" aria-hidden="true">·</span>
               <a
                 href="https://www.cl.df.gov.br"
                 target="_blank"

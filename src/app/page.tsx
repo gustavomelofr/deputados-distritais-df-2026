@@ -261,6 +261,165 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Situação das bases */}
+      <section className="bg-white border-b border-zinc-200">
+        <div className="mx-auto max-w-5xl px-4 py-16">
+          <h2 className="text-2xl font-bold text-zinc-900 text-center mb-2">
+            Situação das bases de dados
+          </h2>
+          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-12">
+            Situação de cada fonte de dados monitorada. Nenhum dado é inventado:
+            o que ainda não foi coletado é informado com transparência.
+          </p>
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Notícias */}
+            <div className="rounded-xl border border-zinc-200 p-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-zinc-900">Notícias</h3>
+                <span className="rounded-full bg-green-100 text-green-700 text-xs font-medium px-2.5 py-0.5">
+                  disponível
+                </span>
+              </div>
+              <p className="text-sm text-zinc-500 mb-3">
+                Agregação de notícias sobre a CLDF e deputados distritais via
+                Google News RSS.
+              </p>
+              <div className="text-xs text-zinc-400 space-y-1">
+                <p>
+                  <span className="text-zinc-600">Registros:</span>{" "}
+                  {noticias.length}
+                </p>
+                <p>
+                  <span className="text-zinc-600">Período:</span>{" "}
+                  {new Date(
+                    Math.min(...noticias.map((n) => new Date(n.data).getTime()))
+                  ).toLocaleDateString("pt-BR")}{" "}
+                  a{" "}
+                  {new Date(
+                    Math.max(...noticias.map((n) => new Date(n.data).getTime()))
+                  ).toLocaleDateString("pt-BR")}
+                </p>
+                <p>
+                  <span className="text-zinc-600">Última coleta:</span>{" "}
+                  {new Date(
+                    Math.max(...noticias.map((n) => new Date(n.data).getTime()))
+                  ).toLocaleDateString("pt-BR", {
+                    day: "2-digit",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+                <p>
+                  <span className="text-zinc-600">Fonte:</span> Google News RSS
+                  (P1)
+                </p>
+              </div>
+            </div>
+
+            {/* Instagram */}
+            <div className="rounded-xl border border-zinc-200 p-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-zinc-900">Instagram</h3>
+                <span className="rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5">
+                  ainda não coletado
+                </span>
+              </div>
+              <p className="text-sm text-zinc-500 mb-3">
+                Monitoramento da atividade pública dos deputados distritais no
+                Instagram.
+              </p>
+              <div className="text-xs text-zinc-400 space-y-1">
+                <p>
+                  <span className="text-zinc-600">Registros:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Período:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Última coleta:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Fonte:</span> Instagram
+                  público (P2)
+                </p>
+              </div>
+            </div>
+
+            {/* Proposições */}
+            <div className="rounded-xl border border-zinc-200 p-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-zinc-900">Proposições</h3>
+                <span className="rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5">
+                  ainda não coletado
+                </span>
+              </div>
+              <p className="text-sm text-zinc-500 mb-3">
+                Projetos de lei, indicações, requerimentos e emendas
+                apresentados na CLDF.
+              </p>
+              <div className="text-xs text-zinc-400 space-y-1">
+                <p>
+                  <span className="text-zinc-600">Registros:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Período:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Última coleta:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Fonte:</span> CLDF — SAPL
+                  (P1)
+                </p>
+              </div>
+            </div>
+
+            {/* Presença */}
+            <div className="rounded-xl border border-zinc-200 p-6">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-zinc-900">Presença em sessões</h3>
+                <span className="rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5">
+                  ainda não coletado
+                </span>
+              </div>
+              <p className="text-sm text-zinc-500 mb-3">
+                Registro de presença dos deputados nas sessões ordinárias e
+                extraordinárias da CLDF.
+              </p>
+              <div className="text-xs text-zinc-400 space-y-1">
+                <p>
+                  <span className="text-zinc-600">Registros:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Período:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Última coleta:</span>{" "}
+                  <span className="text-zinc-300">—</span>
+                </p>
+                <p>
+                  <span className="text-zinc-600">Fonte:</span> CLDF — Dados
+                  Abertos (P1)
+                </p>
+              </div>
+            </div>
+          </div>
+          <p className="text-center text-xs text-zinc-400 mt-6">
+            Dados atualizados automaticamente pelo agente de monitoramento. A
+            indisponibilidade de uma base não significa que ela deixará de ser
+            coletada — a integração é contínua e progressiva.
+          </p>
+        </div>
+      </section>
+
       {/* Sobre */}
       <section className="bg-zinc-50">
         <div className="mx-auto max-w-5xl px-4 py-16">

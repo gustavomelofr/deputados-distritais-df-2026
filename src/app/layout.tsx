@@ -57,7 +57,11 @@ export default function RootLayout({
         <header className="border-b border-zinc-200 bg-white">
           <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
-              <a href="/" className="text-lg font-bold tracking-tight text-zinc-900">
+              <a
+                href="/"
+                aria-label="Deputados Distritais DF 2026 — página inicial"
+                className="text-lg font-bold tracking-tight text-zinc-900"
+              >
                 Deputados Distritais <span className="text-blue-600">DF 2026</span>
               </a>
               <span

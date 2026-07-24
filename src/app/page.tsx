@@ -193,6 +193,7 @@ export default function Home() {
             </p>
             <Link
               href="/metodologia"
+              aria-label="Ver metodologia e fontes de dados do monitor"
               className="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-blue-600 hover:text-blue-500 transition"
             >
               Ver metodologia e fontes →

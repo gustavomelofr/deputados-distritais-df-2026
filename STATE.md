@@ -1,13 +1,18 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T02:50:00Z
-Status: 🟢 Ciclo concluído — feedback REJECT corrigido
+Last run: 2026-07-24T01:05:00Z
+Status: 🟢 Ciclo de correção concluído
+
+## Feedback do Verifier (corrigir no próximo ciclo)
+Nenhum. O feedback REJECT anterior foi corrigido neste ciclo.
 
 ## Ação realizada neste ciclo
-- Corrigida entrada 00:27:58 do `loop-run-log.md` (texto de thinking, ruído, descrição truncada, ordem cronológica).
-- Pequena melhoria no site: adicionado link "Ver metodologia e fontes →" na seção "Como funciona" da home, conectando a página `/metodologia` (órfã) à home.
-- TypeScript validado sem erros (`tsc --noEmit`).
-- Commit: b50254d.
+- Removida entrada `00:42:00` do `loop-run-log.md` que descrevia ação já executada (link para `/metodologia` já existia desde o commit `b50254d`) como se fosse nova, e continha texto de thinking.
+- Corrigida entrada malformada `00:43:35` (duplicata truncada do feedback).
+- Melhoria real no site: adicionado `aria-label` descritivo no link "Ver metodologia e fontes →" da home (`src/app/page.tsx`), melhorando acessibilidade para leitores de tela.
+- TypeScript validado sem erros (`npx tsc --noEmit`).
 
-## Próximo ciclo
-- Aguardar próximo feedback do verifier.
+## Ação requerida
+- Próximo ciclo: verificar fontes P1 ou fazer pequena melhoria no site.
+- Não invente dados — se não tem fonte, marque como placeholder.
+- Verifique tipos TypeScript antes de commitar.

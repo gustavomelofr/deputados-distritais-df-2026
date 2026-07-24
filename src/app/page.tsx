@@ -83,21 +83,26 @@ export default function Home() {
               .map(([partido, count]) => {
                 const pct = Math.round((count / deputados.length) * 100);
                 return (
-                  <div key={partido} className="flex items-center gap-3">
-                    <div className="w-20 shrink-0 text-sm font-medium text-zinc-700 text-right">
+                  <Link
+                    key={partido}
+                    href={`/deputados-distritais?partido=${encodeURIComponent(partido)}`}
+                    className="flex items-center gap-3 group rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    title={`Ver deputados filiados a ${partido}`}
+                  >
+                    <div className="w-20 shrink-0 text-sm font-medium text-zinc-700 text-right group-hover:text-blue-600 transition">
                       {partido}
                     </div>
                     <div className="flex-1 h-7 rounded-md bg-zinc-200 overflow-hidden">
                       <div
-                        className="h-full bg-blue-600 transition-all"
+                        className="h-full bg-blue-600 transition-all group-hover:bg-blue-500"
                         style={{ width: `${pct}%` }}
                         aria-label={`${count} deputados (${pct}%)`}
                       />
                     </div>
-                    <div className="w-16 shrink-0 text-sm text-zinc-500">
+                    <div className="w-16 shrink-0 text-sm text-zinc-500 group-hover:text-blue-600 transition">
                       {count} {count === 1 ? "deputado" : "deputados"}
                     </div>
-                  </div>
+                  </Link>
                 );
               })}
           </div>

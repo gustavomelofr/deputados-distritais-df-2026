@@ -1,13 +1,12 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T00:00:00.000Z
-Status: 🟢 Ciclo concluído — alteração de código real aplicada
+Last run: 2026-07-24T02:30:00Z
+Status: 🟢 Corrigido feedback REJECT anterior
 
-## Última alteração
-- Adicionada seção "Distribuição partidária" na home page (`src/app/page.tsx`)
-- Mostra barras horizontais com a composição da CLDF por partido, ordenadas por número de deputados
-- Usa apenas dados reais já existentes em `src/data/deputados.ts` (24 deputados)
-- TypeScript compila sem erros (`npx tsc --noEmit` passou)
+## Ação do ciclo
+- Corrigidas as 5 entradas do `loop-run-log.md` apontadas pelo verifier: removido texto de thinking/raciocínio, corrigida entrada malformada (23:44:16) e preenchida entrada sem descrição (23:53:15).
+- Melhoria de código: barras da "Distribuição partidária" na home agora são clicáveis e linkam para `/deputados-distritais?partido=XX`, conectando com o filtro já existente.
+- TypeScript compila sem erros (`tsc --noEmit`).
 
 ## Próximo ciclo
-- Continuar melhorias de UI/UX ou integrar nova fonte de dados P1
+- Aguardar novo feedback do verifier.

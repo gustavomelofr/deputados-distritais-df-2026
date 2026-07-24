@@ -104,6 +104,7 @@ export default function Home() {
             </div>
             <Link
               href="/noticias"
+              aria-label="Ver todas as notícias sobre a CLDF"
               className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition whitespace-nowrap"
             >
               Ver todas →

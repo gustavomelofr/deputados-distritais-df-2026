@@ -131,3 +131,4 @@ Trabalhe no site de deputados distrit |
 | 2026-07-24 | 13:20:00 | Sucesso — Removidas as entradas rejeitadas `11:00:10` (texto de thinking em primeira pessoa, marcadores `·`, truncamento, timestamp cronologicamente inconsistente) e `11:00:57` (REJECT truncada, feedback já registrado no STATE.md) do `loop-run-log.md`. Melhoria real: adicionados `focus-visible:ring` nos links de deputados da seção "Composição atual da CLDF" da página `/cenario-2026` (`src/app/cenario-2026/page.tsx`), padronizando a acessibilidade de foco com os demais links do site. TypeScript validado sem erros. |
 
 | 2026-07-24 | 11:22:27 | Falha — spawnSync /bin/sh ETIMEDOUT |
+| 2026-07-24 | 11:37:27 | Falha — spawnSync /bin/sh ETIMEDOUT |

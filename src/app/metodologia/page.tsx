@@ -25,7 +25,7 @@ export default function MetodologiaPage() {
               href="https://github.com/gustavomelofr/deputados-distritais-df-2026"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-blue-600 underline"
+              className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-label="Repositório do projeto no GitHub (abre em nova aba)"
             >
               GitHub
@@ -50,7 +50,7 @@ export default function MetodologiaPage() {
                   href="https://www.cl.df.gov.br/deputados-2023-2026"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 underline"
+                  className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   aria-label="Lista oficial dos deputados distritais 2023-2026 no site da CLDF (abre em nova aba)"
                 >
                   cl.df.gov.br
@@ -88,7 +88,7 @@ export default function MetodologiaPage() {
                   href="https://divulgacandcontas.tse.jus.br/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-blue-600 underline"
+                  className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                   aria-label="DivulgaCand/TSE — dados oficiais de candidatura e prestação de contas (abre em nova aba)"
                 >
                   divulgacandcontas.tse.jus.br
@@ -132,7 +132,7 @@ export default function MetodologiaPage() {
                 href="https://github.com/gustavomelofr/deputados-distritais-df-2026/issues"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 underline"
+                className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 aria-label="Abrir uma issue no GitHub do projeto (abre em nova aba)"
               >
                 GitHub

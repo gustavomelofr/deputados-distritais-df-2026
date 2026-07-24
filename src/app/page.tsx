@@ -21,14 +21,14 @@ export default function Home() {
             <Link
               href="/deputados-distritais"
               aria-label="Consultar os 24 deputados distritais do DF em exercício"
-              className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/25"
+              className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
             >
               Consultar deputados
             </Link>
             <Link
               href="/noticias"
               aria-label="Ver as últimas notícias sobre a Câmara Legislativa do DF"
-              className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition"
+              className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
             >
               Últimas notícias
             </Link>

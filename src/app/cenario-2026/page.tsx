@@ -62,7 +62,7 @@ export default function Cenario2026Page() {
                     <Link
                       key={d.slug}
                       href={`/deputados-distritais/${d.slug}`}
-                      className="rounded-lg bg-zinc-50 border border-zinc-200 px-3 py-1.5 text-xs text-zinc-700 hover:bg-blue-50 hover:border-blue-200 transition"
+                      className="rounded-lg bg-zinc-50 border border-zinc-200 px-3 py-1.5 text-xs text-zinc-700 hover:bg-blue-50 hover:border-blue-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                     >
                       {d.nome}
                     </Link>

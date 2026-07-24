@@ -88,7 +88,11 @@ export default function RootLayout({
               <a href="/monitor-instagram" className="hover:text-zinc-900 transition">
                 Instagram
               </a>
-              <a href="/metodologia" className="hover:text-zinc-900 transition">
+              <a
+                href="/metodologia"
+                aria-label="Metodologia, fontes de dados e critérios de coleta"
+                className="hover:text-zinc-900 transition"
+              >
                 Metodologia
               </a>
             </div>

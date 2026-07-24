@@ -1,11 +1,11 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T11:52:18.994Z
+Last run: 2026-07-24T14:20:00.000Z
 Status: 🟢 Última alteração aprovada
 
 ## Última ação
-Encontrei a melhoria: a página de perfil individual do deputado (`/deputados-distritais/[slug]`) tem vários links sem `focus-visible:ring` — o link "← Todos os deputados", os botões sociais (Instagram...
+Ícone de busca na página /deputados-distritais convertido de SVG decorativo para `<button type="submit">` clicável, melhorando usabilidade mobile e acessibilidade por teclado.
 
 ## Ciclo
 - Intervalo: 15 min
-- Próximo: 2026-07-24T12:07:18.994Z
+- Próximo: 2026-07-24T14:35:00.000Z

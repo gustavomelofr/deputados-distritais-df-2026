@@ -57,3 +57,5 @@ Trabalhe no site de deputados distrit |
 | 2026-07-24 | 02:13:22 | Sucesso — Adicionado feed das 3 notícias mais recentes na Home (commit 7ba4f20), atendendo ao spec do AGENT_BRIEF "Home (stats, news feed, Instagram)". |
 | 2026-07-24 | 02:28:40 | Sucesso — Footer: data de "última atualização" derivada dinamicamente do último commit git em build time (commit dfe5282), substituindo valor hardcoded. |
 | 2026-07-24 | 02:29:47 | REJECT — Entrada 02:28:40 continha texto de thinking/ruído de execução em primeira pessoa com marcadores `·` e `---`; padrão já rejeitado em entradas anteriores. Corrigir no próximo ciclo. |
+| 2026-07-24 | 02:38:53 | Sucesso — Limpas 5 entradas do `loop-run-log.md` (linhas 55-59) que continham texto de thinking e descrições truncadas; entradas reescritas como registros factuais com atribuição de commits (commit 277f002). |
+| 2026-07-24 | 02:39:31 | REJECT — A entrada 02:38:53 reescreveu o log, mas manteve texto de thinking em primeira pessoa em inglês com marcadores `·` e truncamento, reincidindo no padrão rejeitado em 02:29:47. |

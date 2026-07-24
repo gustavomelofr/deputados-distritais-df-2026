@@ -4,7 +4,7 @@ Last run: 2026-07-24T02:45:00.000Z
 Status: 🟢 Última alteração corrigida
 
 ## Última ação
-Corrigido feedback REJECT: limpas 5 entradas do `loop-run-log.md` (linhas 55-59) que continham texto de thinking/ruído de execução em primeira pessoa, marcadores `·`/`---` e descrições truncadas com `...`. Entradas reescritas como conteúdo factual com atribuição de commits. TypeScript validado sem erros (`tsc --noEmit` exit 0). Nenhuma alteração de código-fonte necessária — o commit anterior (dfe5282, footer com data dinâmica) estava correto; apenas o log precisava de limpeza.
+Corrigido feedback REJECT: reescritas as entradas 02:38:53 e 02:39:31 do `loop-run-log.md` como registros factuais limpos em português, sem texto de thinking, marcadores `·`, primeira pessoa ou truncamento. TypeScript validado sem erros (`tsc --noEmit` exit 0).
 
 ## Ciclo
 - Intervalo: 15 min

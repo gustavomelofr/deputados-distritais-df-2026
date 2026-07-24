@@ -127,8 +127,17 @@ export default function MetodologiaPage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              Erros podem ocorrer. Se encontrar algum problema, abra uma issue no
-              GitHub.
+              Erros podem ocorrer. Se encontrar algum problema, abra uma issue no{' '}
+              <a
+                href="https://github.com/gustavomelofr/deputados-distritais-df-2026/issues"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 underline"
+                aria-label="Abrir uma issue no GitHub do projeto (abre em nova aba)"
+              >
+                GitHub
+              </a>
+              .
             </li>
           </ul>
         </section>

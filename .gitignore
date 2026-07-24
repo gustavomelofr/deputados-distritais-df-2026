@@ -38,6 +38,9 @@ yarn-error.log*
 loop-runner.log
 loop-runner.log.*
 
+# opencode runtime artifacts
+.omo/
+
 # vercel
 .vercel
 

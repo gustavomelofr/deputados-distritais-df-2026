@@ -200,7 +200,7 @@ export default function Home() {
             Os dados são atualizados automaticamente à medida que novas fontes
             são integradas.
           </p>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {
                 title: "CLDF",
@@ -217,6 +217,12 @@ export default function Home() {
                 desc: "Monitoramento da atividade pública dos deputados distritais no Instagram: frequência de posts, temas e engajamento.",
                 status: "ativo",
                 href: "/monitor-instagram",
+              },
+              {
+                title: "Cenário 2026",
+                desc: "Pré-candidaturas e movimentações políticas para as eleições distritais de 2026, com recorte por partido e posição.",
+                status: "ativo",
+                href: "/cenario-2026",
               },
             ].map((item) => {
               const card = (

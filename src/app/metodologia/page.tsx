@@ -81,7 +81,16 @@ export default function MetodologiaPage() {
               </h3>
               <p className="text-sm text-zinc-600 mt-1">
                 Dados oficiais de candidatura, prestação de contas e histórico
-                eleitoral dos deputados.
+                eleitoral dos deputados. Disponível em{" "}
+                <a
+                  href="https://divulgacandcontas.tse.jus.br/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline"
+                >
+                  divulgacandcontas.tse.jus.br
+                </a>
+                .
               </p>
             </div>
           </div>

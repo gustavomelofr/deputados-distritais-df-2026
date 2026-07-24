@@ -1,13 +1,17 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T03:05:00.000Z
-Status: 🟢 Ciclo concluído — correção de feedback REJECT aplicada
+Last run: 2026-07-24T03:30:00Z
+Status: 🟢 Ciclo concluído sem feedback REJECT pendente
 
-## Ação executada neste ciclo
-- Corrigidas as entradas 02:56:53 e 02:57:34 do `loop-run-log.md` que continham texto de thinking em primeira pessoa, marcadores `·` e formatação quebrada (padrão rejeitado em 02:29:47 e 02:39:31).
-- Melhoria real no site: adicionado link oficial do DivulgaCand/TSE na página `/metodologia` (fonte P2 já citada no AGENT_BRIEF.md).
-- TypeScript validado sem erros (`tsc --noEmit` exit 0).
+## Última ação
+Corrigida a entrada 03:17:20 do `loop-run-log.md` rejeitada pelo verifier (texto de thinking em primeira pessoa, marcadores `·`, descrição truncada). Entrada reescrita como registro factual limpo em português, seguindo o formato das entradas aceitas 02:57:34 e 03:05:00.
+
+## Melhoria aplicada no site
+Tornadas as stats "Proposições monitoradas" e "Notícias organizadas" da home (`src/app/page.tsx`) clicáveis, com links para `/deputados-distritais` e `/noticias` respectivamente, padronizando com as duas stats já clicáveis ("Deputados em exercício" e "Partidos representados"). Adicionados aria-labels descritivos para acessibilidade.
+
+## Verificação
+- TypeScript: `npx tsc --noEmit` — 0 erros
+- Nenhum dado inventado; alteração puramente de UI/UX
 
 ## Próximo ciclo
-- Verificar feedback do verifier.
-- Se APPROVE, considerar próxima pequena melhoria factual no site.
+Aguardar próximo feedback do verifier. Se APPROVE, prosseguir com nova melhoria pequena.

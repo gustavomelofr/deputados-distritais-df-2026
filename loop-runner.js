@@ -146,8 +146,9 @@ function removeWorktree(worktree) {
 function runAgent(agent, instruction, cwd, files = []) {
   const args = ['run', instruction, '--agent', agent, '--auto', '--title', `loop-${agent}`];
   for (const file of files) args.push('--file', file);
+  const timeout = agent === 'verifier' ? 3 * 60 * 1000 : 5 * 60 * 1000;
   try {
-    const output = run('opencode', args, { cwd, timeout: 15 * 60 * 1000 });
+    const output = run('opencode', args, { cwd, timeout });
     return { ok: true, output };
   } catch (error) {
     const detail = `${error.stderr || ''}\n${error.stdout || ''}\n${error.message || ''}`.slice(-2000);

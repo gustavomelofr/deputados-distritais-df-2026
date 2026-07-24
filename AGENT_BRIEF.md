@@ -78,7 +78,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 
 ### P1 — Página inicial e navegação
 
-- [ ] Reestruturar a Home com hero editorial.
+- [x] Reestruturar a Home com hero editorial.
   Critério: título claro sobre atividade legislativa do DF, subtítulo contextual e CTAs para deputados, notícias e metodologia.
 
 - [ ] Criar três caminhos de navegação na Home.

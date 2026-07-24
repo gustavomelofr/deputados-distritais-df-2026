@@ -118,9 +118,8 @@ export default async function NoticiasPage({ searchParams }: Props) {
           ) : (
             <div className="space-y-4">
               <p className="text-sm text-zinc-400">
-                {noticiasFiltradas.length} notícia
-                {noticiasFiltradas.length !== 1 ? 's' : ''} encontrada
-                {noticiasFiltradas.length !== 1 ? 's' : ''}
+                {noticiasFiltradas.length}{' '}
+                {noticiasFiltradas.length === 1 ? 'notícia encontrada' : 'notícias encontradas'}
                 {filtroDeputado ? ` sobre ${selectedDep?.nome}` : ''}
               </p>
               {noticiasFiltradas.map((n) => (
@@ -129,6 +128,7 @@ export default async function NoticiasPage({ searchParams }: Props) {
                   href={n.url}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
                   className="block rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-200 hover:shadow-sm transition-all"
                 >
                   <div className="flex items-start justify-between gap-4">

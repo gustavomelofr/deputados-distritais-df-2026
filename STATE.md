@@ -1,10 +1,10 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T07:35:00Z
+Last run: 2026-07-24T07:50:00Z
 Status: 🟢 Ciclo concluído sem feedback REJECT
 
 ## Última ação
-Corrigida a entrada 05:24:53 do `loop-run-log.md` (texto de thinking em primeira pessoa, marcadores `·`, truncamento, timestamp fora de ordem) reescrita como registro factual limpo em terceira pessoa com timestamp 07:35:00. Removida entrada REJECT residual 05:26:13 (redundante ao feedback já registrado). Melhoria real: adicionado `aria-label` descritivo no link do GitHub da página `/metodologia` (`src/app/metodologia/page.tsx`), padronizando com o padrão de acessibilidade já aplicado na home. TypeScript validado sem erros.
+Corrigidas as entradas 05:41:01 e 05:43:00 do `loop-run-log.md` (texto de thinking em primeira pessoa, truncamento, entrada corrompida com texto do verifier) reescritas como registro factual limpo em terceira pessoa (timestamp 07:40:00). Melhoria real: corrigido bug de pluralização no contador de notícias da página `/noticias` ("1 notícia encontrada" vs. "N notícias encontradas") e adicionado `aria-label` descritivo nos links externos de notícias (`src/app/noticias/page.tsx`). TypeScript validado sem erros.
 
 ## Ação requerida
 - Nenhuma — aguardar próximo ciclo

@@ -62,6 +62,48 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Distribuição por partido */}
+      <section className="bg-zinc-50 border-b border-zinc-200">
+        <div className="mx-auto max-w-5xl px-4 py-12">
+          <h2 className="text-2xl font-bold text-zinc-900 text-center mb-2">
+            Distribuição partidária
+          </h2>
+          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-10">
+            Composição da CLDF por partido. Cada barra representa o número de
+            deputados distritais em exercício filiados àquenda legenda.
+          </p>
+          <div className="space-y-3">
+            {Object.entries(
+              deputados.reduce<Record<string, number>>((acc, d) => {
+                acc[d.partido] = (acc[d.partido] ?? 0) + 1;
+                return acc;
+              }, {})
+            )
+              .sort((a, b) => b[1] - a[1])
+              .map(([partido, count]) => {
+                const pct = Math.round((count / deputados.length) * 100);
+                return (
+                  <div key={partido} className="flex items-center gap-3">
+                    <div className="w-20 shrink-0 text-sm font-medium text-zinc-700 text-right">
+                      {partido}
+                    </div>
+                    <div className="flex-1 h-7 rounded-md bg-zinc-200 overflow-hidden">
+                      <div
+                        className="h-full bg-blue-600 transition-all"
+                        style={{ width: `${pct}%` }}
+                        aria-label={`${count} deputados (${pct}%)`}
+                      />
+                    </div>
+                    <div className="w-16 shrink-0 text-sm text-zinc-500">
+                      {count} {count === 1 ? "deputado" : "deputados"}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      </section>
+
       {/* Coverage */}
       <section className="bg-white">
         <div className="mx-auto max-w-5xl px-4 py-16">

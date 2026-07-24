@@ -64,18 +64,18 @@ export default function Home() {
                 Partidos representados
               </p>
             </Link>
-            <Link
-              href="/deputados-distritais"
-              className="group rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              aria-label="Ver deputados distritais e suas proposições monitoradas"
-            >
-              <p className="text-3xl font-bold text-blue-600 group-hover:text-blue-500 transition">
-                {deputados.reduce((a, d) => a + d.proposicoes.length, 0)}
+            <div className="rounded-lg focus:outline-none">
+              <p className="text-3xl font-bold text-zinc-300">
+                —
               </p>
-              <p className="text-sm text-zinc-500 mt-1 group-hover:text-blue-600 transition">
-                Proposições monitoradas
+              <p className="text-sm text-zinc-400 mt-1">
+                Proposições{" "}
+                <span className="italic">(ainda não coletado)</span>
               </p>
-            </Link>
+              <p className="text-xs text-zinc-400 mt-1 leading-tight max-w-[160px] mx-auto">
+                Fonte prevista: CLDF — SAPL (P1)
+              </p>
+            </div>
             <Link
               href="/noticias"
               className="group rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"

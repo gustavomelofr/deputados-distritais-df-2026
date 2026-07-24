@@ -54,6 +54,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900">
+        <a
+          href="#conteudo-principal"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-md focus:bg-blue-600 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white focus:shadow-lg"
+        >
+          Pular para o conteúdo
+        </a>
         <header className="border-b border-zinc-200 bg-white">
           <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
@@ -116,7 +122,7 @@ export default function RootLayout({
             </div>
           </nav>
         </header>
-        <main className="flex-1">{children}</main>
+        <main id="conteudo-principal" className="flex-1">{children}</main>
         <footer className="border-t border-zinc-200 bg-zinc-100 py-8 text-xs text-zinc-500">
           <div className="mx-auto max-w-6xl px-4 text-center">
             <p className="font-semibold text-zinc-700 text-sm mb-2">

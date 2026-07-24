@@ -273,6 +273,7 @@ export default function Home() {
                 href="https://github.com/gustavomelofr/deputados-distritais-df-2026"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Repositório público no GitHub do monitor dos deputados distritais do DF (abre em nova aba)"
                 className="text-blue-600 underline"
               >
                 repositório público no GitHub

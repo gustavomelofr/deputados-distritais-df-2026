@@ -44,3 +44,66 @@ Next.js, TypeScript, Tailwind, App Router. A validação obrigatória é `npx ts
 
 ## Saída humana
 Telegram recebe somente PRs aprovados/auto-merge solicitado, escalonamentos ou falhas. O estado técnico fica em `.loop/`, fora do Git.
+
+## Direção editorial e visual
+
+O site deve se inspirar na clareza editorial e na arquitetura de informação de um monitor eleitoral independente: explicar o recorte, indicar fontes e datas, separar fatos de interpretação e oferecer caminhos claros de navegação. Não copiar design, textos, marca ou conteúdo de outros sites.
+
+A página inicial deve comunicar: atividade legislativa do DF, deputados distritais, proposições, notícias, atividade pública e cenário de 2026. Dados sem fonte devem ser omitidos ou apresentados como indisponíveis, nunca inventados.
+
+## Fila de melhorias priorizada
+
+Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. Marque um item como concluído somente quando os critérios de aceite forem atendidos e o PR tiver sido integrado.
+
+### P0 — Confiança editorial e dados
+
+- [ ] Criar uma seção “Situação das bases” na Home.
+  Critério: mostrar última atualização e disponibilidade de notícias, Instagram, proposições e presença, usando dados reais ou estado “Ainda não coletado”.
+
+- [ ] Exibir fonte e data de coleta em notícias, proposições e dados factuais dos perfis.
+  Critério: nenhum dado factual publicado fica sem fonte e data visíveis ou acessíveis.
+
+- [ ] Fortalecer a página de metodologia.
+  Critério: explicar fontes P1/P2, frequência de coleta, limites de interpretação e que volume de posts/notícias não mede popularidade, apoio ou intenção de voto.
+
+- [ ] Padronizar estados vazios e indisponíveis.
+  Critério: ausência de dados usa linguagem honesta, explica a origem esperada e não exibe métricas fictícias.
+
+### P1 — Página inicial e navegação
+
+- [ ] Reestruturar a Home com hero editorial.
+  Critério: título claro sobre atividade legislativa do DF, subtítulo contextual e CTAs para deputados, notícias e metodologia.
+
+- [ ] Criar três caminhos de navegação na Home.
+  Critério: “Deputados em exercício”, “Atividade legislativa” e “Cenário eleitoral de 2026”, cada um com descrição curta e destino funcional.
+
+- [ ] Melhorar a seção de cobertura atual.
+  Critério: métricas verificáveis de deputados monitorados, proposições catalogadas, notícias organizadas e fontes ativas.
+
+- [ ] Criar feed de atualizações monitoradas.
+  Critério: diferenciar notícias, proposições e atividade pública, com fonte, data, deputado relacionado e link externo quando disponível.
+
+### P2 — Perfis e exploração
+
+- [ ] Organizar o perfil individual do deputado.
+  Critério: resumo, contatos, comissões, proposições, presença, gastos, notícias e atividade pública, com estados vazios explicativos.
+
+- [ ] Criar filtros combináveis na listagem.
+  Critério: nome, partido, comissão, situação, região administrativa, tema e período funcionam em desktop e mobile.
+
+- [ ] Criar comparação entre deputados.
+  Critério: usar somente indicadores de fonte clara, sem ranking editorial enganoso e com contexto metodológico.
+
+- [ ] Criar página de atividade legislativa.
+  Critério: listar proposições recentes, temas, status e deputados relacionados, com fontes.
+
+### P3 — Cenário de 2026 e análise
+
+- [ ] Estruturar o cenário de 2026 por estágio de evidência.
+  Critério: usar “pré-candidatura declarada”, “movimentação pública” e “em observação”; cada estágio exige fonte e data.
+
+- [ ] Criar análise descritiva de temas e volume.
+  Critério: declarar que volume não representa popularidade, apoio ou intenção de voto.
+
+- [ ] Melhorar responsividade e acessibilidade.
+  Critério: navegação, filtros, tabelas e cards funcionam em telas pequenas, com foco visível e labels acessíveis.

@@ -17,9 +17,16 @@ worktree isolado → implementer → TypeScript/build → verifier → PR → au
 
 ### Implementer
 - Faz uma única melhoria concreta por ciclo;
+- pode executar por até 45 minutos;
 - trabalha somente no worktree fornecido;
 - não faz commit, push, merge ou alteração em arquivos protegidos;
 - quando receber feedback, corrige somente os pontos do feedback.
+
+### Continuação após timeout
+- O implementer pode executar por até 45 minutos;
+- se houver diff no timeout, o patch fica em `.loop/partial/` e o mesmo worktree é retomado no próximo ciclo;
+- após dois timeouts na mesma tarefa, o loop escala para Telegram;
+- um trabalho parcial expira após 24 horas e é escalado.
 
 ### Verifier
 - É independente, não escreve arquivos e não executa shell;

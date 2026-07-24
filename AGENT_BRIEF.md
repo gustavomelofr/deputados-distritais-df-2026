@@ -67,7 +67,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Criar uma seção “Situação das bases” na Home.
   Critério: mostrar última atualização e disponibilidade de notícias, Instagram, proposições e presença, usando dados reais ou estado “Ainda não coletado”.
 
-- [ ] Exibir fonte e data de coleta em notícias, proposições e dados factuais dos perfis.
+- [x] Exibir fonte e data de coleta em notícias, proposições e dados factuais dos perfis.
   Critério: nenhum dado factual publicado fica sem fonte e data visíveis ou acessíveis.
 
 - [ ] Fortalecer a página de metodologia.

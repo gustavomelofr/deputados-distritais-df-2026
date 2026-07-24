@@ -63,10 +63,14 @@ export default async function DeputadoPage({ params }: Props) {
           </div>
           <p className="text-zinc-500 text-sm mb-3">{dep.nomeCompleto}</p>
           <p className="text-zinc-600 leading-relaxed">{dep.biografia}</p>
+          <p className="text-xs text-zinc-400 mt-2">
+            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026
+          </p>
 
           {/* Contact */}
           {dep.contatos && (
-            <div className="mt-4 flex flex-wrap items-center gap-3">
+            <div className="mt-4">
+              <div className="flex flex-wrap items-center gap-3">
               {dep.contatos.instagram && (
                 <a
                   href={`https://instagram.com/${dep.contatos.instagram}`}
@@ -105,6 +109,10 @@ export default async function DeputadoPage({ params }: Props) {
                   {dep.contatos.email}
                 </a>
               )}
+              </div>
+              <p className="text-xs text-zinc-400 mt-2">
+                Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF</a> — contatos oficiais da legislatura 2023–2026
+              </p>
             </div>
           )}
         </div>
@@ -127,6 +135,9 @@ export default async function DeputadoPage({ params }: Props) {
           ) : (
             <p className="text-sm text-zinc-400">Nenhuma comissão registrada.</p>
           )}
+          <p className="text-xs text-zinc-400 mt-4">
+            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF</a> — Legislatura 2023–2026
+          </p>
         </div>
 
         {/* Status */}
@@ -168,6 +179,9 @@ export default async function DeputadoPage({ params }: Props) {
               </span>
             </div>
           </div>
+          <p className="text-xs text-zinc-400 mt-4">
+            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF</a> — Legislatura 2023–2026
+          </p>
         </div>
       </div>
 
@@ -189,7 +203,12 @@ export default async function DeputadoPage({ params }: Props) {
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <p className="font-medium text-zinc-900 text-sm">{n.titulo}</p>
-                    <p className="text-xs text-zinc-500 mt-1">{n.fonte}</p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      Fonte: {n.fonte} —{' '}
+                      <time dateTime={n.data}>
+                        {new Date(n.data).toLocaleDateString('pt-BR')}
+                      </time>
+                    </p>
                   </div>
                   <span className="text-xs text-zinc-400 whitespace-nowrap">
                     {new Date(n.data).toLocaleDateString('pt-BR')}
@@ -201,6 +220,9 @@ export default async function DeputadoPage({ params }: Props) {
               </a>
             ))}
           </div>
+          <p className="text-xs text-zinc-400 mt-3">
+            Fonte: Google News RSS (P1) — data de publicação original em cada item.
+          </p>
         </section>
       )}
 
@@ -210,6 +232,9 @@ export default async function DeputadoPage({ params }: Props) {
         <p className="text-sm text-zinc-400">
           As proposições do(a) deputado(a) serão carregadas automaticamente da
           base de dados da CLDF nas próximas atualizações do sistema.
+        </p>
+        <p className="text-xs text-zinc-400 mt-3">
+          Fonte prevista: <a href="https://www.cl.df.gov.br" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — SAPL</a> (P1) — ainda não coletado.
         </p>
       </section>
 

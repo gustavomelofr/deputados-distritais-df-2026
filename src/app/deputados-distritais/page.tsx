@@ -120,7 +120,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
       </div>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
         <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-blue-600">{deputados.length}</p>
           <p className="text-xs text-zinc-500 mt-1">Deputados</p>
@@ -142,6 +142,9 @@ export default async function DeputadosPage({ searchParams }: Props) {
           <p className="text-xs text-zinc-500 mt-1">Partidos/Blocos</p>
         </div>
       </div>
+      <p className="text-xs text-zinc-400 mb-10 text-center">
+        Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026
+      </p>
 
       {/* Grid of deputies */}
       {(partidoValido || termoBusca) && (

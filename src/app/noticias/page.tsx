@@ -48,6 +48,9 @@ export default async function NoticiasPage({ searchParams }: Props) {
             ? `Notícias relacionadas a ${selectedDep.nome} (${selectedDep.partido}) na cobertura da CLDF.`
             : 'Cobertura jornalística sobre a Câmara Legislativa do Distrito Federal e seus 24 deputados distritais. Atualizado automaticamente.'}
         </p>
+        <p className="text-xs text-zinc-400 mt-2">
+          Fonte: Google News RSS (P1) — cada notícia exibe veículo de origem e data de publicação original.
+        </p>
         {filtroDeputado && (
           <Link
             href="/noticias"

@@ -70,7 +70,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Exibir fonte e data de coleta em notícias, proposições e dados factuais dos perfis.
   Critério: nenhum dado factual publicado fica sem fonte e data visíveis ou acessíveis.
 
-- [ ] Fortalecer a página de metodologia.
+- [x] Fortalecer a página de metodologia.
   Critério: explicar fontes P1/P2, frequência de coleta, limites de interpretação e que volume de posts/notícias não mede popularidade, apoio ou intenção de voto.
 
 - [ ] Padronizar estados vazios e indisponíveis.

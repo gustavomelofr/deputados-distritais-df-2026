@@ -99,6 +99,115 @@ export default function MetodologiaPage() {
           </div>
         </section>
 
+        {/* Frequência de coleta */}
+        <section className="rounded-xl border border-zinc-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">
+            Frequência de coleta
+          </h2>
+          <p className="text-sm text-zinc-600 mb-4 leading-relaxed">
+            O agente autônomo opera em ciclo contínuo. A frequência efetiva de
+            coleta depende da disponibilidade de cada fonte e pode sofrer
+            interrupções por indisponibilidade técnica ou mudanças nas fontes.
+            Os estados abaixo descrevem a rotina planestada, não garantias de
+            atualização.
+          </p>
+          <ul className="space-y-2 text-sm text-zinc-600">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">CLDF (P1):</strong> consulta
+                periódica à lista oficial de deputados, comissões e, quando
+                disponível, proposições e presença. A frequência exata ainda
+                está em definição conforme a API da CLDF é integrada.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">Google News RSS (P1):</strong>{' '}
+                agregação de notícias em ciclos curtos, com deduplicação e
+                atribuição de fonte e data de publicação quando informadas pelo
+                feed.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">Instagram (P2):</strong>{' '}
+                coleta em implementação; sem frequência definida até a fonte
+                estar integrada.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">DivulgaCand/TSE (P2):</strong>{' '}
+                coleta em implementação; atualização prevista conforme o
+                calendário eleitoral oficial do TSE.
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Limites de interpretação */}
+        <section className="rounded-xl border border-zinc-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">
+            Limites de interpretação
+          </h2>
+          <p className="text-sm text-zinc-600 leading-relaxed mb-4">
+            Este monitor prioriza <strong>fatos atribuídos</strong> sobre
+            interpretações. Os dados apresentados descrevem atividade
+            observável, não juízo de valor sobre os deputados. Em particular:
+          </p>
+          <ul className="space-y-2 text-sm text-zinc-600">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Volume não mede popularidade, apoio ou intenção de voto.
+                </strong>{' '}
+                A quantidade de posts, notícias, proposições ou menções reflete
+                apenas atividade registrada nas fontes monitoradas. Não
+                representa popularidade, apoio da população, intenção de voto
+                nem probabilidade de reeleição ou derrota eleitoral.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Cobertura não é exaustiva.
+                </strong>{' '}
+                A ausência de uma notícia, proposição ou post não significa que
+                o fato não ocorreu — apenas que não foi capturado pelas fontes
+                monitoradas no período.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Sem ranking editorial enganoso.
+                </strong>{' '}
+                Listagens e ordenações usam critérios objetivos (ex.: data ou
+                nome) e não constituem um ranking de mérito político. Comparações
+                entre deputados usam somente indicadores de fonte clara.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Dados desatualizados são marcados.
+                </strong>{' '}
+                Cada bloco de informação indica a data de coleta quando
+                disponível; ausência de data significa que a coleta ainda não
+                foi registrada.
+              </span>
+            </li>
+          </ul>
+        </section>
+
         {/* Limitações */}
         <section className="rounded-xl border border-zinc-200 bg-white p-6">
           <h2 className="text-xl font-semibold text-zinc-900 mb-3">

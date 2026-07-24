@@ -9,8 +9,8 @@ export default function Home() {
       <section className="bg-gradient-to-b from-blue-950 via-blue-900 to-zinc-900 text-white">
         <div className="mx-auto max-w-5xl px-4 py-20 md:py-28 text-center">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-            Monitor Independente dos{" "}
-            <span className="text-blue-400">Deputados Distritais</span> do DF
+            Atividade legislativa do{" "}
+            <span className="text-blue-400">Distrito Federal</span> em monitoramento independente
           </h1>
           <p className="mt-6 text-lg md:text-xl text-blue-200 max-w-2xl mx-auto leading-relaxed">
             Os 24 deputados da Câmara Legislativa do Distrito Federal em exercício,
@@ -31,6 +31,13 @@ export default function Home() {
               className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
             >
               Últimas notícias
+            </Link>
+            <Link
+              href="/metodologia"
+              aria-label="Ver a metodologia e as fontes de dados do monitor"
+              className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
+            >
+              Metodologia
             </Link>
           </div>
         </div>

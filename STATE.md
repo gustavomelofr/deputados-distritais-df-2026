@@ -1,15 +1,15 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T01:05:00Z
+Last run: 2026-07-24T03:15:00Z
 Status: 🟢 Ciclo de correção concluído
 
 ## Feedback do Verifier (corrigir no próximo ciclo)
 Nenhum. O feedback REJECT anterior foi corrigido neste ciclo.
 
 ## Ação realizada neste ciclo
-- Removida entrada `00:42:00` do `loop-run-log.md` que descrevia ação já executada (link para `/metodologia` já existia desde o commit `b50254d`) como se fosse nova, e continha texto de thinking.
-- Corrigida entrada malformada `00:43:35` (duplicata truncada do feedback).
-- Melhoria real no site: adicionado `aria-label` descritivo no link "Ver metodologia e fontes →" da home (`src/app/page.tsx`), melhorando acessibilidade para leitores de tela.
+- Removidas as entradas `00:55:49` (texto de thinking, truncada, fora de ordem cronológica) e `00:56:37` (malformada) do `loop-run-log.md`, conforme apontado pelo verifier.
+- Adicionada entrada factual única no formato padrão, com horário `03:15:00` (posterior a `01:05:00` da entrada anterior).
+- Melhoria real no site: tornada a estatística "Deputados em exercício" da home clicável, com link para `/deputados-distritais` e `aria-label` descritivo (`src/app/page.tsx`).
 - TypeScript validado sem erros (`npx tsc --noEmit`).
 
 ## Ação requerida

@@ -38,10 +38,18 @@ export default function Home() {
       <section className="border-b border-zinc-200 bg-white">
         <div className="mx-auto max-w-5xl px-4 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <p className="text-3xl font-bold text-blue-600">{deputados.length}</p>
-              <p className="text-sm text-zinc-500 mt-1">Deputados em exercício</p>
-            </div>
+            <Link
+              href="/deputados-distritais"
+              className="group rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label="Ver lista dos 24 deputados distritais em exercício"
+            >
+              <p className="text-3xl font-bold text-blue-600 group-hover:text-blue-500 transition">
+                {deputados.length}
+              </p>
+              <p className="text-sm text-zinc-500 mt-1 group-hover:text-blue-600 transition">
+                Deputados em exercício
+              </p>
+            </Link>
             <div>
               <p className="text-3xl font-bold text-blue-600">
                 {new Set(deputados.map((d) => d.partido)).size}

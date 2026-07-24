@@ -50,3 +50,4 @@ Trabalhe no site de deputados distrit |
 | 2026-07-24 | 00:28:40 | REJECT — Entrada do `loop-run-log.md` com texto de thinking, ruído de execução, horário fora de ordem cronológica e descrição truncada. |
 | 2026-07-24 | 00:43:35 | REJECT — Conteúdo não factual: entrada 00:42:00 descrevia ação já executada (link para /metodologia já existia no commit b50254d) e continha texto de thinking. Entrada removida. |
 | 2026-07-24 | 01:05:00 | Sucesso — Corrigido feedback REJECT: removida entrada 00:42:00 não factual (descrevia ação já executada) e entrada malformada 00:43:35. Melhoria real: adicionado aria-label descritivo no link de metodologia da home (acessibilidade). |
+| 2026-07-24 | 03:15:00 | Sucesso — Corrigido feedback REJECT: removidas entradas 00:55:49 (texto de thinking, truncada, fora de ordem) e 00:56:37 (malformada). Melhoria real: tornada a estatística "Deputados em exercício" da home clicável, com link para a lista de deputados. | |

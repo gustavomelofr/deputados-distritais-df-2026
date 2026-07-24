@@ -90,10 +90,18 @@ export default function RootLayout({
               >
                 Notícias
               </a>
-              <a href="/cenario-2026" className="hover:text-zinc-900 transition">
+              <a
+                href="/cenario-2026"
+                aria-label="Cenário eleitoral 2026: pré-candidaturas e movimentações para o Distrito Federal"
+                className="hover:text-zinc-900 transition"
+              >
                 Cenário 2026
               </a>
-              <a href="/monitor-instagram" className="hover:text-zinc-900 transition">
+              <a
+                href="/monitor-instagram"
+                aria-label="Radar Instagram dos deputados distritais: posts e atividade nas redes sociais"
+                className="hover:text-zinc-900 transition"
+              >
                 Instagram
               </a>
               <a

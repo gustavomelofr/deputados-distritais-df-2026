@@ -40,7 +40,7 @@ worktree isolado → implementer → TypeScript/build → verifier → PR → au
 - não altere `.env`, secrets, dependências, configurações do loop nem workflows.
 
 ## Stack
-Next.js, TypeScript, Tailwind, App Router. A validação obrigatória é `npx tsc --noEmit` e `npm run build`.
+Next.js, TypeScript, Tailwind, App Router. O orquestrador executa obrigatoriamente `npx tsc --noEmit` e `npm run build` após cada implementação aprovada para revisão.
 
 ## Saída humana
 Telegram recebe somente PRs aprovados/auto-merge solicitado, escalonamentos ou falhas. O estado técnico fica em `.loop/`, fora do Git.

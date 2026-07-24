@@ -229,7 +229,7 @@ function commitAndOpenPR(worktree, branch, runId, task) {
 
 function buildTask(state) {
   if (state.pendingFeedback) return state.pendingFeedback;
-  return 'Leia AGENT_BRIEF.md. Escolha UMA melhoria pequena, concreta e verificável para o site ou uma atualização factual baseada em fonte oficial. Não invente dados. Não faça commit, push, merge ou alteração fora do worktree. Rode TypeScript e reporte objetivamente a alteração realizada.';
+  return 'Leia AGENT_BRIEF.md. Escolha UMA melhoria pequena, concreta e verificável para o site ou uma atualização factual baseada em fonte oficial. Não invente dados. Não faça commit, push, merge ou alteração fora do worktree. Não rode TypeScript, build ou testes pesados: o orquestrador validará a mudança depois. Reporte objetivamente os arquivos alterados.';
 }
 
 function updateRuntime(statePatch, ledgerPatch) {

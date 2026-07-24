@@ -159,13 +159,15 @@ export default function MetodologiaPage() {
         <div className="flex flex-wrap gap-4">
           <Link
             href="/deputados-distritais"
-            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition"
+            className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+            aria-label="Ver lista dos 24 deputados distritais do DF"
           >
             Ver deputados
           </Link>
           <Link
             href="/noticias"
-            className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition"
+            className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
+            aria-label="Ver últimas notícias sobre a CLDF e deputados distritais"
           >
             Últimas notícias
           </Link>

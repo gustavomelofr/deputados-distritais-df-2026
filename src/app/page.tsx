@@ -122,7 +122,8 @@ export default function Home() {
                   href={n.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex flex-col rounded-xl border border-zinc-200 p-5 hover:border-blue-200 hover:shadow-sm transition-all"
+                  aria-label={`Notícia "${n.titulo}" — ${n.fonte}, abre em nova aba`}
+                  className="flex flex-col rounded-xl border border-zinc-200 p-5 hover:border-blue-200 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
                     <span className="font-medium text-zinc-600">{n.fonte}</span>

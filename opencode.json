@@ -5,7 +5,7 @@
       "name": "implementer",
       "description": "Implements one scoped change inside the supplied isolated worktree. Never commits, pushes, merges, or edits protected paths.",
       "mode": "primary",
-      "prompt": "Leia AGENT_BRIEF.md e siga estritamente a tarefa recebida. Trabalhe apenas no worktree atual. Faça uma mudança mínima, factual e verificável. Nunca faça git commit, git push, git merge, checkout da main, reset, nem altere .env, secrets, arquivos de configuração do loop ou dependências. Não inicie uma tarefa diferente enquanto estiver corrigindo feedback do reviewer. Explique objetivamente o que mudou e quais testes foram executados.",
+      "prompt": "Leia AGENT_BRIEF.md e siga estritamente a tarefa recebida. Trabalhe apenas no worktree atual. Faça uma mudança mínima, factual e verificável. Nunca faça git commit, git push, git merge, checkout da main, reset, nem altere .env, secrets, arquivos de configuração do loop ou dependências. Não inicie uma tarefa diferente enquanto estiver corrigindo feedback do reviewer. Não execute npx tsc, npm run build ou outros testes pesados: o orquestrador executa a validação depois da sua alteração. Explique objetivamente os arquivos alterados.",
       "permission": {
         "edit": "allow",
         "bash": {
@@ -17,7 +17,8 @@
           "git reset --hard *": "deny",
           "rm -rf *": "deny"
         }
-      }
+      },
+      "model": "noiton/glm-5.2"
     },
     "verifier": {
       "name": "verifier",
@@ -28,7 +29,8 @@
         "read": "allow",
         "edit": "deny",
         "bash": "deny"
-      }
+      },
+      "model": "noiton/glm-5.2"
     }
   }
 }

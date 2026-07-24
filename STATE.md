@@ -1,12 +1,12 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T04:20:00.663Z
-Status: 🟢 Ciclo concluído — entrada rejeitada corrigida e melhoria aplicada
+Last run: 2026-07-24T04:35:00.000Z
+Status: 🟢 Ciclo concluído — correção aplicada
 
-## Ciclo atual
-- Corrigida a entrada 04:13:53 do `loop-run-log.md` (texto de thinking em primeira pessoa, marcadores `·`, descrição truncada) reescrita como registro factual limpo em terceira pessoa com atribuição do commit c757148.
-- Melhoria real: corrigido typo "àquenda legenda" → "àquela legenda" na seção "Distribuição partidária" da home (`src/app/page.tsx`).
-- TypeScript validado sem erros.
+## Feedback do Verifier (corrigir no próximo ciclo)
+Nenhum feedback pendente. A entrada 04:26:57 do `loop-run-log.md` foi reescrita como registro factual limpo em terceira pessoa, sem marcadores `·`, sem texto de thinking, com descrição completa e atribuição do commit de228a8.
 
 ## Ação requerida
-- Nenhuma. Aguardando próximo ciclo.
+- Nenhuma ação corretiva pendente
+- Não invente dados — se não tem fonte, marque como placeholder
+- Verifique tipos TypeScript antes de commitar

@@ -149,7 +149,7 @@ export default function MetodologiaPage() {
           </h2>
           <div className="grid grid-cols-2 gap-4 text-sm">
             {[
-              { label: 'Framework', value: 'Next.js 15 (App Router)' },
+              { label: 'Framework', value: 'Next.js 16 (App Router)' },
               { label: 'Linguagem', value: 'TypeScript' },
               { label: 'Estilo', value: 'Tailwind CSS' },
               { label: 'Deploy', value: 'GitHub' },

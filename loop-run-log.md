@@ -46,3 +46,5 @@ Trabalhe no site de deputados distrit |
 | 2026-07-24 | 00:11:45 | Sucesso — TypeScript compila sem erros; build do Next validado; alterações commitadas. |
 | 2026-07-24 | 00:12:29 | REJECT — Entradas do `loop-run-log.md` com texto de thinking e ruído de execução; entrada 23:44:16 malformada; entrada 23:53:15 sem descrição. |
 | 2026-07-24 | 02:30:00 | Sucesso — Corrigidas 5 entradas de log apontadas pelo verifier (texto de thinking, entrada malformada, entrada sem descrição) e tornadas as barras de distribuição partidária da home clicáveis com link para o filtro `?partido=XX`. |
+| 2026-07-24 | 02:45:00 | Sucesso — Corrigida entrada de log anterior com texto de thinking e descrição truncada; entrada reordenada para posição cronológica correta. |
+| 2026-07-24 | 00:28:40 | REJECT — Entrada do `loop-run-log.md` com texto de thinking, ruído de execução, horário fora de ordem cronológica e descrição truncada. |

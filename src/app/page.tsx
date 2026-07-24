@@ -191,6 +191,12 @@ export default function Home() {
               . O código do agente, as fontes e a metodologia estão disponíveis
               para consulta e contribuição.
             </p>
+            <Link
+              href="/metodologia"
+              className="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-blue-600 hover:text-blue-500 transition"
+            >
+              Ver metodologia e fontes →
+            </Link>
           </div>
         </div>
       </section>

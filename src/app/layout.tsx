@@ -76,7 +76,11 @@ export default function RootLayout({
               </span>
             </div>
             <div className="flex items-center gap-6 text-sm font-medium text-zinc-600">
-              <a href="/deputados-distritais" className="hover:text-zinc-900 transition">
+              <a
+                href="/deputados-distritais"
+                aria-label="Lista dos 24 deputados distritais do DF com perfil, proposições e gastos"
+                className="hover:text-zinc-900 transition"
+              >
                 Deputados
               </a>
               <a

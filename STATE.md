@@ -1,10 +1,12 @@
 # Loop State — Deputados Distritais DF 2026
 
-Last run: 2026-07-24T07:50:00.000Z
-Status: 🟢 Última alteração aprovada pelo verifier
+Last run: 2026-07-24T08:05:00.000Z
+Status: 🟢 Última alteração aprovada
 
-## Resumo do último ciclo
-Entrada 07:41:20 do `loop-run-log.md` (texto de thinking/sessão do agente em primeira pessoa, marcadores `·`, reticências de truncamento) reescrita como registro factual limpo em terceira pessoa com atribuição do commit `2993c71`. Melhoria real: adicionado `aria-label` descritivo no link "Notícias" da navbar do `layout.tsx`, padronizando a acessibilidade com os demais links do site. TypeScript validado sem erros.
+## Feedback do Verifier
+Nenhum feedback pendente. Última correção (entrada 07:56:00 do `loop-run-log.md` reescrita como registro factual limpo em terceira pessoa) aplicada com sucesso.
 
 ## Ação requerida
-- Nenhuma — aguardar próximo ciclo
+- Nenhuma correção pendente
+- Não invente dados — se não tem fonte, marque como placeholder
+- Verifique tipos TypeScript antes de commitar

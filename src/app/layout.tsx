@@ -99,6 +99,13 @@ export default function RootLayout({
                 Notícias
               </a>
               <a
+                href="/atualizacoes"
+                aria-label="Feed unificado de atualizações monitoradas: notícias, proposições e atividade pública"
+                className="hover:text-zinc-900 transition"
+              >
+                Atualizações
+              </a>
+              <a
                 href="/cenario-2026"
                 aria-label="Cenário eleitoral 2026: pré-candidaturas e movimentações para o Distrito Federal"
                 className="hover:text-zinc-900 transition"

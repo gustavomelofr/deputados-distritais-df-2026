@@ -166,21 +166,23 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Notícias recentes */}
+      {/* Atualizações monitoradas (feed unificado) */}
       <section className="bg-white border-b border-zinc-200">
         <div className="mx-auto max-w-5xl px-4 py-12">
           <div className="flex items-end justify-between mb-6">
             <div>
               <h2 className="text-2xl font-bold text-zinc-900">
-                Últimas notícias
+                Atualizações monitoradas
               </h2>
               <p className="text-sm text-zinc-500 mt-1">
-                Cobertura jornalística da CLDF, atualizada automaticamente via Google News RSS.
+                Feed unificado de notícias, proposições e atividade pública
+                dos deputados distritais. Cada item mostra fonte, data e
+                deputado relacionado.
               </p>
             </div>
             <Link
-              href="/noticias"
-              aria-label="Ver todas as notícias sobre a CLDF"
+              href="/atualizacoes"
+              aria-label="Ver todas as atualizações monitoradas"
               className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition whitespace-nowrap"
             >
               Ver todas →
@@ -190,45 +192,63 @@ export default function Home() {
             {noticias.length === 0 ? (
               <div className="md:col-span-3 rounded-xl border border-zinc-200 p-8 text-center">
                 <p className="text-zinc-400">
-                  Nenhuma notícia coletada ainda.
+                  Nenhuma atualização coletada ainda.
                 </p>
                 <p className="text-zinc-400 text-sm mt-1">
-                  As notícias são agregadas do Google News RSS (P1) e serão
-                  exibidas assim que coletadas.
+                  As atualizações são agregadas de fontes públicas (P1/P2) e
+                  serão exibidas assim que coletadas.
                 </p>
               </div>
             ) : (
-            [...noticias]
-              .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
-              .slice(0, 3)
-              .map((n) => (
-                <a
-                  key={n.id}
-                  href={n.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Notícia "${n.titulo}" — ${n.fonte}, abre em nova aba`}
-                  className="flex flex-col rounded-xl border border-zinc-200 p-5 hover:border-blue-200 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                >
-                  <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
-                    <span className="font-medium text-zinc-600">{n.fonte}</span>
-                    <time dateTime={n.data}>
-                      {new Date(n.data).toLocaleDateString('pt-BR', {
-                        day: '2-digit',
-                        month: 'short',
-                      })}
-                    </time>
-                  </div>
-                  <h3 className="font-semibold text-zinc-900 text-sm leading-snug line-clamp-3">
-                    {n.titulo}
-                  </h3>
-                  <p className="mt-2 text-xs text-zinc-500 leading-relaxed line-clamp-2">
-                    {n.resumo}
-                  </p>
-                </a>
-              ))
+              [...noticias]
+                .sort((a, b) => new Date(b.data).getTime() - new Date(a.data).getTime())
+                .slice(0, 3)
+                .map((n) => (
+                  <a
+                    key={n.id}
+                    href={n.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Notícia "${n.titulo}" — ${n.fonte}, abre em nova aba`}
+                    className="flex flex-col rounded-xl border border-zinc-200 p-5 hover:border-blue-200 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    <div className="flex items-center justify-between text-xs text-zinc-400 mb-2">
+                      <span className="rounded-full bg-blue-100 text-blue-700 font-medium px-2 py-0.5">
+                        Notícia
+                      </span>
+                      <time dateTime={n.data}>
+                        {new Date(n.data).toLocaleDateString('pt-BR', {
+                          day: '2-digit',
+                          month: 'short',
+                        })}
+                      </time>
+                    </div>
+                    <h3 className="font-semibold text-zinc-900 text-sm leading-snug line-clamp-3">
+                      {n.titulo}
+                    </h3>
+                    <p className="mt-2 text-xs text-zinc-500 leading-relaxed line-clamp-2">
+                      {n.resumo}
+                    </p>
+                    <p className="mt-2 text-xs text-zinc-400">
+                      Fonte: {n.fonte}
+                    </p>
+                  </a>
+                ))
             )}
           </div>
+          <p className="text-xs text-zinc-400 mt-4">
+            O feed completo em{' '}
+            <Link
+              href="/atualizacoes"
+              aria-label="Ver feed de atualizações monitoradas"
+              className="text-blue-600 hover:underline"
+            >
+              /atualizacoes
+            </Link>{' '}
+            diferencia notícias, proposições e atividade pública, com filtro
+            por tipo. Proposições (CLDF — SAPL) e atividade pública
+            (Instagram) ainda não foram coletadas.
+          </p>
         </div>
       </section>
 

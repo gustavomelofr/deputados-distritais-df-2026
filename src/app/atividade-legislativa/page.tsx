@@ -226,6 +226,34 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
         </div>
       </section>
 
+      {/* Temas */}
+      <section className="mb-10" aria-label="Temas das proposições">
+        <h2 className="text-sm font-semibold text-zinc-700 mb-3">
+          Temas
+        </h2>
+        <div className="rounded-xl border border-amber-200 bg-amber-50 p-5">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5">
+              ainda não coletado
+            </span>
+          </div>
+          <p className="text-sm text-zinc-600 leading-relaxed">
+            A API pública do Processo Legislativo Eletrônico (PLE/CLDF) não
+            disponibiliza uma classificação temática estruturada para as
+            proposições. A categorização por área (saúde, educação,
+            segurança, mobilidade, entre outras) exigiria interpretação
+            editorial do conteúdo de cada proposição, o que não é feito
+            aqui para evitar atribuir temas não declarados pela fonte.
+          </p>
+          <p className="text-xs text-zinc-400 mt-3">
+            Origem esperada: classificação temática oficial da CLDF ou
+            análise atribuída com fonte declarada. Enquanto indisponível,
+            use o filtro por tipo e a descrição de cada proposição para
+            identificar a área tratada.
+          </p>
+        </div>
+      </section>
+
       {/* Deputados autores */}
       <section className="mb-10" aria-label="Deputados autores">
         <h2 className="text-sm font-semibold text-zinc-700 mb-3">

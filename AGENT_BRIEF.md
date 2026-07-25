@@ -101,7 +101,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Criar comparação entre deputados.
   Critério: usar somente indicadores de fonte clara, sem ranking editorial enganoso e com contexto metodológico.
 
-- [ ] Criar página de atividade legislativa.
+- [x] Criar página de atividade legislativa.
   Critério: listar proposições recentes, temas, status e deputados relacionados, com fontes.
 
 ### P3 — Cenário de 2026 e análise

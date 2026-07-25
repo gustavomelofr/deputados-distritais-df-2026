@@ -99,6 +99,13 @@ export default function RootLayout({
                 Comparar
               </a>
               <a
+                href="/atividade-legislativa"
+                aria-label="Atividade legislativa da CLDF: proposições por tipo, status e deputado autor"
+                className="hover:text-zinc-900 transition"
+              >
+                Atividade
+              </a>
+              <a
                 href="/noticias"
                 aria-label="Feed de notícias sobre a CLDF e os deputados distritais"
                 className="hover:text-zinc-900 transition"

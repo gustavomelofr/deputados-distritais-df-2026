@@ -72,21 +72,21 @@ export default function Home() {
               </span>
             </Link>
             <Link
-              href="/noticias"
-              aria-label="Acessar a atividade legislativa: notícias e proposições da CLDF"
+              href="/atividade-legislativa"
+              aria-label="Acessar a atividade legislativa: proposições da CLDF por tipo, status e deputado autor"
               className="group rounded-xl border border-zinc-200 p-6 hover:border-blue-300 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <h3 className="font-semibold text-zinc-900 group-hover:text-blue-600 transition">
                 Atividade legislativa
               </h3>
               <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
-                Cobertura jornalística da CLDF via Google News RSS e
-                proposições reais da API pública do PLE/CLDF, organizadas
-                por deputado. Votações e atividade pública ainda não foram
-                coletadas.
+                Proposições reais da API pública do PLE/CLDF, organizadas por
+                tipo, status e deputado autor, com fonte e link para o
+                documento original. Votações e atividade pública ainda não
+                foram coletadas.
               </p>
               <span className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-500 transition">
-                Ver notícias →
+                Ver atividade →
               </span>
             </Link>
             <Link

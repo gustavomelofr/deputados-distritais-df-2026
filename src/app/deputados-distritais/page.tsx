@@ -92,7 +92,8 @@ export default async function DeputadosPage({ searchParams }: Props) {
         </span>
         <Link
           href="/deputados-distritais"
-          className={`rounded-full text-xs font-medium px-3 py-1 transition ${
+          aria-label="Exibir todos os partidos"
+          className={`rounded-full text-xs font-medium px-3 py-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
             !partidoValido
               ? 'bg-blue-600 text-white'
               : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
@@ -108,7 +109,8 @@ export default async function DeputadosPage({ searchParams }: Props) {
                 ? '/deputados-distritais'
                 : `/deputados-distritais?partido=${encodeURIComponent(p)}`
             }
-            className={`rounded-full text-xs font-medium px-3 py-1 transition ${
+            aria-label={`Filtrar deputados do partido ${p}`}
+            className={`rounded-full text-xs font-medium px-3 py-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
               partidoValido === p
                 ? 'bg-blue-600 text-white'
                 : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
@@ -143,7 +145,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
         </div>
       </div>
       <p className="text-xs text-zinc-400 mb-10 text-center">
-        Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026
+        Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="Lista oficial dos deputados distritais 2023-2026 no site da CLDF (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026
       </p>
 
       {/* Grid of deputies */}
@@ -153,7 +155,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
           {deputadosFiltrados.length !== 1 ? 's' : ''}
           {partidoValido ? ` de ${partidoValido}` : ''}
           {termoBusca ? ` para "${busca}"` : ''}.{' '}
-          <Link href="/deputados-distritais" className="text-blue-600 hover:underline">
+          <Link href="/deputados-distritais" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
             Limpar filtros
           </Link>
         </p>
@@ -165,7 +167,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
           </p>
           <Link
             href="/deputados-distritais"
-            className="mt-3 inline-block text-sm font-semibold text-blue-600 hover:underline"
+            className="mt-3 inline-block text-sm font-semibold text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             Limpar filtros
           </Link>
@@ -176,7 +178,8 @@ export default async function DeputadosPage({ searchParams }: Props) {
           <Link
             key={dep.id}
             href={`/deputados-distritais/${dep.slug}`}
-            className="group rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100/50 transition-all"
+            aria-label={`Ver perfil de ${dep.nome} (${dep.partido})`}
+            className="group rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-300 hover:shadow-lg hover:shadow-blue-100/50 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
           >
             <div className="flex items-center gap-4">
               <div className="relative h-14 w-14 flex-shrink-0">

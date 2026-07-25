@@ -188,6 +188,46 @@ export default function Home() {
               Ver todas →
             </Link>
           </div>
+          {/* Resumo do feed por tipo (fonte factual, sem inventar) */}
+          <dl
+            className="flex flex-wrap gap-2 mb-6"
+            aria-label="Contagem de atualizações por tipo no feed unificado"
+          >
+            <Link
+              href="/atualizacoes?tipo=noticia"
+              aria-label={`Ver ${noticias.length} notícias no feed`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 text-blue-700 px-3 py-1 text-xs font-medium hover:bg-blue-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+              <span className="rounded-full bg-blue-100 px-2 py-0.5">Notícia</span>
+              <span className="font-semibold" aria-label={`${noticias.length} notícias`}>
+                {noticias.length}
+              </span>
+            </Link>
+            <Link
+              href="/atualizacoes?tipo=proposicao"
+              aria-label={`Ver ${deputados.flatMap((d) => d.proposicoes).length} proposições no feed`}
+              className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 text-purple-700 px-3 py-1 text-xs font-medium hover:bg-purple-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
+            >
+              <span className="rounded-full bg-purple-100 px-2 py-0.5">Proposição</span>
+              <span className="font-semibold" aria-label={`${deputados.flatMap((d) => d.proposicoes).length} proposições`}>
+                {deputados.flatMap((d) => d.proposicoes).length}
+              </span>
+              {deputados.flatMap((d) => d.proposicoes).length === 0 && (
+                <span className="text-purple-400 italic">ainda não coletado</span>
+              )}
+            </Link>
+            <Link
+              href="/atualizacoes?tipo=atividade-publica"
+              aria-label="Ver atividade pública no feed (Instagram ainda não coletado)"
+              className="inline-flex items-center gap-1.5 rounded-full bg-pink-50 text-pink-700 px-3 py-1 text-xs font-medium hover:bg-pink-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
+            >
+              <span className="rounded-full bg-pink-100 px-2 py-0.5">Atividade pública</span>
+              <span className="font-semibold" aria-label="0 atividade pública">
+                0
+              </span>
+              <span className="text-pink-400 italic">ainda não coletado</span>
+            </Link>
+          </dl>
           <div className="grid md:grid-cols-3 gap-4">
             {noticias.length === 0 ? (
               <div className="md:col-span-3 rounded-xl border border-zinc-200 p-8 text-center">

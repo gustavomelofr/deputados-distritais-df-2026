@@ -87,7 +87,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Melhorar a seção de cobertura atual.
   Critério: métricas verificáveis de deputados monitorados, proposições catalogadas, notícias organizadas e fontes ativas.
 
-- [ ] Criar feed de atualizações monitoradas.
+- [x] Criar feed de atualizações monitoradas.
   Critério: diferenciar notícias, proposições e atividade pública, com fonte, data, deputado relacionado e link externo quando disponível.
 
 ### P2 — Perfis e exploração

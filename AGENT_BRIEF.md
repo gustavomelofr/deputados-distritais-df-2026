@@ -98,7 +98,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Criar filtros combináveis na listagem.
   Critério: nome, partido, comissão, situação, região administrativa, tema e período funcionam em desktop e mobile.
 
-- [ ] Criar comparação entre deputados.
+- [x] Criar comparação entre deputados.
   Critério: usar somente indicadores de fonte clara, sem ranking editorial enganoso e com contexto metodológico.
 
 - [ ] Criar página de atividade legislativa.

@@ -285,9 +285,22 @@ export default function Home() {
           <h2 className="text-2xl font-bold text-zinc-900 text-center mb-2">
             Cobertura atual
           </h2>
-          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-10">
+          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-4">
             Resumo verificável do que está sendo monitorado agora. Métricas
             calculadas a partir dos dados publicados, não inventadas.
+          </p>
+          <p className="text-xs text-zinc-400 text-center mb-10">
+            Última atualização da cobertura:{" "}
+            {noticias.length > 0
+              ? new Date(
+                  Math.max(...noticias.map((n) => new Date(n.data).getTime()))
+                ).toLocaleDateString("pt-BR", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })
+              : "—"}
+            {" "}· Deputados: CLDF (Legislatura 2023–2026) · Notícias: Google News RSS (P1)
           </p>
 
           {/* Métricas verificáveis */}
@@ -304,6 +317,9 @@ export default function Home() {
                 Deputados monitorados
               </p>
               <p className="text-xs text-zinc-400 mt-1">de 24 em exercício</p>
+              <p className="text-xs text-zinc-400 mt-2 leading-tight">
+                Fonte: CLDF
+              </p>
             </Link>
             <div
               className="rounded-xl border border-zinc-200 p-5 text-center"
@@ -315,6 +331,9 @@ export default function Home() {
               </p>
               <p className="text-xs text-zinc-400 mt-1">
                 <span className="italic">ainda não coletado</span>
+              </p>
+              <p className="text-xs text-zinc-400 mt-2 leading-tight">
+                Fonte prevista: CLDF — SAPL (P1)
               </p>
             </div>
             <Link
@@ -331,17 +350,25 @@ export default function Home() {
               <p className="text-xs text-zinc-400 mt-1">
                 {new Set(noticias.map((n) => n.fonte)).size} veículos
               </p>
+              <p className="text-xs text-zinc-400 mt-2 leading-tight">
+                Fonte: Google News RSS (P1)
+              </p>
             </Link>
             <div
               className="rounded-xl border border-zinc-200 p-5 text-center"
               aria-label="Fontes ativas no monitoramento"
             >
               <p className="text-3xl font-bold text-blue-600">
-                {new Set(noticias.map((n) => n.fonte)).size + 1}
+                {noticias.length > 0
+                  ? new Set(noticias.map((n) => n.fonte)).size
+                  : 0}
               </p>
               <p className="text-sm text-zinc-500 mt-1">Fontes ativas</p>
               <p className="text-xs text-zinc-400 mt-1">
-                CLDF + {new Set(noticias.map((n) => n.fonte)).size} veículos
+                veículos com notícias coletadas
+              </p>
+              <p className="text-xs text-zinc-400 mt-2 leading-tight">
+                P1: CLDF + Google News · P2: Instagram (não iniciado)
               </p>
             </div>
           </div>
@@ -360,8 +387,8 @@ export default function Home() {
               },
               {
                 title: "Instagram Radar",
-                desc: "Monitoramento da atividade pública dos deputados distritais no Instagram: frequência de posts, temas e engajamento.",
-                status: "ativo",
+                desc: "Monitoramento da atividade pública dos deputados distritais no Instagram: frequência de posts, temas e engajamento. A coleta ainda não foi iniciada.",
+                status: "em breve",
                 href: "/monitor-instagram",
               },
               {

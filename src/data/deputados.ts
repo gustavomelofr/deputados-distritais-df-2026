@@ -15,6 +15,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Servidores públicos', 'Educação', 'Transporte público'],
   },
   {
     id: '2',
@@ -30,6 +32,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Infraestrutura', 'Mobilidade urbana', 'Desenvolvimento econômico'],
   },
   {
     id: '3',
@@ -45,6 +49,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Direitos das mulheres', 'Juventude', 'Assistência social'],
   },
   {
     id: '4',
@@ -60,6 +66,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Saúde pública', 'Defesa dos animais', 'Direitos das mulheres'],
   },
   {
     id: '5',
@@ -75,6 +83,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Licitações', 'Contratos públicos', 'Fiscalização do executivo'],
   },
   {
     id: '6',
@@ -90,6 +100,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Direitos humanos', 'Educação', 'Transparência'],
   },
   {
     id: '7',
@@ -105,6 +117,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Participação popular', 'Transparência', 'Combate às desigualdades'],
   },
   {
     id: '8',
@@ -120,6 +134,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Mobilidade urbana', 'Geração de emprego', 'Infraestrutura'],
   },
   {
     id: '9',
@@ -135,6 +151,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Comunicação pública', 'Cultura', 'Esporte'],
   },
   {
     id: '10',
@@ -150,6 +168,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Assistência social', 'Juventude', 'Direitos das mulheres'],
   },
   {
     id: '11',
@@ -165,6 +185,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Desenvolvimento regional', 'Obras'],
   },
   {
     id: '12',
@@ -180,6 +202,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Segurança pública', 'Servidores públicos', 'Fiscalização do governo'],
   },
   {
     id: '13',
@@ -195,6 +219,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Liberdade econômica', 'Geração de empregos', 'Desburocratização'],
   },
   {
     id: '14',
@@ -210,6 +236,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: ['Ceilândia'],
+    temas: ['Assistência social', 'Infraestrutura'],
   },
   {
     id: '15',
@@ -225,6 +253,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Educação pública', 'Juventude', 'Direitos humanos'],
   },
   {
     id: '16',
@@ -240,6 +270,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Assistência social', 'Combate às drogas', 'Comunidades'],
   },
   {
     id: '17',
@@ -255,6 +287,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Direitos das mulheres', 'Crianças e adolescentes', 'Primeira infância'],
   },
   {
     id: '18',
@@ -270,6 +304,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: ['Planaltina'],
+    temas: ['Saúde', 'Direitos das mulheres', 'Comunidades carentes'],
   },
   {
     id: '19',
@@ -285,6 +321,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Direitos trabalhistas', 'Transporte público', 'Moradia popular'],
   },
   {
     id: '20',
@@ -300,6 +338,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Desenvolvimento rural', 'Abastecimento', 'Produtor rural'],
   },
   {
     id: '21',
@@ -315,6 +355,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Habitação', 'Urbanização', 'Regularização fundiária'],
   },
   {
     id: '22',
@@ -330,6 +372,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Segurança pública', 'Defesa do consumidor', 'Fiscalização do executivo'],
   },
   {
     id: '23',
@@ -345,6 +389,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: [],
+    temas: ['Inovação', 'Tecnologia', 'Geração de emprego'],
   },
   {
     id: '24',
@@ -360,6 +406,8 @@ export const deputados: DeputadoDistrital[] = [
     presenca: [],
     gastos: [],
     statusMandato: 'exercicio',
+    regioesAdministrativas: ['Samambaia'],
+    temas: ['Saúde', 'Educação', 'Geração de oportunidades'],
   },
 ];
 

@@ -17,6 +17,12 @@ export interface DeputadoDistrital {
   presenca: Sessao[];
   gastos: Gasto[];
   statusMandato: 'exercicio' | 'licenca' | 'suplente';
+  // Regiões administrativas do DF explicitamente citadas na biografia oficial
+  // (fonte: CLDF). Lista vazia significa "região não declarada na biografia".
+  regioesAdministrativas?: string[];
+  // Temas de atuação explicitamente citados na biografia oficial (fonte: CLDF).
+  // Lista vazia significa "tema não declarado na biografia".
+  temas?: string[];
 }
 
 export interface Proposicao {

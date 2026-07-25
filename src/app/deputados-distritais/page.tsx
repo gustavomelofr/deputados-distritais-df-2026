@@ -8,6 +8,9 @@ interface Props {
     q?: string;
     comissao?: string;
     situacao?: string;
+    regiao?: string;
+    tema?: string;
+    periodo?: string;
   }>;
 }
 
@@ -39,9 +42,44 @@ const situacoes: { valor: string; rotulo: string }[] = [
   { valor: 'suplente', rotulo: 'Suplente' },
 ];
 
+// Regiões administrativas e temas são derivados apenas das biografias oficiais
+// (fonte: CLDF). Listas vazias em cada deputado significam "não declarado".
+const regioesAdministrativas = [
+  ...new Set(deputados.flatMap((d) => d.regioesAdministrativas ?? [])),
+].sort();
+
+const temas = [
+  ...new Set(deputados.flatMap((d) => d.temas ?? [])),
+].sort();
+
+// Períodos derivados das datas das proposições reais catalogadas (fonte: CLDF).
+// Quando não há proposições em um período, o filtro retorna lista vazia com
+// estado honesto de indisponibilidade.
+const periodos: { valor: string; rotulo: string }[] = [
+  { valor: '2026-07', rotulo: 'Julho de 2026' },
+  { valor: '2026-06', rotulo: 'Junho de 2026' },
+  { valor: '2026', rotulo: 'Ano de 2026' },
+];
+
+const deputadoTemProposicaoNoPeriodo = (
+  slug: string,
+  periodo: string,
+): boolean => {
+  const props = proposicoesPorDeputado[slug];
+  if (!props || props.length === 0) return false;
+  return props.some((p) => p.data.startsWith(periodo));
+};
+
 export default async function DeputadosPage({ searchParams }: Props) {
-  const { partido: filtroPartido, q: busca, comissao: filtroComissao, situacao: filtroSituacao } =
-    await searchParams;
+  const {
+    partido: filtroPartido,
+    q: busca,
+    comissao: filtroComissao,
+    situacao: filtroSituacao,
+    regiao: filtroRegiao,
+    tema: filtroTema,
+    periodo: filtroPeriodo,
+  } = await searchParams;
   const partidoValido = filtroPartido
     ? partidos.find((p) => p === filtroPartido)
     : null;
@@ -51,12 +89,24 @@ export default async function DeputadosPage({ searchParams }: Props) {
   const situacaoValida = filtroSituacao
     ? situacoes.find((s) => s.valor === filtroSituacao)?.valor ?? null
     : null;
+  const regiaoValida = filtroRegiao
+    ? regioesAdministrativas.find((r) => r === filtroRegiao)
+    : null;
+  const temaValido = filtroTema ? temas.find((t) => t === filtroTema) : null;
+  const periodoValido = filtroPeriodo
+    ? periodos.find((p) => p.valor === filtroPeriodo)?.valor ?? null
+    : null;
 
   const termoBusca = (busca ?? '').trim().toLowerCase();
   const deputadosFiltrados = deputados.filter((d) => {
     if (partidoValido && d.partido !== partidoValido) return false;
     if (comissaoValida && !d.comissoes.includes(comissaoValida)) return false;
     if (situacaoValida && d.statusMandato !== situacaoValida) return false;
+    if (regiaoValida && !(d.regioesAdministrativas ?? []).includes(regiaoValida))
+      return false;
+    if (temaValido && !(d.temas ?? []).includes(temaValido)) return false;
+    if (periodoValido && !deputadoTemProposicaoNoPeriodo(d.slug, periodoValido))
+      return false;
     if (termoBusca) {
       const alvo = `${d.nome} ${d.nomeCompleto ?? ''} ${d.biografia}`.toLowerCase();
       if (!alvo.includes(termoBusca)) return false;
@@ -65,7 +115,13 @@ export default async function DeputadosPage({ searchParams }: Props) {
   });
 
   const haFiltrosAtivos = Boolean(
-    partidoValido || comissaoValida || situacaoValida || termoBusca,
+    partidoValido ||
+      comissaoValida ||
+      situacaoValida ||
+      regiaoValida ||
+      temaValido ||
+      periodoValido ||
+      termoBusca,
   );
 
   return (
@@ -89,8 +145,8 @@ export default async function DeputadosPage({ searchParams }: Props) {
         role="search"
         aria-label="Filtros combináveis da listagem de deputados distritais"
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="lg:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div className="sm:col-span-2 lg:col-span-3">
             <label
               htmlFor="filtro-nome"
               className="block text-xs font-medium text-zinc-500 mb-1"
@@ -186,6 +242,100 @@ export default async function DeputadosPage({ searchParams }: Props) {
               ))}
             </select>
           </div>
+
+          <div>
+            <label
+              htmlFor="filtro-regiao"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Região administrativa
+            </label>
+            <select
+              id="filtro-regiao"
+              name="regiao"
+              defaultValue={regiaoValida ?? ''}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              aria-describedby="filtro-regiao-ajuda"
+            >
+              <option value="">Todas as regiões</option>
+              {regioesAdministrativas.length === 0 ? (
+                <option value="" disabled>
+                  Nenhuma região declarada nas biografias
+                </option>
+              ) : (
+                regioesAdministrativas.map((r) => (
+                  <option key={r} value={r}>
+                    {r}
+                  </option>
+                ))
+              )}
+            </select>
+            <p id="filtro-regiao-ajuda" className="mt-1 text-[11px] text-zinc-400">
+              {regioesAdministrativas.length === 0
+                ? 'Ainda não coletado nas biografias oficiais.'
+                : 'Apenas regiões explicitamente citadas nas biografias (CLDF).'}
+            </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="filtro-tema"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Tema de atuação
+            </label>
+            <select
+              id="filtro-tema"
+              name="tema"
+              defaultValue={temaValido ?? ''}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              aria-describedby="filtro-tema-ajuda"
+            >
+              <option value="">Todos os temas</option>
+              {temas.length === 0 ? (
+                <option value="" disabled>
+                  Nenhum tema declarado nas biografias
+                </option>
+              ) : (
+                temas.map((t) => (
+                  <option key={t} value={t}>
+                    {t}
+                  </option>
+                ))
+              )}
+            </select>
+            <p id="filtro-tema-ajuda" className="mt-1 text-[11px] text-zinc-400">
+              {temas.length === 0
+                ? 'Ainda não coletado nas biografias oficiais.'
+                : 'Temas citados nas biografias oficiais (CLDF).'}
+            </p>
+          </div>
+
+          <div>
+            <label
+              htmlFor="filtro-periodo"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Período de atividade
+            </label>
+            <select
+              id="filtro-periodo"
+              name="periodo"
+              defaultValue={periodoValido ?? ''}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              aria-describedby="filtro-periodo-ajuda"
+            >
+              <option value="">Todos os períodos</option>
+              {periodos.map((p) => (
+                <option key={p.valor} value={p.valor}>
+                  {p.rotulo}
+                </option>
+              ))}
+            </select>
+            <p id="filtro-periodo-ajuda" className="mt-1 text-[11px] text-zinc-400">
+              Filtra por proposições catalogadas (CLDF). Sem proposições no período, o deputado não aparece.
+            </p>
+          </div>
         </div>
 
         <div className="mt-4 flex flex-wrap items-center gap-3">
@@ -246,6 +396,13 @@ export default async function DeputadosPage({ searchParams }: Props) {
           {situacaoValida
             ? ` · situação ${
                 situacoes.find((s) => s.valor === situacaoValida)?.rotulo
+              }`
+            : ''}
+          {regiaoValida ? ` · região ${regiaoValida}` : ''}
+          {temaValido ? ` · tema ${temaValido}` : ''}
+          {periodoValido
+            ? ` · período ${
+                periodos.find((p) => p.valor === periodoValido)?.rotulo
               }`
             : ''}
           {termoBusca ? ` · busca "${busca}"` : ''}.

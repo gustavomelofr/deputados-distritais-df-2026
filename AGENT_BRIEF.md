@@ -95,7 +95,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Organizar o perfil individual do deputado.
   Critério: resumo, contatos, comissões, proposições, presença, gastos, notícias e atividade pública, com estados vazios explicativos.
 
-- [ ] Criar filtros combináveis na listagem.
+- [x] Criar filtros combináveis na listagem.
   Critério: nome, partido, comissão, situação, região administrativa, tema e período funcionam em desktop e mobile.
 
 - [ ] Criar comparação entre deputados.

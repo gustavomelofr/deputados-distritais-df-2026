@@ -92,6 +92,13 @@ export default function RootLayout({
                 Deputados
               </a>
               <a
+                href="/comparar"
+                aria-label="Comparar deputados distritais lado a lado com indicadores de fonte clara"
+                className="hover:text-zinc-900 transition"
+              >
+                Comparar
+              </a>
+              <a
                 href="/noticias"
                 aria-label="Feed de notícias sobre a CLDF e os deputados distritais"
                 className="hover:text-zinc-900 transition"

@@ -135,6 +135,14 @@ export default async function DeputadosPage({ searchParams }: Props) {
           Os 24 deputados da Câmara Legislativa do Distrito Federal na legislatura
           2023–2026. Clique em cada perfil para ver detalhes.
         </p>
+        <p className="mt-3 text-sm">
+          <Link
+            href="/comparar"
+            className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 font-medium text-blue-700 hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
+          >
+            Comparar deputados lado a lado →
+          </Link>
+        </p>
       </div>
 
       {/* Filtros combináveis */}

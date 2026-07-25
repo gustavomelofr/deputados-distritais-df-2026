@@ -84,7 +84,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Criar três caminhos de navegação na Home.
   Critério: “Deputados em exercício”, “Atividade legislativa” e “Cenário eleitoral de 2026”, cada um com descrição curta e destino funcional.
 
-- [ ] Melhorar a seção de cobertura atual.
+- [x] Melhorar a seção de cobertura atual.
   Critério: métricas verificáveis de deputados monitorados, proposições catalogadas, notícias organizadas e fontes ativas.
 
 - [ ] Criar feed de atualizações monitoradas.

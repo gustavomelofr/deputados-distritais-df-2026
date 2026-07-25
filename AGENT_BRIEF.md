@@ -92,7 +92,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 
 ### P2 — Perfis e exploração
 
-- [ ] Organizar o perfil individual do deputado.
+- [x] Organizar o perfil individual do deputado.
   Critério: resumo, contatos, comissões, proposições, presença, gastos, notícias e atividade pública, com estados vazios explicativos.
 
 - [ ] Criar filtros combináveis na listagem.

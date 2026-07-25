@@ -2,6 +2,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { deputados, getDeputadoBySlug } from '@/data/deputados';
 import { noticias } from '@/data/noticias';
+import { proposicoesPorDeputado } from '@/data/proposicoes';
 import type { Metadata } from 'next';
 
 interface Props {
@@ -30,6 +31,8 @@ export default async function DeputadoPage({ params }: Props) {
   const noticiasRelacionadas = noticias.filter((n) =>
     n.deputadosRelacionados.includes(dep.slug)
   );
+
+  const proposicoesDeputado = (proposicoesPorDeputado[dep.slug] || []).slice(0, 8);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
@@ -172,8 +175,8 @@ export default async function DeputadoPage({ params }: Props) {
             </div>
             <div className="flex justify-between">
               <span className="text-zinc-500">Proposições</span>
-              <span className="text-zinc-400 text-sm italic">
-                ainda não coletado
+              <span className="text-zinc-700 text-sm font-medium">
+                {proposicoesPorDeputado[dep.slug]?.length || 0} em 2026
               </span>
             </div>
             <div className="flex justify-between">
@@ -230,15 +233,55 @@ export default async function DeputadoPage({ params }: Props) {
         </section>
       )}
 
-      {/* Proposições placeholder */}
-      <section className="rounded-xl border border-zinc-200 bg-white p-6">
-        <h2 className="font-semibold text-zinc-900 mb-2">Proposições</h2>
-        <p className="text-sm text-zinc-400">
-          As proposições do(a) deputado(a) serão carregadas automaticamente da
-          base de dados da CLDF nas próximas atualizações do sistema.
-        </p>
+      {/* Proposições */}
+      <section className="rounded-xl border border-zinc-200 bg-white p-6 mb-10">
+        <div className="flex items-center justify-between mb-3">
+          <h2 className="font-semibold text-zinc-900">Proposições</h2>
+          <Link
+            href={`/atualizacoes?tipo=proposicao`}
+            className="text-sm text-blue-600 hover:underline"
+          >
+            Ver no feed →
+          </Link>
+        </div>
+        {proposicoesDeputado.length > 0 ? (
+          <div className="space-y-3">
+            {proposicoesDeputado.map((p) => (
+              <a
+                key={p.id}
+                href={p.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block rounded-lg border border-zinc-200 p-4 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div className="min-w-0">
+                    <p className="font-medium text-zinc-900 text-sm">
+                      {p.sigla} — {p.tipoOriginal}
+                    </p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {p.autor} · {p.etapa}
+                    </p>
+                  </div>
+                  <span className="text-xs text-zinc-400 whitespace-nowrap">
+                    {new Date(p.data).toLocaleDateString('pt-BR')}
+                  </span>
+                </div>
+                <p className="text-sm text-zinc-600 mt-2 line-clamp-2">
+                  {p.descricao}
+                </p>
+              </a>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-zinc-400">
+            Nenhuma proposição com dataLeitura em 2026 foi encontrada para
+            este(a) deputado(a) na amostra coletada. A base completa está
+            disponível na fonte oficial.
+          </p>
+        )}
         <p className="text-xs text-zinc-400 mt-3">
-          Fonte prevista: <a href="https://www.cl.df.gov.br" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — SAPL</a> (P1) — ainda não coletado.
+          Fonte: <a href="https://dados.cl.df.gov.br/id/dataset/proposicoes" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — SAPL (PLE)</a> (P1) — API pública do Processo Legislativo Eletrônico.
         </p>
       </section>
 

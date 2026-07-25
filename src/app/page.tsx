@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { deputados } from "@/data/deputados";
 import { noticias } from "@/data/noticias";
+import { proposicoes } from "@/data/proposicoes";
 
 export default function Home() {
   return (
@@ -79,9 +80,10 @@ export default function Home() {
                 Atividade legislativa
               </h3>
               <p className="mt-2 text-sm text-zinc-500 leading-relaxed">
-                Cobertura jornalística da CLDF via Google News RSS, com
-                notícias organizadas por deputado. Proposições e votações
-                ainda não foram coletadas.
+                Cobertura jornalística da CLDF via Google News RSS e
+                proposições reais da API pública do PLE/CLDF, organizadas
+                por deputado. Votações e atividade pública ainda não foram
+                coletadas.
               </p>
               <span className="mt-4 inline-flex items-center text-sm font-semibold text-blue-600 group-hover:text-blue-500 transition">
                 Ver notícias →
@@ -135,18 +137,21 @@ export default function Home() {
                 Partidos representados
               </p>
             </Link>
-            <div className="rounded-lg focus:outline-none">
-              <p className="text-3xl font-bold text-zinc-300">
-                —
+            <Link
+              href="/atualizacoes?tipo=proposicao"
+              className="group rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label="Ver lista de proposições no feed de atualizações"
+            >
+              <p className="text-3xl font-bold text-blue-600 group-hover:text-blue-500 transition">
+                {proposicoes.length}
               </p>
-              <p className="text-sm text-zinc-400 mt-1">
-                Proposições{" "}
-                <span className="italic">(ainda não coletado)</span>
+              <p className="text-sm text-zinc-500 mt-1 group-hover:text-blue-600 transition">
+                Proposições catalogadas
               </p>
               <p className="text-xs text-zinc-400 mt-1 leading-tight max-w-[160px] mx-auto">
-                Fonte prevista: CLDF — SAPL (P1)
+                Fonte: CLDF — SAPL (P1)
               </p>
-            </div>
+            </Link>
             <Link
               href="/noticias"
               className="group rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -205,16 +210,13 @@ export default function Home() {
             </Link>
             <Link
               href="/atualizacoes?tipo=proposicao"
-              aria-label={`Ver ${deputados.flatMap((d) => d.proposicoes).length} proposições no feed`}
+              aria-label={`Ver ${proposicoes.length} proposições no feed`}
               className="inline-flex items-center gap-1.5 rounded-full bg-purple-50 text-purple-700 px-3 py-1 text-xs font-medium hover:bg-purple-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-500"
             >
               <span className="rounded-full bg-purple-100 px-2 py-0.5">Proposição</span>
-              <span className="font-semibold" aria-label={`${deputados.flatMap((d) => d.proposicoes).length} proposições`}>
-                {deputados.flatMap((d) => d.proposicoes).length}
+              <span className="font-semibold" aria-label={`${proposicoes.length} proposições`}>
+                {proposicoes.length}
               </span>
-              {deputados.flatMap((d) => d.proposicoes).length === 0 && (
-                <span className="text-purple-400 italic">ainda não coletado</span>
-              )}
             </Link>
             <Link
               href="/atualizacoes?tipo=atividade-publica"
@@ -286,8 +288,7 @@ export default function Home() {
               /atualizacoes
             </Link>{' '}
             diferencia notícias, proposições e atividade pública, com filtro
-            por tipo. Proposições (CLDF — SAPL) e atividade pública
-            (Instagram) ainda não foram coletadas.
+            por tipo. Atividade pública (Instagram) ainda não foi coletada.
           </p>
         </div>
       </section>
@@ -381,21 +382,24 @@ export default function Home() {
                 Fonte: CLDF
               </p>
             </Link>
-            <div
-              className="rounded-xl border border-zinc-200 p-5 text-center"
-              aria-label="Proposições catalogadas: ainda não coletado"
+            <Link
+              href="/atualizacoes?tipo=proposicao"
+              className="rounded-xl border border-zinc-200 p-5 text-center hover:border-blue-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label="Proposições catalogadas: acessar feed"
             >
-              <p className="text-3xl font-bold text-zinc-300">—</p>
+              <p className="text-3xl font-bold text-blue-600">
+                {proposicoes.length}
+              </p>
               <p className="text-sm text-zinc-500 mt-1">
                 Proposições catalogadas
               </p>
               <p className="text-xs text-zinc-400 mt-1">
-                <span className="italic">ainda não coletado</span>
+                {new Set(proposicoes.map((p) => p.deputadoSlug)).size} deputados autores
               </p>
               <p className="text-xs text-zinc-400 mt-2 leading-tight">
-                Fonte prevista: CLDF — SAPL (P1)
+                Fonte: CLDF — SAPL (P1)
               </p>
-            </div>
+            </Link>
             <Link
               href="/noticias"
               className="rounded-xl border border-zinc-200 p-5 text-center hover:border-blue-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
@@ -581,30 +585,51 @@ export default function Home() {
             <div className="rounded-xl border border-zinc-200 p-6">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-zinc-900">Proposições</h3>
-                <span className="rounded-full bg-amber-100 text-amber-700 text-xs font-medium px-2.5 py-0.5">
-                  ainda não coletado
+                <span className="rounded-full bg-green-100 text-green-700 text-xs font-medium px-2.5 py-0.5">
+                  disponível
                 </span>
               </div>
               <p className="text-sm text-zinc-500 mb-3">
-                Projetos de lei, indicações, requerimentos e emendas
-                apresentados na CLDF.
+                Projetos de lei, indicações, requerimentos e moções
+                apresentados na CLDF, coletados da API pública do Processo
+                Legislativo Eletrônico.
               </p>
               <div className="text-xs text-zinc-400 space-y-1">
                 <p>
                   <span className="text-zinc-600">Registros:</span>{" "}
-                  <span className="text-zinc-300">—</span>
+                  {proposicoes.length}
                 </p>
                 <p>
                   <span className="text-zinc-600">Período:</span>{" "}
-                  <span className="text-zinc-300">—</span>
+                  {proposicoes.length > 0
+                    ? `${new Date(
+                        Math.min(
+                          ...proposicoes.map((p) => new Date(p.data).getTime())
+                        )
+                      ).toLocaleDateString("pt-BR")} a ${new Date(
+                        Math.max(
+                          ...proposicoes.map((p) => new Date(p.data).getTime())
+                        )
+                      ).toLocaleDateString("pt-BR")}`
+                    : "—"}
                 </p>
                 <p>
                   <span className="text-zinc-600">Última coleta:</span>{" "}
-                  <span className="text-zinc-300">—</span>
+                  {proposicoes.length > 0
+                    ? new Date(
+                        Math.max(
+                          ...proposicoes.map((p) => new Date(p.data).getTime())
+                        )
+                      ).toLocaleDateString("pt-BR", {
+                        day: "2-digit",
+                        month: "long",
+                        year: "numeric",
+                      })
+                    : "—"}
                 </p>
                 <p>
                   <span className="text-zinc-600">Fonte:</span> CLDF — SAPL
-                  (P1)
+                  (PLE) (P1)
                 </p>
               </div>
             </div>

@@ -60,6 +60,26 @@ export default function MetodologiaPage() {
             </div>
             <div>
               <h3 className="font-semibold text-zinc-800 text-sm">
+                CLDF — SAPL / Processo Legislativo Eletrônico (P1)
+              </h3>
+              <p className="text-sm text-zinc-600 mt-1">
+                API pública de proposições da CLDF (projetos de lei, indicações,
+                requerimentos, moções e outros), com autoria, ementa, data de
+                leitura e tramitação. Disponível em{" "}
+                <a
+                  href="https://dados.cl.df.gov.br/id/dataset/proposicoes"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  aria-label="Portal de Dados Abertos da CLDF — dataset de proposições (abre em nova aba)"
+                >
+                  dados.cl.df.gov.br
+                </a>
+                .
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 text-sm">
                 Google News RSS (P1)
               </h3>
               <p className="text-sm text-zinc-600 mt-1">
@@ -216,8 +236,10 @@ export default function MetodologiaPage() {
           <ul className="space-y-2 text-sm text-zinc-600">
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              Os dados de proposições, presença e gastos individuais por deputado
-              ainda estão sendo integrados da API da CLDF.
+              Os dados de presença e gastos individuais por deputado ainda
+              estão sendo integrados da API da CLDF. As proposições já são
+              coletadas da API pública do PLE/CLDF, mas a amostra publicada
+              prioriza 2026 e pode não incluir todo o histórico.
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />

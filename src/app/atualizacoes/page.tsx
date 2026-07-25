@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { noticias } from '@/data/noticias';
 import { deputados } from '@/data/deputados';
+import { proposicoes } from '@/data/proposicoes';
 
 // Lookup de slug -> nome do deputado, derivado dos dados (sem hardcoding).
 const deputadoPorSlug = Object.fromEntries(
@@ -22,7 +23,7 @@ interface ItemAtualizacao {
 
 // Constrói o feed unificado a partir das fontes disponíveis.
 // - Notícias: agregadas via Google News RSS (P1) — disponível.
-// - Proposições: extraídas dos perfis da CLDF (P1) — ainda não coletado.
+// - Proposições: API pública do PLE/CLDF (P1) — disponível (coleta julho/2026).
 // - Atividade pública (Instagram): Instagram público (P2) — ainda não coletado.
 function buildFeed(): ItemAtualizacao[] {
   const items: ItemAtualizacao[] = [];
@@ -40,21 +41,19 @@ function buildFeed(): ItemAtualizacao[] {
     });
   }
 
-  // Proposições: cada deputado pode ter proposicoes[] (atualmente vazio).
-  // Quando coletadas, entram automaticamente no feed.
-  for (const d of deputados) {
-    for (const p of d.proposicoes) {
-      items.push({
-        id: `proposicao-${p.id}`,
-        tipo: 'proposicao',
-        titulo: p.titulo,
-        fonte: 'CLDF — SAPL',
-        url: p.link || undefined,
-        data: p.data,
-        resumo: p.descricao,
-        deputadosRelacionados: [d.slug],
-      });
-    }
+  // Proposições reais coletadas da API pública do PLE/CLDF (P1).
+  // Cada proposição já vem vinculada ao deputado autor via slug.
+  for (const p of proposicoes) {
+    items.push({
+      id: `proposicao-${p.id}`,
+      tipo: 'proposicao',
+      titulo: p.titulo,
+      fonte: 'CLDF — SAPL (PLE)',
+      url: p.link || undefined,
+      data: p.data,
+      resumo: p.descricao,
+      deputadosRelacionados: [p.deputadoSlug],
+    });
   }
 
   // Atividade pública (Instagram): sem dados coletados ainda.

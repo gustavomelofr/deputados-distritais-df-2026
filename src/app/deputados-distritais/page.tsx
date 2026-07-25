@@ -3,7 +3,12 @@ import { deputados, partidos } from '@/data/deputados';
 import { proposicoesPorDeputado } from '@/data/proposicoes';
 
 interface Props {
-  searchParams: Promise<{ partido?: string; q?: string }>;
+  searchParams: Promise<{
+    partido?: string;
+    q?: string;
+    comissao?: string;
+    situacao?: string;
+  }>;
 }
 
 // Mapa de cores por partido para identidade visual consistente nos cards.
@@ -26,21 +31,42 @@ const partidoCores: Record<string, string> = {
 const corPartido = (partido: string): string =>
   partidoCores[partido] ?? 'bg-zinc-100 text-zinc-700';
 
+const comissoes = [...new Set(deputados.flatMap((d) => d.comissoes))].sort();
+
+const situacoes: { valor: string; rotulo: string }[] = [
+  { valor: 'exercicio', rotulo: 'Em exercício' },
+  { valor: 'licenca', rotulo: 'Em licença' },
+  { valor: 'suplente', rotulo: 'Suplente' },
+];
+
 export default async function DeputadosPage({ searchParams }: Props) {
-  const { partido: filtroPartido, q: busca } = await searchParams;
+  const { partido: filtroPartido, q: busca, comissao: filtroComissao, situacao: filtroSituacao } =
+    await searchParams;
   const partidoValido = filtroPartido
     ? partidos.find((p) => p === filtroPartido)
+    : null;
+  const comissaoValida = filtroComissao
+    ? comissoes.find((c) => c === filtroComissao)
+    : null;
+  const situacaoValida = filtroSituacao
+    ? situacoes.find((s) => s.valor === filtroSituacao)?.valor ?? null
     : null;
 
   const termoBusca = (busca ?? '').trim().toLowerCase();
   const deputadosFiltrados = deputados.filter((d) => {
     if (partidoValido && d.partido !== partidoValido) return false;
+    if (comissaoValida && !d.comissoes.includes(comissaoValida)) return false;
+    if (situacaoValida && d.statusMandato !== situacaoValida) return false;
     if (termoBusca) {
       const alvo = `${d.nome} ${d.nomeCompleto ?? ''} ${d.biografia}`.toLowerCase();
       if (!alvo.includes(termoBusca)) return false;
     }
     return true;
   });
+
+  const haFiltrosAtivos = Boolean(
+    partidoValido || comissaoValida || situacaoValida || termoBusca,
+  );
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-12">
@@ -55,72 +81,133 @@ export default async function DeputadosPage({ searchParams }: Props) {
         </p>
       </div>
 
-      {/* Busca por nome */}
-      <form className="mb-6" action="/deputados-distritais" method="GET" role="search">
-        <div className="relative max-w-md">
-          <input
-            type="search"
-            name="q"
-            defaultValue={busca ?? ''}
-            placeholder="Buscar por nome ou biografia…"
-            aria-label="Buscar deputado distrital por nome"
-            className="w-full rounded-lg border border-zinc-300 bg-white pl-10 pr-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
-          />
+      {/* Filtros combináveis */}
+      <form
+        className="mb-8 rounded-xl border border-zinc-200 bg-white p-4 md:p-5"
+        action="/deputados-distritais"
+        method="GET"
+        role="search"
+        aria-label="Filtros combináveis da listagem de deputados distritais"
+      >
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="lg:col-span-2">
+            <label
+              htmlFor="filtro-nome"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Nome ou biografia
+            </label>
+            <div className="relative">
+              <input
+                id="filtro-nome"
+                type="search"
+                name="q"
+                defaultValue={busca ?? ''}
+                placeholder="Buscar por nome ou biografia…"
+                aria-label="Buscar deputado distrital por nome"
+                className="w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              />
+              <svg
+                viewBox="0 0 24 24"
+                className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m21 21-4.3-4.3" />
+              </svg>
+            </div>
+          </div>
+
+          <div>
+            <label
+              htmlFor="filtro-partido"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Partido
+            </label>
+            <select
+              id="filtro-partido"
+              name="partido"
+              defaultValue={partidoValido ?? ''}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="">Todos os partidos</option>
+              {partidos.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="filtro-comissao"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Comissão
+            </label>
+            <select
+              id="filtro-comissao"
+              name="comissao"
+              defaultValue={comissaoValida ?? ''}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="">Todas as comissões</option>
+              {comissoes.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="filtro-situacao"
+              className="block text-xs font-medium text-zinc-500 mb-1"
+            >
+              Situação
+            </label>
+            <select
+              id="filtro-situacao"
+              name="situacao"
+              defaultValue={situacaoValida ?? ''}
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+            >
+              <option value="">Todas as situações</option>
+              {situacoes.map((s) => (
+                <option key={s.valor} value={s.valor}>
+                  {s.rotulo}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="submit"
-            aria-label="Executar busca"
-            className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400 hover:text-blue-600 transition cursor-pointer"
+            className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
           >
-            <svg
-              viewBox="0 0 24 24"
-              className="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              aria-hidden="true"
-            >
-              <circle cx="11" cy="11" r="7" />
-              <path d="m21 21-4.3-4.3" />
-            </svg>
+            Aplicar filtros
           </button>
+          {haFiltrosAtivos && (
+            <Link
+              href="/deputados-distritais"
+              className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
+            >
+              Limpar filtros
+            </Link>
+          )}
+          <span className="text-xs text-zinc-400">
+            {deputadosFiltrados.length} de {deputados.length} deputados
+          </span>
         </div>
       </form>
-
-      {/* Filter by party */}
-      <div className="mb-8 flex flex-wrap gap-2 items-center">
-        <span className="text-sm font-medium text-zinc-500 mr-2">
-          Partidos:
-        </span>
-        <Link
-          href="/deputados-distritais"
-          aria-label="Exibir todos os partidos"
-          className={`rounded-full text-xs font-medium px-3 py-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-            !partidoValido
-              ? 'bg-blue-600 text-white'
-              : 'bg-zinc-100 text-zinc-600 hover:bg-zinc-200'
-          }`}
-        >
-          Todos
-        </Link>
-        {partidos.map((p) => (
-          <Link
-            key={p}
-            href={
-              partidoValido === p
-                ? '/deputados-distritais'
-                : `/deputados-distritais?partido=${encodeURIComponent(p)}`
-            }
-            aria-label={`Filtrar deputados do partido ${p}`}
-            className={`rounded-full text-xs font-medium px-3 py-1 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
-              partidoValido === p
-                ? 'bg-blue-600 text-white'
-                : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
-            }`}
-          >
-            {p}
-          </Link>
-        ))}
-      </div>
 
       {/* Summary stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
@@ -150,15 +237,18 @@ export default async function DeputadosPage({ searchParams }: Props) {
       </p>
 
       {/* Grid of deputies */}
-      {(partidoValido || termoBusca) && (
+      {haFiltrosAtivos && (
         <p className="text-sm text-zinc-500 mb-4">
           Mostrando {deputadosFiltrados.length} deputado
           {deputadosFiltrados.length !== 1 ? 's' : ''}
-          {partidoValido ? ` de ${partidoValido}` : ''}
-          {termoBusca ? ` para "${busca}"` : ''}.{' '}
-          <Link href="/deputados-distritais" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
-            Limpar filtros
-          </Link>
+          {partidoValido ? ` · partido ${partidoValido}` : ''}
+          {comissaoValida ? ` · comissão ${comissaoValida}` : ''}
+          {situacaoValida
+            ? ` · situação ${
+                situacoes.find((s) => s.valor === situacaoValida)?.rotulo
+              }`
+            : ''}
+          {termoBusca ? ` · busca "${busca}"` : ''}.
         </p>
       )}
       {deputadosFiltrados.length === 0 ? (

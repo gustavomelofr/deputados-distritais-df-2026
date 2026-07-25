@@ -106,7 +106,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 
 ### P3 — Cenário de 2026 e análise
 
-- [ ] Estruturar o cenário de 2026 por estágio de evidência.
+- [x] Estruturar o cenário de 2026 por estágio de evidência.
   Critério: usar “pré-candidatura declarada”, “movimentação pública” e “em observação”; cada estágio exige fonte e data.
 
 - [ ] Criar análise descritiva de temas e volume.

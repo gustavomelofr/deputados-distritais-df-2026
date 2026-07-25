@@ -283,13 +283,69 @@ export default function Home() {
       <section className="bg-white">
         <div className="mx-auto max-w-5xl px-4 py-16">
           <h2 className="text-2xl font-bold text-zinc-900 text-center mb-2">
-            Cobertura em construção
+            Cobertura atual
           </h2>
-          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-12">
-            Este site está sendo construído continuamente por um agente autônomo.
-            Os dados são atualizados automaticamente à medida que novas fontes
-            são integradas.
+          <p className="text-zinc-500 text-center max-w-xl mx-auto mb-10">
+            Resumo verificável do que está sendo monitorado agora. Métricas
+            calculadas a partir dos dados publicados, não inventadas.
           </p>
+
+          {/* Métricas verificáveis */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-12">
+            <Link
+              href="/deputados-distritais"
+              className="rounded-xl border border-zinc-200 p-5 text-center hover:border-blue-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label="Deputados monitorados: acessar lista"
+            >
+              <p className="text-3xl font-bold text-blue-600">
+                {deputados.length}
+              </p>
+              <p className="text-sm text-zinc-500 mt-1">
+                Deputados monitorados
+              </p>
+              <p className="text-xs text-zinc-400 mt-1">de 24 em exercício</p>
+            </Link>
+            <div
+              className="rounded-xl border border-zinc-200 p-5 text-center"
+              aria-label="Proposições catalogadas: ainda não coletado"
+            >
+              <p className="text-3xl font-bold text-zinc-300">—</p>
+              <p className="text-sm text-zinc-500 mt-1">
+                Proposições catalogadas
+              </p>
+              <p className="text-xs text-zinc-400 mt-1">
+                <span className="italic">ainda não coletado</span>
+              </p>
+            </div>
+            <Link
+              href="/noticias"
+              className="rounded-xl border border-zinc-200 p-5 text-center hover:border-blue-300 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+              aria-label="Notícias organizadas: acessar"
+            >
+              <p className="text-3xl font-bold text-blue-600">
+                {noticias.length}
+              </p>
+              <p className="text-sm text-zinc-500 mt-1">
+                Notícias organizadas
+              </p>
+              <p className="text-xs text-zinc-400 mt-1">
+                {new Set(noticias.map((n) => n.fonte)).size} veículos
+              </p>
+            </Link>
+            <div
+              className="rounded-xl border border-zinc-200 p-5 text-center"
+              aria-label="Fontes ativas no monitoramento"
+            >
+              <p className="text-3xl font-bold text-blue-600">
+                {new Set(noticias.map((n) => n.fonte)).size + 1}
+              </p>
+              <p className="text-sm text-zinc-500 mt-1">Fontes ativas</p>
+              <p className="text-xs text-zinc-400 mt-1">
+                CLDF + {new Set(noticias.map((n) => n.fonte)).size} veículos
+              </p>
+            </div>
+          </div>
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {[
               {

@@ -285,6 +285,129 @@ export default async function DeputadoPage({ params }: Props) {
         </p>
       </section>
 
+      {/* Presença em sessões */}
+      <section
+        aria-labelledby="presenca-titulo"
+        className="rounded-xl border border-zinc-200 bg-white p-6 mb-10"
+      >
+        <h2 id="presenca-titulo" className="font-semibold text-zinc-900 mb-3">
+          Presença em sessões
+        </h2>
+        {dep.presenca.length > 0 ? (
+          <ul className="space-y-2">
+            {dep.presenca.map((s) => (
+              <li
+                key={s.id}
+                className="flex items-start justify-between gap-4 text-sm text-zinc-600"
+              >
+                <span className="min-w-0">
+                  <span className="font-medium text-zinc-900">{s.descricao}</span>
+                  <time dateTime={s.data} className="block text-xs text-zinc-400 mt-0.5">
+                    {new Date(s.data).toLocaleDateString('pt-BR')}
+                  </time>
+                </span>
+                <span
+                  className={`whitespace-nowrap text-xs font-medium ${
+                    s.presente ? 'text-green-600' : 'text-amber-600'
+                  }`}
+                >
+                  {s.presente ? 'Presente' : 'Ausente'}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            A presença em sessões plenárias e comissões ainda não foi coletada
+            para este(a) deputado(a). A fonte oficial é o sistema de presença
+            da Câmara Legislativa do DF. Quando a coleta estiver disponível,
+            cada sessão será exibida com data e status (presente/ausente).
+          </p>
+        )}
+        <p className="text-xs text-zinc-400 mt-4">
+          Fonte prevista: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — presença em sessões</a> (P1) — ainda não coletado.
+        </p>
+      </section>
+
+      {/* Gastos da cota parlamentar */}
+      <section
+        aria-labelledby="gastos-titulo"
+        className="rounded-xl border border-zinc-200 bg-white p-6 mb-10"
+      >
+        <h2 id="gastos-titulo" className="font-semibold text-zinc-900 mb-3">
+          Gastos da cota parlamentar
+        </h2>
+        {dep.gastos.length > 0 ? (
+          <ul className="space-y-2">
+            {dep.gastos.map((g) => (
+              <li
+                key={g.id}
+                className="flex items-start justify-between gap-4 text-sm text-zinc-600"
+              >
+                <span className="min-w-0">
+                  <span className="font-medium text-zinc-900">{g.tipo}</span>
+                  <span className="block text-xs text-zinc-400 mt-0.5">
+                    {g.descricao} —{' '}
+                    <time dateTime={g.data}>
+                      {new Date(g.data).toLocaleDateString('pt-BR')}
+                    </time>
+                  </span>
+                </span>
+                <span className="whitespace-nowrap text-sm font-medium text-zinc-700">
+                  R$ {g.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-zinc-400 leading-relaxed">
+            Os gastos da cota parlamentar ainda não foram coletados para
+            este(a) deputado(a). A fonte oficial é a Câmara Legislativa do DF,
+            que disponibiliza as despesas da verba de gabinete. Quando a coleta
+            estiver disponível, cada despesa será exibida com tipo, valor, data
+            e descrição.
+          </p>
+        )}
+        <p className="text-xs text-zinc-400 mt-4">
+          Fonte prevista: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF — cota parlamentar</a> (P1) — ainda não coletado.
+        </p>
+      </section>
+
+      {/* Atividade pública (Instagram) */}
+      <section
+        aria-labelledby="atividade-publica-titulo"
+        className="rounded-xl border border-zinc-200 bg-white p-6 mb-10"
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h2 id="atividade-publica-titulo" className="font-semibold text-zinc-900">
+            Atividade pública
+          </h2>
+          {dep.contatos?.instagram && (
+            <a
+              href={`https://instagram.com/${dep.contatos.instagram}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-blue-600 hover:underline"
+            >
+              Ver perfil no Instagram →
+            </a>
+          )}
+        </div>
+        <p className="text-sm text-zinc-400 leading-relaxed">
+          O monitoramento da atividade pública no Instagram ainda não foi
+          iniciado para este(a) deputado(a). Nenhum dado de posts, frequência,
+          temas ou engajamento está disponível neste momento. O volume de posts
+          não mede popularidade, apoio ou intenção de voto — apenas atividade
+          registrada na fonte monitorada.
+        </p>
+        <p className="text-xs text-zinc-400 mt-4">
+          Fonte prevista: Instagram público (P2) — ainda não coletado.{' '}
+          <Link href="/monitor-instagram" className="text-blue-600 hover:underline">
+            Ver radar geral →
+          </Link>
+        </p>
+      </section>
+
       {/* Navegação entre deputados */}
       <nav
         aria-label="Navegação entre perfis de deputados"

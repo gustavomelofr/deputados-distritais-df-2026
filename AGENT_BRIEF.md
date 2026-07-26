@@ -112,5 +112,5 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Criar análise descritiva de temas e volume.
   Critério: declarar que volume não representa popularidade, apoio ou intenção de voto.
 
-- [ ] Melhorar responsividade e acessibilidade.
+- [x] Melhorar responsividade e acessibilidade.
   Critério: navegação, filtros, tabelas e cards funcionam em telas pequenas, com foco visível e labels acessíveis.

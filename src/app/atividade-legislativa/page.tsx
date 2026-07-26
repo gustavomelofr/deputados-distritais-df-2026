@@ -136,7 +136,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             href="https://dados.cl.df.gov.br/id/dataset/proposicoes"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             dataset oficial
           </a>
@@ -302,7 +302,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             estilo de atuação, não mérito político. Ver{' '}
             <Link
               href="/metodologia"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               metodologia e limites de interpretação
             </Link>
@@ -419,7 +419,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
                         href={p.link}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                       >
                         CLDF — SAPL (PLE)
                       </a>
@@ -461,7 +461,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             Ver{' '}
             <Link
               href="/metodologia"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               metodologia e fontes
             </Link>{' '}

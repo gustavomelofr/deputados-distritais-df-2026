@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { execSync } from "node:child_process";
+import { SiteNav } from "@/components/site-nav";
 import "./globals.css";
 
 // Data da última atualização do site, derivada do último commit do git.
@@ -61,19 +62,19 @@ export default function RootLayout({
           Pular para o conteúdo
         </a>
         <header className="border-b border-zinc-200 bg-white">
-          <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3">
-            <div className="flex items-center gap-3">
+          <nav className="mx-auto max-w-6xl flex items-center justify-between px-4 py-3 gap-3">
+            <div className="flex items-center gap-3 min-w-0">
               <a
                 href="/"
                 aria-label="Deputados Distritais DF 2026 — página inicial"
-                className="text-lg font-bold tracking-tight text-zinc-900"
+                className="text-lg font-bold tracking-tight text-zinc-900 shrink-0"
               >
                 Deputados Distritais <span className="text-blue-600">DF 2026</span>
               </a>
               <span
                 aria-label="Agente autônomo ativo: monitoramento contínuo de fontes públicas"
                 role="status"
-                className="hidden sm:inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20"
+                className="hidden md:inline-flex items-center gap-1.5 rounded-full bg-green-50 px-2 py-0.5 text-xs font-medium text-green-700 ring-1 ring-green-600/20"
                 title="Agente autônomo monitorando fontes públicas continuamente"
               >
                 <span className="relative flex h-1.5 w-1.5">
@@ -83,71 +84,7 @@ export default function RootLayout({
                 agente ativo
               </span>
             </div>
-            <div className="flex items-center gap-6 text-sm font-medium text-zinc-600">
-              <a
-                href="/deputados-distritais"
-                aria-label="Lista dos 24 deputados distritais do DF com perfil, proposições e gastos"
-                className="hover:text-zinc-900 transition"
-              >
-                Deputados
-              </a>
-              <a
-                href="/comparar"
-                aria-label="Comparar deputados distritais lado a lado com indicadores de fonte clara"
-                className="hover:text-zinc-900 transition"
-              >
-                Comparar
-              </a>
-              <a
-                href="/atividade-legislativa"
-                aria-label="Atividade legislativa da CLDF: proposições por tipo, status e deputado autor"
-                className="hover:text-zinc-900 transition"
-              >
-                Atividade
-              </a>
-              <a
-                href="/analise"
-                aria-label="Análise descritiva de temas e volume das fontes monitoradas"
-                className="hover:text-zinc-900 transition"
-              >
-                Análise
-              </a>
-              <a
-                href="/noticias"
-                aria-label="Feed de notícias sobre a CLDF e os deputados distritais"
-                className="hover:text-zinc-900 transition"
-              >
-                Notícias
-              </a>
-              <a
-                href="/atualizacoes"
-                aria-label="Feed unificado de atualizações monitoradas: notícias, proposições e atividade pública"
-                className="hover:text-zinc-900 transition"
-              >
-                Atualizações
-              </a>
-              <a
-                href="/cenario-2026"
-                aria-label="Cenário eleitoral 2026: pré-candidaturas e movimentações para o Distrito Federal"
-                className="hover:text-zinc-900 transition"
-              >
-                Cenário 2026
-              </a>
-              <a
-                href="/monitor-instagram"
-                aria-label="Radar Instagram dos deputados distritais: posts e atividade nas redes sociais"
-                className="hover:text-zinc-900 transition"
-              >
-                Instagram
-              </a>
-              <a
-                href="/metodologia"
-                aria-label="Metodologia, fontes de dados e critérios de coleta"
-                className="hover:text-zinc-900 transition"
-              >
-                Metodologia
-              </a>
-            </div>
+            <SiteNav />
           </nav>
         </header>
         <main id="conteudo-principal" className="flex-1">{children}</main>

@@ -136,35 +136,39 @@ export default async function NoticiasPage({ searchParams }: Props) {
                 {filtroDeputado ? ` sobre ${selectedDep?.nome}` : ''}
               </p>
               {noticiasFiltradas.map((n) => (
-                <a
+                <article
                   key={n.id}
-                  href={n.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
-                  className="block rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-200 hover:shadow-sm transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  className="rounded-xl border border-zinc-200 bg-white p-5 hover:border-blue-200 hover:shadow-sm transition-all"
                 >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <h2 className="font-semibold text-zinc-900 leading-snug">
-                        {n.titulo}
-                      </h2>
-                      <p className="text-sm text-zinc-500 mt-1">{n.fonte}</p>
+                  <a
+                    href={n.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
+                    className="block rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <h2 className="font-semibold text-zinc-900 leading-snug">
+                          {n.titulo}
+                        </h2>
+                        <p className="text-sm text-zinc-500 mt-1">{n.fonte}</p>
+                      </div>
+                      <time
+                        dateTime={n.data}
+                        className="text-xs text-zinc-400 whitespace-nowrap mt-1"
+                      >
+                        {new Date(n.data).toLocaleDateString('pt-BR', {
+                          day: '2-digit',
+                          month: 'long',
+                          year: 'numeric',
+                        })}
+                      </time>
                     </div>
-                    <time
-                      dateTime={n.data}
-                      className="text-xs text-zinc-400 whitespace-nowrap mt-1"
-                    >
-                      {new Date(n.data).toLocaleDateString('pt-BR', {
-                        day: '2-digit',
-                        month: 'long',
-                        year: 'numeric',
-                      })}
-                    </time>
-                  </div>
-                  <p className="mt-2 text-sm text-zinc-600 leading-relaxed line-clamp-2">
-                    {n.resumo}
-                  </p>
+                    <p className="mt-2 text-sm text-zinc-600 leading-relaxed line-clamp-2">
+                      {n.resumo}
+                    </p>
+                  </a>
                   {n.deputadosRelacionados.length > 0 && (
                     <div className="mt-3 flex flex-wrap gap-1">
                       {n.deputadosRelacionados.map((slug) => (
@@ -179,7 +183,7 @@ export default async function NoticiasPage({ searchParams }: Props) {
                       ))}
                     </div>
                   )}
-                </a>
+                </article>
               ))}
             </div>
           )}

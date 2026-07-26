@@ -237,7 +237,8 @@ export default function Cenario2026Page() {
                               <Link
                                 key={slug}
                                 href={`/deputados-distritais/${dep.slug}`}
-                                className="rounded-md bg-white border border-zinc-200 px-2.5 py-1 text-xs text-zinc-700 hover:bg-blue-50 hover:border-blue-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                                aria-label={`Ver perfil de ${dep.nome} (${dep.partido})`}
+                                className="rounded-md bg-white border border-zinc-200 px-2.5 py-1 text-xs text-zinc-700 hover:bg-blue-50 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                               >
                                 {dep.nome} ({dep.partido})
                               </Link>
@@ -316,7 +317,8 @@ export default function Cenario2026Page() {
                     <Link
                       key={d.slug}
                       href={`/deputados-distritais/${d.slug}`}
-                      className="rounded-lg bg-zinc-50 border border-zinc-200 px-3 py-1.5 text-xs text-zinc-700 hover:bg-blue-50 hover:border-blue-200 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
+                      aria-label={`Ver perfil de ${d.nome} (${d.partido})`}
+                      className="rounded-lg bg-zinc-50 border border-zinc-200 px-3 py-1.5 text-xs text-zinc-700 hover:bg-blue-50 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
                       {d.nome}
                     </Link>

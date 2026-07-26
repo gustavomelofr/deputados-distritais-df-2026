@@ -273,49 +273,70 @@ export default async function DeputadoPage({ params }: Props) {
       </div>
 
       {/* News related */}
-      {noticiasRelacionadas.length > 0 && (
-        <section className="mb-10">
-          <h2 className="text-xl font-bold text-zinc-900 mb-4">
-            Notícias relacionadas
-          </h2>
-          <div className="space-y-3">
-            {noticiasRelacionadas.map((n) => (
-              <a
-                key={n.id}
-                href={n.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
-                className="block rounded-lg border border-zinc-200 bg-white p-4 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="min-w-0">
-                    <p className="font-medium text-zinc-900 text-sm">{n.titulo}</p>
-                    <p className="text-xs text-zinc-500 mt-1">
-                      Fonte: {n.fonte} —{' '}
-                      <time dateTime={n.data}>
-                        {new Date(n.data).toLocaleDateString('pt-BR')}
-                      </time>
-                    </p>
+      <section className="mb-10">
+        <h2 className="text-xl font-bold text-zinc-900 mb-4">
+          Notícias relacionadas
+        </h2>
+        {noticiasRelacionadas.length > 0 ? (
+          <>
+            <div className="space-y-3">
+              {noticiasRelacionadas.map((n) => (
+                <a
+                  key={n.id}
+                  href={n.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
+                  className="block rounded-lg border border-zinc-200 bg-white p-4 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="min-w-0">
+                      <p className="font-medium text-zinc-900 text-sm">{n.titulo}</p>
+                      <p className="text-xs text-zinc-500 mt-1">
+                        Fonte: {n.fonte} —{' '}
+                        <time dateTime={n.data}>
+                          {new Date(n.data).toLocaleDateString('pt-BR')}
+                        </time>
+                      </p>
+                    </div>
+                    <time
+                      dateTime={n.data}
+                      className="text-xs text-zinc-400 whitespace-nowrap"
+                    >
+                      {new Date(n.data).toLocaleDateString('pt-BR')}
+                    </time>
                   </div>
-                  <time
-                    dateTime={n.data}
-                    className="text-xs text-zinc-400 whitespace-nowrap"
-                  >
-                    {new Date(n.data).toLocaleDateString('pt-BR')}
-                  </time>
-                </div>
-                <p className="text-sm text-zinc-600 mt-2 line-clamp-2">
-                  {n.resumo}
-                </p>
-              </a>
-            ))}
+                  <p className="text-sm text-zinc-600 mt-2 line-clamp-2">
+                    {n.resumo}
+                  </p>
+                </a>
+              ))}
+            </div>
+            <p className="text-xs text-zinc-400 mt-3">
+              Fonte: Google News RSS (P1) — data de publicação original em cada item.
+            </p>
+          </>
+        ) : (
+          <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-5">
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              Nenhuma notícia relacionada a {dep.nome} foi capturada nas fontes
+              monitoradas até o momento. A ausência aqui não significa ausência
+              de cobertura jornalística — apenas que nenhuma menção foi
+              associada a este deputado na coleta atual do Google News RSS.
+            </p>
+            <p className="text-xs text-zinc-400 mt-3">
+              Fonte prevista: Google News RSS (P1).{' '}
+              <Link
+                href="/noticias"
+                aria-label="Ver todas as notícias coletadas da CLDF"
+                className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+              >
+                Ver todas as notícias →
+              </Link>
+            </p>
           </div>
-          <p className="text-xs text-zinc-400 mt-3">
-            Fonte: Google News RSS (P1) — data de publicação original em cada item.
-          </p>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* Proposições */}
       <section className="rounded-xl border border-zinc-200 bg-white p-6 mb-10">

@@ -276,7 +276,11 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
                   <span className="w-40 shrink-0 text-zinc-700">
                     {tipoLabel[t] || t}
                   </span>
-                  <span className="flex-1 h-2 rounded-full bg-zinc-100 overflow-hidden">
+                  <span
+                    className="flex-1 h-2 rounded-full bg-zinc-100 overflow-hidden"
+                    role="img"
+                    aria-label={`${countsPorTipo[t]} proposições (${pct}% do total)`}
+                  >
                     <span
                       className="block h-full bg-purple-500"
                       style={{ width: `${pct}%` }}

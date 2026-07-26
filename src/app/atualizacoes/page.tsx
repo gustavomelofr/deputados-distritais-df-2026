@@ -285,7 +285,7 @@ export default async function AtualizacoesPage({ searchParams }: Props) {
                         href={item.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline"
+                        className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                       >
                         {item.fonte}
                       </a>

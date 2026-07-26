@@ -136,6 +136,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             href="https://dados.cl.df.gov.br/id/dataset/proposicoes"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Dataset oficial de proposições da CLDF (abre em nova aba)"
             className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             dataset oficial
@@ -419,6 +420,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
                         href={p.link}
                         target="_blank"
                         rel="noopener noreferrer"
+                        aria-label={`Abrir fonte da proposição ${p.sigla} na CLDF em nova aba`}
                         className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                       >
                         CLDF — SAPL (PLE)

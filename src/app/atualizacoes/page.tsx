@@ -146,8 +146,10 @@ export default async function AtualizacoesPage({ searchParams }: Props) {
         </p>
       </div>
 
-      {/* Filtros por tipo */}
-      <div className="flex flex-wrap gap-2 mb-8" role="tablist" aria-label="Filtrar atualizações por tipo">
+      {/* Filtros por tipo — links de navegação que filtram via query string,
+          não tabs que alternam conteúdo in-place. Por isso sem role="tablist"
+          (que exigiria role="tab" e aria-selected nos filhos). */}
+      <div className="flex flex-wrap gap-2 mb-8" aria-label="Filtrar atualizações por tipo">
         <Link
           href="/atualizacoes"
           aria-label="Exibir todas as atualizações"

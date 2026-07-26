@@ -104,7 +104,8 @@ export default async function DeputadoPage({ params }: Props) {
             href="https://www.cl.df.gov.br/deputados-2023-2026"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            aria-label="CLDF — Câmara Legislativa do DF (abre em nova aba)"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             CLDF — Câmara Legislativa do DF
           </a>{' '}
@@ -135,7 +136,7 @@ export default async function DeputadoPage({ params }: Props) {
           <p className="text-zinc-500 text-sm mb-3">{dep.nomeCompleto}</p>
           <p className="text-zinc-600 leading-relaxed">{dep.biografia}</p>
           <p className="text-xs text-zinc-400 mt-2">
-            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — Câmara Legislativa do DF (abre em nova aba)" className="text-blue-600 hover:underline">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026
+            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — Câmara Legislativa do DF (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF — Câmara Legislativa do DF</a> — Legislatura 2023–2026
           </p>
 
           {/* Contact */}
@@ -193,7 +194,7 @@ export default async function DeputadoPage({ params }: Props) {
               )}
               </div>
               <p className="text-xs text-zinc-400 mt-2">
-                Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — contatos oficiais (abre em nova aba)" className="text-blue-600 hover:underline">CLDF</a> — contatos oficiais da legislatura 2023–2026
+                Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — contatos oficiais (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF</a> — contatos oficiais da legislatura 2023–2026
               </p>
             </div>
           )}
@@ -222,7 +223,7 @@ export default async function DeputadoPage({ params }: Props) {
             </p>
           )}
           <p className="text-xs text-zinc-400 mt-4">
-            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — comissões (abre em nova aba)" className="text-blue-600 hover:underline">CLDF</a> — Legislatura 2023–2026
+            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — comissões (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF</a> — Legislatura 2023–2026
           </p>
         </div>
 
@@ -266,7 +267,7 @@ export default async function DeputadoPage({ params }: Props) {
             </div>
           </div>
           <p className="text-xs text-zinc-400 mt-4">
-            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — proposições (abre em nova aba)" className="text-blue-600 hover:underline">CLDF</a> — Legislatura 2023–2026
+            Fonte: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — proposições (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF</a> — Legislatura 2023–2026
           </p>
         </div>
       </div>
@@ -318,7 +319,8 @@ export default async function DeputadoPage({ params }: Props) {
           <h2 className="font-semibold text-zinc-900">Proposições</h2>
           <Link
             href={`/atualizacoes?tipo=proposicao`}
-            className="text-sm text-blue-600 hover:underline"
+            aria-label={`Ver proposições de ${dep.nome} no feed de atualizações`}
+            className="text-sm text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             Ver no feed →
           </Link>
@@ -360,7 +362,7 @@ export default async function DeputadoPage({ params }: Props) {
           </p>
         )}
         <p className="text-xs text-zinc-400 mt-3">
-          Fonte: <a href="https://dados.cl.df.gov.br/id/dataset/proposicoes" target="_blank" rel="noopener noreferrer" aria-label="CLDF — SAPL (PLE) (abre em nova aba)" className="text-blue-600 hover:underline">CLDF — SAPL (PLE)</a> (P1) — API pública do Processo Legislativo Eletrônico.
+          Fonte: <a href="https://dados.cl.df.gov.br/id/dataset/proposicoes" target="_blank" rel="noopener noreferrer" aria-label="CLDF — SAPL (PLE) (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF — SAPL (PLE)</a> (P1) — API pública do Processo Legislativo Eletrônico.
         </p>
       </section>
 
@@ -404,7 +406,7 @@ export default async function DeputadoPage({ params }: Props) {
           </p>
         )}
         <p className="text-xs text-zinc-400 mt-4">
-          Fonte prevista: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — presença em sessões (abre em nova aba)" className="text-blue-600 hover:underline">CLDF — presença em sessões</a> (P1) — ainda não coletado.
+          Fonte prevista: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — presença em sessões (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF — presença em sessões</a> (P1) — ainda não coletado.
         </p>
       </section>
 
@@ -448,7 +450,7 @@ export default async function DeputadoPage({ params }: Props) {
           </p>
         )}
         <p className="text-xs text-zinc-400 mt-4">
-          Fonte prevista: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — cota parlamentar (abre em nova aba)" className="text-blue-600 hover:underline">CLDF — cota parlamentar</a> (P1) — ainda não coletado.
+          Fonte prevista: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="CLDF — cota parlamentar (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF — cota parlamentar</a> (P1) — ainda não coletado.
         </p>
       </section>
 
@@ -466,7 +468,8 @@ export default async function DeputadoPage({ params }: Props) {
               href={`https://instagram.com/${dep.contatos.instagram}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-blue-600 hover:underline"
+              aria-label={`Ver perfil @${dep.contatos.instagram} de ${dep.nome} no Instagram (abre em nova aba)`}
+              className="text-sm text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               Ver perfil no Instagram →
             </a>
@@ -481,7 +484,7 @@ export default async function DeputadoPage({ params }: Props) {
         </p>
         <p className="text-xs text-zinc-400 mt-4">
           Fonte prevista: Instagram público (P2) — ainda não coletado.{' '}
-          <Link href="/monitor-instagram" className="text-blue-600 hover:underline">
+          <Link href="/monitor-instagram" aria-label="Ver radar geral de atividade pública no Instagram" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
             Ver radar geral →
           </Link>
         </p>

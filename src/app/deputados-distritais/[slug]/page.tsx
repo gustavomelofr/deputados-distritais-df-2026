@@ -298,9 +298,12 @@ export default async function DeputadoPage({ params }: Props) {
                       </time>
                     </p>
                   </div>
-                  <span className="text-xs text-zinc-400 whitespace-nowrap">
+                  <time
+                    dateTime={n.data}
+                    className="text-xs text-zinc-400 whitespace-nowrap"
+                  >
                     {new Date(n.data).toLocaleDateString('pt-BR')}
-                  </span>
+                  </time>
                 </div>
                 <p className="text-sm text-zinc-600 mt-2 line-clamp-2">
                   {n.resumo}
@@ -346,9 +349,12 @@ export default async function DeputadoPage({ params }: Props) {
                       {p.autor} · {p.etapa}
                     </p>
                   </div>
-                  <span className="text-xs text-zinc-400 whitespace-nowrap">
+                  <time
+                    dateTime={p.data}
+                    className="text-xs text-zinc-400 whitespace-nowrap"
+                  >
                     {new Date(p.data).toLocaleDateString('pt-BR')}
-                  </span>
+                  </time>
                 </div>
                 <p className="text-sm text-zinc-600 mt-2 line-clamp-2">
                   {p.descricao}

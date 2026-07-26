@@ -140,7 +140,7 @@ export default async function CompararPage({ searchParams }: Props) {
                   id={`comparar-${name}`}
                   name={name}
                   defaultValue={atual ?? ''}
-                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
                 >
                   <option value="">— selecionar —</option>
                   {deputados.map((d) => (

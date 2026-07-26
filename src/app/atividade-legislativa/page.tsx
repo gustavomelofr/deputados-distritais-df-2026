@@ -453,14 +453,23 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             Sobre estes dados
           </h2>
           <p className="text-sm text-zinc-500 leading-relaxed">
-            As proposições listadas são projetos de lei, indicações,
-            requerimentos e moções apresentados na Câmara Legislativa do
-            Distrito Federal, coletados da API pública do Processo Legislativo
-            Eletrônico (PLE/CLDF). O volume de proposições por deputado não
-            mede efetividade legislativa, apoio popular ou intenção de voto —
-            é apenas um registro de atividade formal na fonte. Cada item
-            vincula-se ao deputado autor via slug e ao documento original na
-            CLDF.
+            As proposições listadas são{' '}
+            {tiposDisponiveis.map((t, i) => {
+              const label = (tipoLabel[t] || t).toLowerCase();
+              const sep =
+                i === 0
+                  ? ''
+                  : i === tiposDisponiveis.length - 1
+                    ? ' e '
+                    : ', ';
+              return <span key={t}>{sep}{label}</span>;
+            })}{' '}
+            apresentados na Câmara Legislativa do Distrito Federal, coletados
+            da API pública do Processo Legislativo Eletrônico (PLE/CLDF). O
+            volume de proposições por deputado não mede efetividade
+            legislativa, apoio popular ou intenção de voto — é apenas um
+            registro de atividade formal na fonte. Cada item vincula-se ao
+            deputado autor via slug e ao documento original na CLDF.
           </p>
           <p className="text-xs text-zinc-400 mt-3">
             Ver{' '}

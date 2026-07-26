@@ -106,6 +106,13 @@ export default function RootLayout({
                 Atividade
               </a>
               <a
+                href="/analise"
+                aria-label="Análise descritiva de temas e volume das fontes monitoradas"
+                className="hover:text-zinc-900 transition"
+              >
+                Análise
+              </a>
+              <a
                 href="/noticias"
                 aria-label="Feed de notícias sobre a CLDF e os deputados distritais"
                 className="hover:text-zinc-900 transition"

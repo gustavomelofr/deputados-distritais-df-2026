@@ -109,7 +109,7 @@ Execute os itens na ordem abaixo. Faça uma única melhoria concreta por ciclo. 
 - [x] Estruturar o cenário de 2026 por estágio de evidência.
   Critério: usar “pré-candidatura declarada”, “movimentação pública” e “em observação”; cada estágio exige fonte e data.
 
-- [ ] Criar análise descritiva de temas e volume.
+- [x] Criar análise descritiva de temas e volume.
   Critério: declarar que volume não representa popularidade, apoio ou intenção de voto.
 
 - [ ] Melhorar responsividade e acessibilidade.

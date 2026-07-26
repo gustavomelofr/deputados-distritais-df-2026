@@ -528,6 +528,7 @@ export default async function CompararPage({ searchParams }: Props) {
               <Link
                 key={d.slug}
                 href={`/deputados-distritais/${d.slug}`}
+                aria-label={`Ver perfil de ${d.nome} (${d.partido})`}
                 className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
               >
                 Ver perfil de {d.nome} →

@@ -171,6 +171,7 @@ export default async function NoticiasPage({ searchParams }: Props) {
                         <Link
                           key={slug}
                           href={`/noticias?deputado=${slug}`}
+                          aria-label={`Filtrar notícias por ${deputadoPorSlug[slug] || slug}`}
                           className="rounded-full bg-blue-50 text-blue-700 text-xs px-2 py-0.5 hover:bg-blue-100 transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         >
                           {deputadoPorSlug[slug] || slug}

@@ -160,7 +160,7 @@ export default function AnalisePage() {
         </p>
         <p className="text-xs text-zinc-500 mt-3">
           Ver{' '}
-          <Link href="/metodologia" className="text-blue-600 hover:underline">
+          <Link href="/metodologia" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
             metodologia e limites de interpretação
           </Link>{' '}
           para detalhes.
@@ -226,7 +226,7 @@ export default function AnalisePage() {
             href="https://dados.cl.df.gov.br/id/dataset/proposicoes"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             CLDF — SAPL (PLE)
           </a>
@@ -429,7 +429,7 @@ export default function AnalisePage() {
           por tipo em{' '}
           <Link
             href="/atividade-legislativa"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             atividade legislativa
           </Link>{' '}
@@ -453,13 +453,13 @@ export default function AnalisePage() {
         </p>
         <p className="text-xs text-zinc-400 mt-4">
           Ver{' '}
-          <Link href="/metodologia" className="text-blue-600 hover:underline">
+          <Link href="/metodologia" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
             metodologia completa
           </Link>{' '}
           e{' '}
           <Link
             href="/atividade-legislativa"
-            className="text-blue-600 hover:underline"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             atividade legislativa
           </Link>{' '}

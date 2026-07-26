@@ -142,13 +142,16 @@ export default async function NoticiasPage({ searchParams }: Props) {
                       </h2>
                       <p className="text-sm text-zinc-500 mt-1">{n.fonte}</p>
                     </div>
-                    <span className="text-xs text-zinc-400 whitespace-nowrap mt-1">
+                    <time
+                      dateTime={n.data}
+                      className="text-xs text-zinc-400 whitespace-nowrap mt-1"
+                    >
                       {new Date(n.data).toLocaleDateString('pt-BR', {
                         day: '2-digit',
                         month: 'long',
                         year: 'numeric',
                       })}
-                    </span>
+                    </time>
                   </div>
                   <p className="mt-2 text-sm text-zinc-600 leading-relaxed line-clamp-2">
                     {n.resumo}

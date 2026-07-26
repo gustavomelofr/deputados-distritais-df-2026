@@ -84,18 +84,27 @@ export default async function NoticiasPage({ searchParams }: Props) {
                         ? '/noticias'
                         : `/noticias?deputado=${d.slug}`
                     }
+                    aria-label={
+                      filtroDeputado === d.slug
+                        ? `Remover filtro: ${d.nome} (${d.partido}), ${d.count} ${d.count === 1 ? 'notícia' : 'notícias'}`
+                        : `Filtrar notícias por ${d.nome} (${d.partido}), ${d.count} ${d.count === 1 ? 'notícia' : 'notícias'}`
+                    }
+                    aria-current={filtroDeputado === d.slug ? 'page' : undefined}
                     className={`flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${
                       filtroDeputado === d.slug
                         ? 'bg-blue-50 text-blue-700 font-medium'
                         : 'text-zinc-600 hover:bg-zinc-50'
                     }`}
                   >
-                    <span className="text-xs text-zinc-400 ml-auto font-mono">
-                      {d.count}
-                    </span>
                     <span className="truncate">{d.nome}</span>
                     <span className="text-xs text-zinc-400 flex-shrink-0">
                       {d.partido}
+                    </span>
+                    <span
+                      className="text-xs text-zinc-400 ml-auto font-mono"
+                      aria-hidden="true"
+                    >
+                      {d.count}
                     </span>
                   </Link>
                 ))}

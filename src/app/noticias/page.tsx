@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { noticias } from '@/data/noticias';
 import { deputados } from '@/data/deputados';
@@ -10,6 +11,25 @@ const deputadoPorSlug = Object.fromEntries(
 interface Props {
   searchParams: Promise<{ deputado?: string }>;
 }
+
+export const metadata: Metadata = {
+  title: 'Notícias — Deputados Distritais DF 2026',
+  description:
+    'Cobertura jornalística sobre a Câmara Legislativa do Distrito Federal e seus 24 deputados distritais, agregada do Google News RSS (P1). Cada notícia exibe veículo de origem e data de publicação.',
+  alternates: {
+    canonical: '/noticias',
+  },
+  openGraph: {
+    title: 'Notícias — Deputados Distritais DF 2026',
+    description:
+      'Cobertura jornalística sobre a CLDF e seus 24 deputados distritais, agregada do Google News RSS (P1).',
+  },
+  twitter: {
+    title: 'Notícias — Deputados Distritais DF 2026',
+    description:
+      'Cobertura jornalística sobre a CLDF e seus 24 deputados distritais, agregada do Google News RSS (P1).',
+  },
+};
 
 export default async function NoticiasPage({ searchParams }: Props) {
   const { deputado: filtroDeputado } = await searchParams;

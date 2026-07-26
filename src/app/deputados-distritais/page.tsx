@@ -529,6 +529,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               <div className="flex items-center gap-2 text-zinc-400">
                 {dep.contatos.instagram && (
                   <span
+                    role="img"
                     title={`@${dep.contatos.instagram}`}
                     aria-label={`Instagram: @${dep.contatos.instagram}`}
                     className="inline-flex items-center justify-center"
@@ -540,6 +541,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
                 )}
                 {dep.contatos.email && (
                   <span
+                    role="img"
                     title={dep.contatos.email}
                     aria-label={`E-mail: ${dep.contatos.email}`}
                     className="inline-flex items-center justify-center"

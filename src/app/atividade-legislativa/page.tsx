@@ -303,6 +303,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             estilo de atuação, não mérito político. Ver{' '}
             <Link
               href="/metodologia"
+              aria-label="Ver metodologia e limites de interpretação dos dados de atividade legislativa"
               className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               metodologia e limites de interpretação
@@ -408,6 +409,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
                       <span className="text-zinc-500">Autor:</span>{' '}
                       <Link
                         href={`/deputados-distritais/${p.deputadoSlug}`}
+                        aria-label={`Ver perfil de ${deputadoPorSlug[p.deputadoSlug] || p.autor} na lista de deputados distritais`}
                         className="rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 hover:bg-blue-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                       >
                         {deputadoPorSlug[p.deputadoSlug] || p.autor}
@@ -464,6 +466,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             Ver{' '}
             <Link
               href="/metodologia"
+              aria-label="Ver metodologia e fontes dos dados de atividade legislativa"
               className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               metodologia e fontes

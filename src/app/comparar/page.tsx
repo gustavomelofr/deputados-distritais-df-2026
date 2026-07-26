@@ -476,6 +476,7 @@ export default async function CompararPage({ searchParams }: Props) {
                             href={`https://instagram.com/${d.contatos.instagram}`}
                             target="_blank"
                             rel="noopener noreferrer"
+                            aria-label={`Perfil @${d.contatos.instagram} de ${d.nome} no Instagram (abre em nova aba)`}
                             className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                           >
                             {d.contatos.instagram}

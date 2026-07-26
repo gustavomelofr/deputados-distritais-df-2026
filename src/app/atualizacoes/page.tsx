@@ -301,6 +301,7 @@ export default async function AtualizacoesPage({ searchParams }: Props) {
                         <Link
                           key={slug}
                           href={`/deputados-distritais/${slug}`}
+                          aria-label={`Ver perfil de ${deputadoPorSlug[slug] || slug}`}
                           className="rounded-full bg-blue-50 text-blue-700 px-2 py-0.5 hover:bg-blue-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                         >
                           {deputadoPorSlug[slug] || slug}

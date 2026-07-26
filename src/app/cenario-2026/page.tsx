@@ -175,7 +175,14 @@ export default function Cenario2026Page() {
         </ul>
         <p className="text-xs text-zinc-400 mt-4">
           Volume de menções não mede popularidade, apoio ou intenção de voto.
-          Ver <Link href="/metodologia" className="text-blue-600 hover:underline">metodologia</Link>.
+          Ver{' '}
+          <Link
+            href="/metodologia"
+            aria-label="Ver metodologia e limites de interpretação"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+          >
+            metodologia
+          </Link>.
         </p>
       </section>
 
@@ -245,7 +252,8 @@ export default function Cenario2026Page() {
                             href={item.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:underline"
+                            aria-label={`Abrir fonte "${item.fonte}" em nova aba`}
+                            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                           >
                             {item.fonte}
                           </a>
@@ -323,7 +331,8 @@ export default function Cenario2026Page() {
             href="https://www.cl.df.gov.br/deputados-2023-2026"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-600 hover:underline"
+            aria-label="Lista oficial dos deputados distritais 2023-2026 no site da CLDF (abre em nova aba)"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             CLDF — Câmara Legislativa do DF
           </a>{' '}
@@ -349,7 +358,8 @@ export default function Cenario2026Page() {
           voto.{' '}
           <Link
             href="/metodologia"
-            className="text-blue-600 hover:underline"
+            aria-label="Ver metodologia completa"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             Ver metodologia completa
           </Link>

@@ -166,7 +166,7 @@ export default function Home() {
             </Link>
           </div>
           <p className="text-xs text-zinc-400 text-center mt-6">
-            Deputados: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">CLDF</a> (Legislatura 2023–2026) &middot; Notícias: Google News RSS (P1)
+            Deputados: <a href="https://www.cl.df.gov.br/deputados-2023-2026" target="_blank" rel="noopener noreferrer" aria-label="Lista oficial dos deputados distritais 2023-2026 no site da CLDF (abre em nova aba)" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">CLDF</a> (Legislatura 2023–2026) &middot; Notícias: Google News RSS (P1)
           </p>
         </div>
       </section>
@@ -693,7 +693,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Repositório público no GitHub do monitor dos deputados distritais do DF (abre em nova aba)"
-                className="text-blue-600 underline"
+                className="text-blue-600 underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
               >
                 repositório público no GitHub
               </a>

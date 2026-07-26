@@ -283,7 +283,7 @@ export default function Home() {
             <Link
               href="/atualizacoes"
               aria-label="Ver feed de atualizações monitoradas"
-              className="text-blue-600 hover:underline"
+              className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               /atualizacoes
             </Link>{' '}

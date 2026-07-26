@@ -354,7 +354,8 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
             </p>
             <Link
               href="/atividade-legislativa"
-              className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-blue-600 hover:text-blue-500 transition"
+              aria-label="Limpar filtros e exibir todas as proposições"
+              className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-blue-600 hover:text-blue-500 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               Limpar filtros →
             </Link>

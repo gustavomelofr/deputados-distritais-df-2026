@@ -226,6 +226,7 @@ export default function AnalisePage() {
             href="https://dados.cl.df.gov.br/id/dataset/proposicoes"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Dataset oficial de proposições da CLDF (abre em nova aba)"
             className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             CLDF — SAPL (PLE)

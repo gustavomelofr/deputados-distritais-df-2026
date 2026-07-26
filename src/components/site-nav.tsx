@@ -1,7 +1,11 @@
 // Navegação principal acessível e responsiva.
 // Em telas pequenas usa <details>/<summary> nativo (sem JS) como menu disclosure;
-// em telas grandes mostra os links inline. Inclui aria-current quando aplicável
-// e foco visível consistente.
+// em telas grandes mostra os links inline. Inclui aria-current="page" no link
+// correspondente à rota atual e foco visível consistente.
+
+'use client';
+
+import { usePathname } from 'next/navigation';
 
 export interface NavItem {
   href: string;
@@ -69,21 +73,34 @@ const focusRing =
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white rounded';
 
 export function SiteNav() {
+  const pathname = usePathname();
+  const isAtivo = (href: string) =>
+    href === pathname ||
+    (href !== '/' && pathname.startsWith(href + '/'));
+
   return (
     <nav aria-label="Navegação principal" className="flex items-center">
       {/* Navegação inline — telas médias e grandes (sm:). */}
       <ul className="hidden sm:flex items-center gap-x-5 lg:gap-x-6 text-sm font-medium text-zinc-600">
-        {navItems.map((item) => (
-          <li key={item.href}>
-            <a
-              href={item.href}
-              aria-label={item.ariaLabel}
-              className={`hover:text-zinc-900 transition ${focusRing}`}
-            >
-              {item.label}
-            </a>
-          </li>
-        ))}
+        {navItems.map((item) => {
+          const ativo = isAtivo(item.href);
+          return (
+            <li key={item.href}>
+              <a
+                href={item.href}
+                aria-label={item.ariaLabel}
+                aria-current={ativo ? 'page' : undefined}
+                className={`transition ${focusRing} ${
+                  ativo
+                    ? 'text-zinc-900 font-semibold'
+                    : 'hover:text-zinc-900'
+                }`}
+              >
+                {item.label}
+              </a>
+            </li>
+          );
+        })}
       </ul>
 
       {/* Menu disclosure — telas pequenas (<sm). Usa <details> nativo, sem JS. */}
@@ -116,18 +133,26 @@ export function SiteNav() {
           role="menu"
           aria-label="Itens de navegação"
         >
-          {navItems.map((item) => (
-            <li key={item.href} role="none">
-              <a
-                href={item.href}
-                role="menuitem"
-                aria-label={item.ariaLabel}
-                className={`block rounded-lg px-3 py-2 text-sm font-medium text-zinc-700 hover:bg-blue-50 hover:text-blue-700 transition ${focusRing}`}
-              >
-                {item.label}
-              </a>
-            </li>
-          ))}
+          {navItems.map((item) => {
+            const ativo = isAtivo(item.href);
+            return (
+              <li key={item.href} role="none">
+                <a
+                  href={item.href}
+                  role="menuitem"
+                  aria-label={item.ariaLabel}
+                  aria-current={ativo ? 'page' : undefined}
+                  className={`block rounded-lg px-3 py-2 text-sm font-medium transition ${focusRing} ${
+                    ativo
+                      ? 'bg-blue-50 text-blue-700'
+                      : 'text-zinc-700 hover:bg-blue-50 hover:text-blue-700'
+                  }`}
+                >
+                  {item.label}
+                </a>
+              </li>
+            );
+          })}
         </ul>
       </details>
     </nav>

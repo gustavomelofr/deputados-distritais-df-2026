@@ -285,6 +285,7 @@ export default async function DeputadoPage({ params }: Props) {
                 href={n.url}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
                 className="block rounded-lg border border-zinc-200 bg-white p-4 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -333,6 +334,7 @@ export default async function DeputadoPage({ params }: Props) {
                 href={p.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label={`Abrir proposição ${p.sigla} — ${p.tipoOriginal} de ${p.autor} em nova aba`}
                 className="block rounded-lg border border-zinc-200 p-4 hover:border-blue-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 <div className="flex items-start justify-between gap-4">

@@ -254,6 +254,63 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
         </div>
       </section>
 
+      {/* Análise descritiva de volume */}
+      <section className="mb-10" aria-label="Análise descritiva de volume">
+        <h2 className="text-sm font-semibold text-zinc-700 mb-3">
+          Análise descritiva de volume
+        </h2>
+        <div className="rounded-xl border border-zinc-200 bg-white p-5">
+          <p className="text-sm text-zinc-600 leading-relaxed">
+            No período de {periodoInicio} a {periodoFim}, a base reúne{' '}
+            <strong className="text-zinc-800">{ordenadas.length} proposições</strong>{' '}
+            de {autores.length} deputados autores. A distribuição por tipo é:
+          </p>
+          <ul className="mt-3 space-y-1.5 text-sm text-zinc-600">
+            {tiposDisponiveis.map((t) => {
+              const pct = ordenadas.length > 0
+                ? Math.round((countsPorTipo[t] / ordenadas.length) * 100)
+                : 0;
+              return (
+                <li key={t} className="flex items-center gap-2">
+                  <span className="w-40 shrink-0 text-zinc-700">
+                    {tipoLabel[t] || t}
+                  </span>
+                  <span className="flex-1 h-2 rounded-full bg-zinc-100 overflow-hidden">
+                    <span
+                      className="block h-full bg-purple-500"
+                      style={{ width: `${pct}%` }}
+                      aria-hidden="true"
+                    />
+                  </span>
+                  <span className="w-20 shrink-0 text-right text-xs text-zinc-500">
+                    {countsPorTipo[t]} ({pct}%)
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <p className="mt-4 text-xs text-zinc-500 leading-relaxed">
+            <strong className="text-zinc-700">
+              Volume não mede popularidade, apoio ou intenção de voto.
+            </strong>{' '}
+            A quantidade de proposições por deputado, tipo ou período é apenas
+            um registro de atividade formal na fonte (CLDF — SAPL/PLE). Não
+            representa efetividade legislativa, apoio popular, intenção de
+            voto nem probabilidade de reeleição. Diferenças de volume podem
+            refletir recorte do período coletado, tipo de proposição
+            (indicações tendem a ser mais numerosas que projetos de lei) e
+            estilo de atuação, não mérito político. Ver{' '}
+            <Link
+              href="/metodologia"
+              className="text-blue-600 hover:underline"
+            >
+              metodologia e limites de interpretação
+            </Link>
+            .
+          </p>
+        </div>
+      </section>
+
       {/* Deputados autores */}
       <section className="mb-10" aria-label="Deputados autores">
         <h2 className="text-sm font-semibold text-zinc-700 mb-3">

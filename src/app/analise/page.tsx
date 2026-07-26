@@ -160,7 +160,11 @@ export default function AnalisePage() {
         </p>
         <p className="text-xs text-zinc-500 mt-3">
           Ver{' '}
-          <Link href="/metodologia" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
+          <Link
+            href="/metodologia"
+            aria-label="Ver metodologia e limites de interpretação"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+          >
             metodologia e limites de interpretação
           </Link>{' '}
           para detalhes.
@@ -430,6 +434,7 @@ export default function AnalisePage() {
           por tipo em{' '}
           <Link
             href="/atividade-legislativa"
+            aria-label="Ver atividade legislativa e filtrar proposições por tipo"
             className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             atividade legislativa
@@ -454,12 +459,17 @@ export default function AnalisePage() {
         </p>
         <p className="text-xs text-zinc-400 mt-4">
           Ver{' '}
-          <Link href="/metodologia" className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded">
+          <Link
+            href="/metodologia"
+            aria-label="Ver metodologia completa"
+            className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+          >
             metodologia completa
           </Link>{' '}
           e{' '}
           <Link
             href="/atividade-legislativa"
+            aria-label="Ver atividade legislativa e detalhes das proposições individuais"
             className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             atividade legislativa

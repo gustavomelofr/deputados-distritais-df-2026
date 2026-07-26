@@ -188,7 +188,7 @@ export default function Home() {
             <Link
               href="/atualizacoes"
               aria-label="Ver todas as atualizações monitoradas"
-              className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition whitespace-nowrap"
+              className="text-sm font-semibold text-blue-600 hover:text-blue-500 transition whitespace-nowrap focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               Ver todas →
             </Link>
@@ -703,7 +703,7 @@ export default function Home() {
             <Link
               href="/metodologia"
               aria-label="Ver metodologia e fontes de dados do monitor"
-              className="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-blue-600 hover:text-blue-500 transition"
+              className="inline-flex items-center gap-1 mt-4 text-sm font-semibold text-blue-600 hover:text-blue-500 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
               Ver metodologia e fontes →
             </Link>

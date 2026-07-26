@@ -128,7 +128,7 @@ export default function MetodologiaPage() {
             O agente autônomo opera em ciclo contínuo. A frequência efetiva de
             coleta depende da disponibilidade de cada fonte e pode sofrer
             interrupções por indisponibilidade técnica ou mudanças nas fontes.
-            Os estados abaixo descrevem a rotina planestada, não garantias de
+            Os estados abaixo descrevem a rotina planejada, não garantias de
             atualização.
           </p>
           <ul className="space-y-2 text-sm text-zinc-600">

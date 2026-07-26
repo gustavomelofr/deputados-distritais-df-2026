@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export default function MonitorInstagramPage() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12">
@@ -28,6 +30,18 @@ export default function MonitorInstagramPage() {
           Fonte prevista: Instagram público (P2) — ainda não coletado.
         </p>
       </div>
+
+      <p className="text-xs text-zinc-400 mt-6 text-center">
+        Ver{' '}
+        <Link
+          href="/metodologia"
+          aria-label="Ver metodologia e detalhes sobre as fontes P2 (Instagram e DivulgaCand/TSE)"
+          className="text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
+        >
+          metodologia e fontes de dados
+        </Link>{' '}
+        para detalhes sobre a coleta P2 e seus limites de interpretação.
+      </p>
     </div>
   );
 }

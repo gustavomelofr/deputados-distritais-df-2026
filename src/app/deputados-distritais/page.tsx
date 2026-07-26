@@ -202,7 +202,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               id="filtro-partido"
               name="partido"
               defaultValue={partidoValido ?? ''}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <option value="">Todos os partidos</option>
               {partidos.map((p) => (
@@ -224,7 +224,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               id="filtro-comissao"
               name="comissao"
               defaultValue={comissaoValida ?? ''}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <option value="">Todas as comissões</option>
               {comissoes.map((c) => (
@@ -246,7 +246,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               id="filtro-situacao"
               name="situacao"
               defaultValue={situacaoValida ?? ''}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
             >
               <option value="">Todas as situações</option>
               {situacoes.map((s) => (
@@ -268,7 +268,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               id="filtro-regiao"
               name="regiao"
               defaultValue={regiaoValida ?? ''}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-describedby="filtro-regiao-ajuda"
             >
               <option value="">Todas as regiões</option>
@@ -302,7 +302,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               id="filtro-tema"
               name="tema"
               defaultValue={temaValido ?? ''}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-describedby="filtro-tema-ajuda"
             >
               <option value="">Todos os temas</option>
@@ -336,7 +336,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
               id="filtro-periodo"
               name="periodo"
               defaultValue={periodoValido ?? ''}
-              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
               aria-describedby="filtro-periodo-ajuda"
             >
               <option value="">Todos os períodos</option>

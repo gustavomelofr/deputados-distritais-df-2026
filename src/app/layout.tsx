@@ -84,7 +84,7 @@ export default function RootLayout({
               <a
                 href="/"
                 aria-label="Deputados Distritais DF 2026 — página inicial"
-                className="text-lg font-bold tracking-tight text-zinc-900 shrink-0"
+                className="text-lg font-bold tracking-tight text-zinc-900 shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 Deputados Distritais <span className="text-blue-600">DF 2026</span>
               </a>
@@ -126,7 +126,7 @@ export default function RootLayout({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Repositório do projeto no GitHub (abre em nova aba)"
-                className="underline hover:text-zinc-700"
+                className="underline hover:text-zinc-700 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 GitHub
               </a>
@@ -136,7 +136,7 @@ export default function RootLayout({
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Site oficial da Câmara Legislativa do Distrito Federal (abre em nova aba)"
-                className="underline hover:text-zinc-700"
+                className="underline hover:text-zinc-700 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
                 CLDF
               </a>

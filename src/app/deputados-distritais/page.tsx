@@ -1,6 +1,26 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { deputados, partidos } from '@/data/deputados';
 import { proposicoesPorDeputado } from '@/data/proposicoes';
+
+export const metadata: Metadata = {
+  title: 'Deputados Distritais — Lista dos 24 Deputados do DF 2026',
+  description:
+    'Lista dos 24 deputados distritais da Câmara Legislativa do Distrito Federal na legislatura 2023–2026, com filtros por partido, comissão, situação, região administrativa, tema e período de atividade.',
+  alternates: {
+    canonical: '/deputados-distritais',
+  },
+  openGraph: {
+    title: 'Deputados Distritais — Lista dos 24 Deputados do DF 2026',
+    description:
+      'Os 24 deputados da CLDF na legislatura 2023–2026, com filtros combináveis e perfil individual de cada parlamentar.',
+  },
+  twitter: {
+    title: 'Deputados Distritais — Lista dos 24 Deputados do DF 2026',
+    description:
+      'Os 24 deputados da CLDF na legislatura 2023–2026, com filtros combináveis e perfil individual de cada parlamentar.',
+  },
+};
 
 interface Props {
   searchParams: Promise<{

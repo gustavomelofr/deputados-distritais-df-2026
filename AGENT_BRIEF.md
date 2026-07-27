@@ -116,7 +116,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Atualizar marca e metadados globais para “Monitor Eleitoral DF 2026”.
   Critério: título, descrição, cabeçalho e rodapé deixam claro que a cobertura inclui governo, Senado, Câmara Federal e CLDF, sem quebrar rotas atuais.
 
-- [ ] Atualizar a mensagem principal da Home para o novo escopo eleitoral.
+- [x] Atualizar a mensagem principal da Home para o novo escopo eleitoral.
   Critério: hero explica cargos cobertos, independência editorial e uso de evidências, preservando CTAs funcionais.
 
 - [ ] Atualizar metodologia para notícias, evidências eleitorais, fotos e links oficiais.

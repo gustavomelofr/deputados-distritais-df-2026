@@ -382,6 +382,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
           {haFiltrosAtivos && (
             <Link
               href="/deputados-distritais"
+              aria-label="Limpar filtros e exibir todos os deputados distritais"
               className="rounded-lg border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
             >
               Limpar filtros
@@ -477,6 +478,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
           </p>
           <Link
             href="/deputados-distritais"
+            aria-label="Limpar filtros e exibir todos os deputados distritais"
             className="mt-3 inline-block text-sm font-semibold text-blue-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
           >
             Limpar filtros

@@ -12,11 +12,15 @@ export const metadata: Metadata = {
     canonical: '/analise',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Análise Descritiva — Deputados Distritais DF 2026',
     description:
       'Contagens por tipo, fonte, período e deputado. Volume não mede popularidade ou intenção de voto.',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Análise Descritiva — Deputados Distritais DF 2026',
     description:
       'Contagens por tipo, fonte, período e deputado. Volume não mede popularidade ou intenção de voto.',

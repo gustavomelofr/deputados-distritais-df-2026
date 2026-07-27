@@ -20,11 +20,15 @@ export const metadata: Metadata = {
     canonical: '/noticias',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Notícias — Deputados Distritais DF 2026',
     description:
       'Cobertura jornalística sobre a CLDF e seus 24 deputados distritais, agregada do Google News RSS (P1).',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Notícias — Deputados Distritais DF 2026',
     description:
       'Cobertura jornalística sobre a CLDF e seus 24 deputados distritais, agregada do Google News RSS (P1).',

@@ -1,7 +1,31 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { deputados } from "@/data/deputados";
 import { noticias } from "@/data/noticias";
 import { proposicoes } from "@/data/proposicoes";
+
+export const metadata: Metadata = {
+  title: "Deputados Distritais DF 2026 — Monitor Independente",
+  description:
+    "Monitoramento independente da atividade legislativa dos 24 deputados distritais do Distrito Federal: proposições, notícias, atividade pública e cenário eleitoral de 2026, com fonte e data.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    locale: "pt_BR",
+    siteName: "Deputados Distritais DF 2026",
+    title: "Deputados Distritais DF 2026 — Monitor Independente",
+    description:
+      "Atividade legislativa dos 24 deputados distritais do DF: proposições, notícias e cenário de 2026, com fonte e data.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Deputados Distritais DF 2026 — Monitor Independente",
+    description:
+      "Atividade legislativa dos 24 deputados distritais do DF: proposições, notícias e cenário de 2026, com fonte e data.",
+  },
+};
 
 export default function Home() {
   return (

@@ -399,23 +399,49 @@ export default async function DeputadosPage({ searchParams }: Props) {
         role="group"
         aria-label="Resumo estatístico da legislatura: total de deputados, partidos, em exercício e comissões"
       >
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">{deputados.length}</p>
-          <p className="text-xs text-zinc-500 mt-1">Deputados</p>
+        <div
+          className="rounded-lg border border-zinc-200 bg-white p-4 text-center"
+          aria-label={`${deputados.length} deputados`}
+        >
+          <p className="text-2xl font-bold text-blue-600" aria-hidden="true">
+            {deputados.length}
+          </p>
+          <p className="text-xs text-zinc-500 mt-1" aria-hidden="true">
+            Deputados
+          </p>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">{partidos.length}</p>
-          <p className="text-xs text-zinc-500 mt-1">Partidos</p>
+        <div
+          className="rounded-lg border border-zinc-200 bg-white p-4 text-center"
+          aria-label={`${partidos.length} partidos`}
+        >
+          <p className="text-2xl font-bold text-blue-600" aria-hidden="true">
+            {partidos.length}
+          </p>
+          <p className="text-xs text-zinc-500 mt-1" aria-hidden="true">
+            Partidos
+          </p>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">
+        <div
+          className="rounded-lg border border-zinc-200 bg-white p-4 text-center"
+          aria-label={`${deputados.filter((d) => d.statusMandato === 'exercicio').length} deputados em exercício`}
+        >
+          <p className="text-2xl font-bold text-blue-600" aria-hidden="true">
             {deputados.filter((d) => d.statusMandato === 'exercicio').length}
           </p>
-          <p className="text-xs text-zinc-500 mt-1">Em exercício</p>
+          <p className="text-xs text-zinc-500 mt-1" aria-hidden="true">
+            Em exercício
+          </p>
         </div>
-        <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">{comissoes.length}</p>
-          <p className="text-xs text-zinc-500 mt-1">Comissões</p>
+        <div
+          className="rounded-lg border border-zinc-200 bg-white p-4 text-center"
+          aria-label={`${comissoes.length} comissões`}
+        >
+          <p className="text-2xl font-bold text-blue-600" aria-hidden="true">
+            {comissoes.length}
+          </p>
+          <p className="text-xs text-zinc-500 mt-1" aria-hidden="true">
+            Comissões
+          </p>
         </div>
       </div>
       <p className="text-xs text-zinc-400 mb-10 text-center">

@@ -148,7 +148,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Corrigir links e metadados das notícias 21–25.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Criar coletor de descoberta de notícias eleitorais.
+- [x] Criar coletor de descoberta de notícias eleitorais.
   Critério: buscar fontes permitidas dos últimos sete dias, produzir candidatos deduplicados e não publicar automaticamente sem revisão do agente.
 
 ### P2 — Ampliar para 100 notícias dos últimos seis meses

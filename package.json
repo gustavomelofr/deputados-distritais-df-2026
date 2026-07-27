@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:loop": "node --test test/loop-runner.test.js"
   },
   "dependencies": {
     "next": "16.2.11",

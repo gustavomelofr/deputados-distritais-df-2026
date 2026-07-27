@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+/* eslint-disable @typescript-eslint/no-require-imports */
 /**
  * L3 loop orchestrator: isolated maker/checker workflow.
  * The model never commits or pushes. Only this process delivers approved work.
@@ -26,6 +27,10 @@ const LOG_FILE = path.join(ROOT, 'loop-runner.log');
 const PAUSE_FILE = path.join(ROOT, '.loop-pause');
 const GATE_FILE = path.join(ROOT, 'loop-gate.json');
 const REPO = 'gustavomelofr/deputados-distritais-df-2026';
+const DELIVERY_RETRY_DELAYS_MS = (process.env.LOOP_DELIVERY_RETRY_DELAYS_MS || '5000,15000')
+  .split(',').map(Number).filter((value) => Number.isFinite(value) && value >= 0);
+const AGENT_RETRY_DELAYS_MS = (process.env.LOOP_AGENT_RETRY_DELAYS_MS || '5000,15000')
+  .split(',').map(Number).filter((value) => Number.isFinite(value) && value >= 0);
 
 function log(message) {
   const line = `[${new Date().toISOString()}] ${message}`;
@@ -44,6 +49,44 @@ function run(bin, args, options = {}) {
 
 function readJson(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, 'utf8')); } catch { return fallback; }
+}
+
+function sleep(ms) {
+  if (ms > 0) Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+}
+
+function errorText(error) {
+  return `${error?.stderr || ''}\n${error?.stdout || ''}\n${error?.message || error || ''}`;
+}
+
+function isTransientError(error) {
+  return /APIConnectionError|terminated|ECONNRESET|ETIMEDOUT|EAI_AGAIN|socket hang up|HTTP (?:429|5\d\d)|status (?:429|5\d\d)|GraphQL: Something went wrong|Internal Server Error|Service Unavailable|Bad Gateway/i.test(errorText(error));
+}
+
+function runWithRetry(action, options = {}) {
+  const delays = options.delays || DELIVERY_RETRY_DELAYS_MS;
+  const shouldRetry = options.shouldRetry || isTransientError;
+  const sleepFn = options.sleepFn || sleep;
+  let lastError;
+  for (let attempt = 0; attempt <= delays.length; attempt += 1) {
+    try { return action(attempt + 1); } catch (error) {
+      lastError = error;
+      if (attempt >= delays.length || !shouldRetry(error)) throw error;
+      sleepFn(delays[attempt]);
+    }
+  }
+  throw lastError;
+}
+
+function pendingBacklogItems(content) {
+  const marker = '## Fila de melhorias priorizada';
+  const start = content.indexOf(marker);
+  if (start < 0) throw new Error(`Seção "${marker}" não encontrada em AGENT_BRIEF.md.`);
+  return [...content.slice(start).matchAll(/^- \[ \] (.+)$/gm)].map((match) => match[1].trim());
+}
+
+function hasPendingBacklog(file = path.join(ROOT, 'AGENT_BRIEF.md')) {
+  return pendingBacklogItems(fs.readFileSync(file, 'utf8')).length > 0;
 }
 
 function writeJson(file, value) {
@@ -185,17 +228,20 @@ function runAgent(agent, instruction, cwd, files = []) {
   const args = ['run', instruction, '--agent', agent, '--auto', '--title', `loop-${agent}`];
   for (const file of files) args.push('--file', file);
   const timeout = agent === 'verifier' ? VERIFIER_TIMEOUT_MS : IMPLEMENTER_TIMEOUT_MS;
-  try {
-    const output = run('opencode', args, { cwd, timeout });
-    return { ok: true, output };
-  } catch (error) {
-    const detail = `${error.stderr || ''}\n${error.stdout || ''}\n${error.message || ''}`.slice(-2000);
-    return {
-      ok: false,
-      timedOut: error?.code === 'ETIMEDOUT' || /ETIMEDOUT|timed out/i.test(`${error?.message || ''} ${error?.stderr || ''}`),
-      error: detail,
-    };
+  for (let attempt = 0; attempt <= AGENT_RETRY_DELAYS_MS.length; attempt += 1) {
+    try {
+      return { ok: true, output: run('opencode', args, { cwd, timeout }) };
+    } catch (error) {
+      const timedOut = error?.code === 'ETIMEDOUT' || /ETIMEDOUT|timed out/i.test(errorText(error));
+      if (!timedOut && isTransientError(error) && attempt < AGENT_RETRY_DELAYS_MS.length) {
+        log(`Falha transitória do agente ${agent}; nova tentativa em ${AGENT_RETRY_DELAYS_MS[attempt]}ms.`);
+        sleep(AGENT_RETRY_DELAYS_MS[attempt]);
+        continue;
+      }
+      return { ok: false, timedOut, error: errorText(error).slice(-2000) };
+    }
   }
+  return { ok: false, timedOut: false, error: `Agente ${agent} esgotou tentativas.` };
 }
 
 function runTests(worktree) {
@@ -254,19 +300,74 @@ function review(worktree, runId, task, tests) {
   return parsed;
 }
 
-function commitAndOpenPR(worktree, branch, runId, task) {
+function deliveryMetadata(branch, runId, task) {
+  return {
+    branch,
+    runId,
+    task,
+    title: `🤖 Loop: ${task.slice(0, 72)}`,
+    body: `Mudança criada pelo loop autônomo.\n\n- Run: \`${runId}\`\n- Verifier: aprovado\n- Testes: TypeScript e build executados\n- Entrega: auto-merge solicitado após CI.`,
+  };
+}
+
+function findPullRequest(branch, cwd, command = run) {
+  const output = command('gh', ['pr', 'list', '--repo', REPO, '--head', branch, '--state', 'all', '--limit', '1', '--json', 'url'], { cwd, timeout: 120000 });
+  return JSON.parse(output || '[]')[0]?.url || null;
+}
+
+function safelyFindPullRequest(branch, cwd, command, retry) {
+  try { return retry(() => findPullRequest(branch, cwd, command)); } catch { return null; }
+}
+
+function createPullRequest(delivery, cwd, command = run, retry = runWithRetry) {
+  const existing = safelyFindPullRequest(delivery.branch, cwd, command, retry);
+  if (existing) return existing;
+  let cliError;
+  try {
+    const output = retry(() => command('gh', [
+      'pr', 'create', '--repo', REPO, '--base', BASE_BRANCH, '--head', delivery.branch,
+      '--title', delivery.title, '--body', delivery.body,
+    ], { cwd, timeout: 120000 }));
+    const url = output.split('\n').find((line) => line.startsWith('https://'));
+    if (url) return url;
+  } catch (error) { cliError = error; }
+
+  const afterCli = safelyFindPullRequest(delivery.branch, cwd, command, retry);
+  if (afterCli) return afterCli;
+  try {
+    const output = retry(() => command('gh', [
+      'api', '--method', 'POST', `repos/${REPO}/pulls`,
+      '-f', `base=${BASE_BRANCH}`, '-f', `head=${delivery.branch}`,
+      '-f', `title=${delivery.title}`, '-f', `body=${delivery.body}`, '--jq', '.html_url',
+    ], { cwd, timeout: 120000 }));
+    const url = output.trim();
+    if (url.startsWith('https://')) return url;
+    throw new Error('API REST criou PR sem URL identificável.');
+  } catch (restError) {
+    const afterRest = safelyFindPullRequest(delivery.branch, cwd, command, retry);
+    if (afterRest) return afterRest;
+    throw new Error(`Falha ao criar PR via CLI e REST. CLI: ${errorText(cliError).slice(-400)} REST: ${errorText(restError).slice(-400)}`);
+  }
+}
+
+function enableAutoMerge(url, cwd, command = run, retry = runWithRetry) {
+  retry(() => command('gh', ['pr', 'merge', url, '--auto', '--squash'], { cwd, timeout: 120000 }));
+}
+
+function deliverPullRequest(delivery, cwd, command = run, retry = runWithRetry) {
+  const url = createPullRequest(delivery, cwd, command, retry);
+  enableAutoMerge(url, cwd, command, retry);
+  return url;
+}
+
+function commitApprovedWork(worktree, branch, runId) {
   const files = listChangedFiles(worktree);
   const blocked = files.filter(violatesGate);
   if (blocked.length) throw new Error(`Gate bloqueou entrega: ${blocked.join(', ')}`);
   run('git', ['add', '--', ...files], { cwd: worktree });
   run('git', ['commit', '-m', `feat(loop): atualização aprovada ${runId}`], { cwd: worktree, timeout: 60000 });
   run('git', ['push', '--set-upstream', 'origin', branch], { cwd: worktree, timeout: 120000 });
-  const title = `🤖 Loop: ${task.slice(0, 72)}`;
-  const body = `Mudança criada pelo loop autônomo.\n\n- Run: \`${runId}\`\n- Verifier: aprovado\n- Testes: TypeScript e build executados\n- Entrega: auto-merge solicitado após CI.`;
-  const url = run('gh', ['pr', 'create', '--repo', REPO, '--base', BASE_BRANCH, '--head', branch, '--title', title, '--body', body], { cwd: worktree, timeout: 120000 }).split('\n').find((line) => line.startsWith('https://'));
-  if (!url) throw new Error('PR criado sem URL identificável.');
-  run('gh', ['pr', 'merge', url, '--auto', '--squash'], { cwd: worktree, timeout: 120000 });
-  return url;
+  return git(worktree, ['rev-parse', 'HEAD']);
 }
 
 function buildTask(state) {
@@ -300,6 +401,23 @@ async function mainLoop() {
   const state = readJson(RUNTIME_STATE, {});
   const ledger = readJson(LEDGER_FILE, {});
   const previous = ledger.active;
+
+  if (previous?.status === 'delivery_pending') {
+    try {
+      const prUrl = deliverPullRequest(previous, previous.worktree || ROOT);
+      updateRuntime({ status: 'approved', lastAction: previous.task, pendingFeedback: null, prUrl, lastError: null }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
+      appendRun({ runId: previous.runId, outcome: 'delivery_recovered', attempt: previous.attempt, task: previous.task, prUrl, tests: previous.tests });
+      notify(`✅ Entrega recuperada\nPR: ${prUrl}\nAuto-merge ativado após CI.`);
+      if (previous.worktree && fs.existsSync(previous.worktree)) removeWorktree(previous.worktree);
+    } catch (error) {
+      const deliveryFailures = (previous.deliveryFailures || 0) + 1;
+      log(`Entrega ainda pendente (${deliveryFailures}): ${error.message}`);
+      updateRuntime({ status: 'delivery_pending', lastError: error.message }, { lastOutcome: 'delivery_pending', active: { ...previous, deliveryFailures } });
+      if (deliveryFailures === 1) notify(`⚠️ Entrega pendente; será retomada automaticamente\nBranch: ${previous.branch}\n${error.message.slice(0, 300)}`);
+    }
+    return;
+  }
+
   if (previous?.status === 'timed_out' && (!fs.existsSync(previous.worktree) || Date.now() - Date.parse(previous.timedOutAt || 0) >= PARTIAL_TTL_MS)) {
     appendRun({ runId: previous.runId, outcome: 'escalated', task: previous.task, reason: 'Trabalho parcial expirou após 24h', partialPatch: previous.partialPatch });
     updateRuntime({ status: 'escalated', lastError: 'Trabalho parcial expirou após 24h.' }, { lastOutcome: 'escalated', active: null });
@@ -308,6 +426,17 @@ async function mainLoop() {
     return;
   }
   const resumable = previous?.status === 'timed_out' && fs.existsSync(previous.worktree) && (previous.timeouts || 0) < MAX_TIMEOUTS ? previous : null;
+  if (!resumable && !hasPendingBacklog()) {
+    const enteringIdle = state.status !== 'idle';
+    updateRuntime({ status: 'idle', pendingFeedback: null, lastError: null }, { lastOutcome: 'idle', active: null });
+    if (enteringIdle) {
+      appendRun({ outcome: 'idle', reason: 'Fila de melhorias concluída' });
+      log('Fila de melhorias concluída; loop em idle.');
+      notify('⏸️ Loop em idle\nTodos os itens da fila foram concluídos. Adicione um novo checkbox pendente para retomar.');
+    }
+    return;
+  }
+  if (state.status === 'idle') log('Novo item pendente detectado; loop retomado.');
   const runId = resumable?.runId || new Date().toISOString().replace(/[:.]/g, '-');
   const task = resumable?.task || buildTask(state);
   const created = resumable || createWorktree(runId);
@@ -331,8 +460,11 @@ async function mainLoop() {
       const verdict = review(worktree, runId, task, tests);
       log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
       if (verdict.verdict === 'APPROVE') {
-        const prUrl = commitAndOpenPR(worktree, branch, runId, task);
-        updateRuntime({ status: 'approved', lastAction: task, pendingFeedback: null, prUrl }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
+        const sha = commitApprovedWork(worktree, branch, runId);
+        const delivery = { ...deliveryMetadata(branch, runId, task), status: 'delivery_pending', worktree, sha, attempt, tests, deliveryFailures: 0 };
+        updateRuntime({ status: 'delivery_pending', lastAction: task, pendingFeedback: null, lastError: null }, { lastOutcome: 'delivery_pending', active: delivery });
+        const prUrl = deliverPullRequest(delivery, worktree);
+        updateRuntime({ status: 'approved', lastAction: task, pendingFeedback: null, prUrl, lastError: null }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
         appendRun({ runId, outcome: 'approved', attempt, task, prUrl, tests });
         notify(`✅ Loop aprovado\nPR: ${prUrl}\nTentativas: ${attempt}\nAuto-merge ativado após CI.`);
         removeWorktree(worktree);
@@ -350,6 +482,15 @@ async function mainLoop() {
       }
     }
   } catch (error) {
+    const active = readJson(LEDGER_FILE, {}).active;
+    if (active?.status === 'delivery_pending') {
+      const deliveryFailures = (active.deliveryFailures || 0) + 1;
+      log(`Entrega pendente após aprovação (${deliveryFailures}): ${error.message}`);
+      appendRun({ runId, outcome: 'delivery_pending', task, branch, sha: active.sha, error: error.message.slice(0, 1000) });
+      updateRuntime({ status: 'delivery_pending', lastError: error.message }, { lastOutcome: 'delivery_pending', active: { ...active, deliveryFailures } });
+      notify(`⚠️ Código aprovado e enviado, mas a entrega está pendente\nBranch: ${branch}\nO próximo ciclo retomará sem reimplementar.`);
+      return;
+    }
     log(`Ciclo falhou: ${error.message}`);
     appendRun({ runId, outcome: 'failed', error: error.message.slice(0, 1000) });
     updateRuntime({ status: 'failed', lastError: error.message }, { consecutiveFailures: (ledger.consecutiveFailures || 0) + 1, lastOutcome: 'failed', active: null });
@@ -369,4 +510,15 @@ async function start() {
 
 process.on('uncaughtException', (error) => log(`Uncaught exception: ${error.stack || error.message}`));
 process.on('unhandledRejection', (error) => log(`Unhandled rejection: ${error}`));
-start();
+
+if (require.main === module) start();
+
+module.exports = {
+  createPullRequest,
+  deliverPullRequest,
+  findPullRequest,
+  hasPendingBacklog,
+  isTransientError,
+  pendingBacklogItems,
+  runWithRetry,
+};

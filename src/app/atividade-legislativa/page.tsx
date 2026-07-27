@@ -11,11 +11,15 @@ export const metadata: Metadata = {
     canonical: '/atividade-legislativa',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Atividade Legislativa — Deputados Distritais DF 2026',
     description:
       'Proposições da CLDF por tipo, status e deputado autor. Fonte: PLE/CLDF (P1).',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Atividade Legislativa — Deputados Distritais DF 2026',
     description:
       'Proposições da CLDF por tipo, status e deputado autor. Fonte: PLE/CLDF (P1).',

@@ -9,13 +9,6 @@ import { deputados } from '@/data/deputados';
 // de interpretação. Nenhum dado é inventado; o que não foi coletado é
 // apresentado como indisponível com a origem esperada.
 
-const tipoLabel: Record<string, string> = {
-  projeto_de_lei: 'Projeto de Lei',
-  indicacao: 'Indicação',
-  requerimento: 'Requerimento',
-  emenda: 'Emenda',
-};
-
 function formatarData(iso: string): string {
   return new Date(iso).toLocaleDateString('pt-BR', {
     day: '2-digit',
@@ -40,13 +33,15 @@ export default function AnalisePage() {
   const proposicoesOrdenadas = [...proposicoes].sort(
     (a, b) => new Date(b.data).getTime() - new Date(a.data).getTime()
   );
+  // Agrupa por tipoOriginal (tipo real da CLDF), não pelo enum `tipo`,
+  // que colapsa PDL/PR/PLC/PELO sob "projeto_de_lei" — gerando contagem imprecisa.
   const tiposDisponiveis = Array.from(
-    new Set(proposicoesOrdenadas.map((p) => p.tipo))
+    new Set(proposicoesOrdenadas.map((p) => p.tipoOriginal))
   ).sort();
 
   const countsPorTipo = tiposDisponiveis.reduce<Record<string, number>>(
     (acc, t) => {
-      acc[t] = proposicoesOrdenadas.filter((p) => p.tipo === t).length;
+      acc[t] = proposicoesOrdenadas.filter((p) => p.tipoOriginal === t).length;
       return acc;
     },
     {}
@@ -202,8 +197,8 @@ export default function AnalisePage() {
               const largura = Math.round((countsPorTipo[t] / maxCountTipo) * 100);
               return (
                 <li key={t} className="flex items-center gap-2">
-                  <span className="w-40 shrink-0 text-sm text-zinc-700">
-                    {tipoLabel[t] || t}
+                  <span className="w-56 shrink-0 text-sm text-zinc-700">
+                    {t}
                   </span>
                   <span
                     className="flex-1 h-2.5 rounded-full bg-zinc-100 overflow-hidden"

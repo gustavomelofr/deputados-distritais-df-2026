@@ -158,6 +158,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
         <p className="mt-3 text-sm">
           <Link
             href="/comparar"
+            aria-label="Comparar deputados distritais lado a lado com indicadores de fonte clara"
             className="inline-flex items-center gap-1 rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 font-medium text-blue-700 hover:bg-blue-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
           >
             Comparar deputados lado a lado →
@@ -375,6 +376,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="submit"
+            aria-label="Aplicar filtros combináveis na listagem de deputados distritais"
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
           >
             Aplicar filtros

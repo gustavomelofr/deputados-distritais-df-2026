@@ -41,9 +41,10 @@ export default async function DeputadoPage({ params }: Props) {
       {/* Back link */}
       <Link
         href="/deputados-distritais"
+        aria-label="Voltar para a lista dos 24 deputados distritais"
         className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-blue-600 transition mb-8 rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
       >
-        ← Todos os deputados
+        <span aria-hidden="true">←</span> Todos os deputados
       </Link>
 
       {/* Resumo executivo — indicadores rápidos do mandato */}

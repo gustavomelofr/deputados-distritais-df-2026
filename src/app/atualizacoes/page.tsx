@@ -320,7 +320,7 @@ export default async function AtualizacoesPage({ searchParams }: Props) {
                     aria-label={`Abrir ${config.label.toLowerCase()} "${item.titulo}" de ${item.fonte} em nova aba`}
                     className="mt-3 inline-flex items-center gap-1 text-xs text-blue-600 font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                   >
-                    Abrir fonte externa →
+                    Abrir fonte externa <span aria-hidden="true">→</span>
                   </a>
                 )}
               </article>

@@ -2,25 +2,25 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 export const metadata: Metadata = {
-  title: 'Metodologia — Deputados Distritais DF 2026',
+  title: 'Metodologia — Monitor Eleitoral DF 2026',
   description:
-    'Metodologia, fontes de dados (CLDF, Google News RSS, Instagram, DivulgaCand/TSE), frequência de coleta e limites de interpretação do monitor independente dos 24 deputados distritais do DF.',
+    'Metodologia do Monitor Eleitoral DF 2026: fontes (TSE, DivulgaCand, TRE-DF, CLDF, Câmara, Senado, partidos, veículos), estágios eleitorais, datas separadas, licenças de imagem, limites de interpretação e diferença entre pré-candidatura e registro oficial.',
   alternates: {
     canonical: '/metodologia',
   },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',
-    siteName: 'Deputados Distritais DF 2026',
-    title: 'Metodologia — Deputados Distritais DF 2026',
+    siteName: 'Monitor Eleitoral DF 2026',
+    title: 'Metodologia — Monitor Eleitoral DF 2026',
     description:
-      'Fontes P1/P2, frequência de coleta e limites de interpretação do monitor dos deputados distritais do DF.',
+      'Fontes, estágios, datas, licenças de imagem e limites de interpretação do monitor independente das eleições de 2026 no DF.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Metodologia — Deputados Distritais DF 2026',
+    title: 'Metodologia — Monitor Eleitoral DF 2026',
     description:
-      'Fontes P1/P2, frequência de coleta e limites de interpretação do monitor dos deputados distritais do DF.',
+      'Fontes, estágios, datas, licenças de imagem e limites de interpretação do monitor independente das eleições de 2026 no DF.',
   },
 };
 
@@ -29,22 +29,28 @@ export default function MetodologiaPage() {
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="text-3xl font-bold text-zinc-900 mb-2">Metodologia</h1>
       <p className="text-zinc-500 mb-10">
-        Como este monitor é construído, quais as fontes e os limites de cada dado.
+        Como o Monitor Eleitoral DF 2026 é construído: fontes, estágios,
+        datas, licenças de imagem e limites de interpretação.
       </p>
 
       <div className="space-y-8">
         {/* Sobre */}
         <section className="rounded-xl border border-zinc-200 bg-white p-6">
-          <h2 className="text-xl font-semibold text-zinc-900 mb-3">Sobre o projeto</h2>
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">
+            Sobre o projeto
+          </h2>
           <p className="text-zinc-600 leading-relaxed">
-            Este é um monitor independente dos 24 deputados distritais do Distrito
-            Federal. O site é operado por um <strong>agente autônomo contínuo</strong>{" "}
-            (inteligência artificial) que trabalha 24 horas por dia: coleta dados de
-            fontes oficiais e abertas, atualiza o site automaticamente e reporta
-            novidades relevantes.
+            Este é um monitor independente das eleições de 2026 no Distrito
+            Federal para os cargos de <strong>governador e vice</strong>,{' '}
+            <strong>senador</strong>, <strong>deputado federal</strong> e{' '}
+            <strong>deputado distrital</strong>. O site é operado por um{' '}
+            <strong>agente autônomo contínuo</strong> (inteligência artificial)
+            que trabalha 24 horas por dia: coleta dados de fontes oficiais e
+            abertas, atualiza o site automaticamente e reporta novidades
+            relevantes.
           </p>
           <p className="text-zinc-600 leading-relaxed mt-3">
-            Todo o código-fonte é aberto e está disponível no{" "}
+            Todo o código-fonte é aberto e está disponível no{' '}
             <a
               href="https://github.com/gustavomelofr/deputados-distritais-df-2026"
               target="_blank"
@@ -54,22 +60,52 @@ export default function MetodologiaPage() {
             >
               GitHub
             </a>
-            . Cada alteração no site é commitada automaticamente com mensagem descritiva.
+            . Cada alteração no site é commitada automaticamente com mensagem
+            descritiva.
           </p>
         </section>
 
         {/* Fontes */}
         <section className="rounded-xl border border-zinc-200 bg-white p-6">
-          <h2 className="text-xl font-semibold text-zinc-900 mb-3">Fontes de dados</h2>
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">
+            Fontes de dados
+          </h2>
+          <p className="text-sm text-zinc-600 mb-4 leading-relaxed">
+            As fontes são usadas em ordem de prioridade. Uma notícia ou
+            evidência só é registrada quando aponta para a fonte específica —
+            nunca para a página inicial de um veículo.
+          </p>
           <div className="space-y-4">
             <div>
               <h3 className="font-semibold text-zinc-800 text-sm">
-                CLDF — Câmara Legislativa do Distrito Federal (P1)
+                1. TSE, DivulgaCand e TRE-DF (prioridade 1)
               </h3>
               <p className="text-sm text-zinc-600 mt-1">
-                Fonte oficial de dados sobre os 24 deputados distritais: biografias,
-                fotos, partidos, comissões e links para perfis individuais.
-                Disponível em{" "}
+                Dados oficiais de candidatura, prestação de contas e histórico
+                eleitoral. Quando o DivulgaCand está disponível para a eleição
+                2026, o registro oficial prevalece sobre qualquer classificação
+                anterior. Disponível em{' '}
+                <a
+                  href="https://divulgacandcontas.tse.jus.br/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  aria-label="DivulgaCand/TSE — dados oficiais de candidatura e prestação de contas (abre em nova aba)"
+                >
+                  divulgacandcontas.tse.jus.br
+                </a>
+                .
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 text-sm">
+                2. CLDF, Câmara dos Deputados, Senado Federal e demais órgãos
+                públicos (prioridade 2)
+              </h3>
+              <p className="text-sm text-zinc-600 mt-1">
+                Dados institucionais de mandato atual: biografias, fotos,
+                partidos, comissões, proposições e atividade legislativa. CLDF
+                em{' '}
                 <a
                   href="https://www.cl.df.gov.br/deputados-2023-2026"
                   target="_blank"
@@ -79,17 +115,7 @@ export default function MetodologiaPage() {
                 >
                   cl.df.gov.br
                 </a>
-                .
-              </p>
-            </div>
-            <div>
-              <h3 className="font-semibold text-zinc-800 text-sm">
-                CLDF — SAPL / Processo Legislativo Eletrônico (P1)
-              </h3>
-              <p className="text-sm text-zinc-600 mt-1">
-                API pública de proposições da CLDF (projetos de lei, indicações,
-                requerimentos, moções e outros), com autoria, ementa, data de
-                leitura e tramitação. Disponível em{" "}
+                ; proposições em{' '}
                 <a
                   href="https://dados.cl.df.gov.br/id/dataset/proposicoes"
                   target="_blank"
@@ -104,93 +130,218 @@ export default function MetodologiaPage() {
             </div>
             <div>
               <h3 className="font-semibold text-zinc-800 text-sm">
-                Google News RSS (P1)
+                3. Páginas e documentos oficiais de partidos (prioridade 3)
               </h3>
               <p className="text-sm text-zinc-600 mt-1">
-                Agregação de notícias sobre a CLDF e deputados distritais de
-                veículos como G1, Correio Braziliense, Brasil de Fato, GPS
-                Brasília, Congresso em Foco, Folha de S.Paulo, entre outros.
+                Anúncios partidários formais de pré-candidatura, convenções e
+                documentos públicos nos sites oficiais das legendas.
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-zinc-800 text-sm">
-                Instagram (P2 — em implementação)
+                4. Declaração pública da própria pessoa (prioridade 4)
               </h3>
               <p className="text-sm text-zinc-600 mt-1">
-                Monitoramento dos perfis públicos de Instagram dos deputados
-                distritais para acompanhamento da atividade pública.
+                Site oficial ou perfil oficial verificado da própria pessoa
+                confirmando intenção de candidatura. Instagram serve somente
+                para confirmar e exibir links de perfis oficiais — sem coleta
+                de posts, frequência ou métricas.
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-zinc-800 text-sm">
-                DivulgaCand/TSE (P2 — em implementação)
+                5. Veículos jornalísticos identificáveis (prioridade 5)
               </h3>
               <p className="text-sm text-zinc-600 mt-1">
-                Dados oficiais de candidatura, prestação de contas e histórico
-                eleitoral dos deputados. Disponível em{" "}
-                <a
-                  href="https://divulgacandcontas.tse.jus.br/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                  aria-label="DivulgaCand/TSE — dados oficiais de candidatura e prestação de contas (abre em nova aba)"
-                >
-                  divulgacandcontas.tse.jus.br
-                </a>
-                .
+                Reportagens com autoria identificável e data, de veículos como
+                G1, Correio Braziliense, Brasil de Fato, GPS Brasília, Congresso
+                em Foco, Folha de S.Paulo, entre outros. Exige URL da matéria
+                específica.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-semibold text-zinc-800 text-sm">
+                6. Google News RSS (prioridade 6 — descoberta)
+              </h3>
+              <p className="text-sm text-zinc-600 mt-1">
+                Usado somente como mecanismo de descoberta de reportagens. O
+                item só é publicado quando a matéria específica é confirmada
+                com fonte, autoria e data.
               </p>
             </div>
           </div>
         </section>
 
-        {/* Frequência de coleta */}
+        {/* Estágios eleitorais */}
         <section className="rounded-xl border border-zinc-200 bg-white p-6">
           <h2 className="text-xl font-semibold text-zinc-900 mb-3">
-            Frequência de coleta
+            Estágios eleitorais
           </h2>
           <p className="text-sm text-zinc-600 mb-4 leading-relaxed">
-            O agente autônomo opera em ciclo contínuo. A frequência efetiva de
-            coleta depende da disponibilidade de cada fonte e pode sofrer
-            interrupções por indisponibilidade técnica ou mudanças nas fontes.
-            Os estados abaixo descrevem a rotina planejada, não garantias de
-            atualização.
+            Antes do registro no TSE, ninguém é chamado de{' '}
+            <strong>candidato oficial</strong>. A classificação reflete
+            somente o que a evidência suporta, nos estágios abaixo:
+          </p>
+          <ul className="space-y-2 text-sm text-zinc-600">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">Nome monitorado:</strong>{' '}
+                pessoa que aparece em fontes relevantes ao contexto eleitoral,
+                sem declaração de intenção de candidatura.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Pré-candidatura declarada:
+                </strong>{' '}
+                a própria pessoa declarou publicamente, em site ou perfil
+                oficial, a intenção de se candidatar.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Anunciado pelo partido:
+                </strong>{' '}
+                a legenda anunciou formalmente a pré-candidatura em página ou
+                documento oficial.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">
+                  Movimentação pública:
+                </strong>{' '}
+                indicação de movimentação eleitoral com fonte primária ou duas
+                reportagens independentes. Pesquisa de opinião, menção ou
+                presença em evento não comprova intenção de candidatura.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-green-600 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">Registro oficial:</strong>{' '}
+                candidatura registrada no TSE/DivulgaCand. Somente neste
+                estágio o termo “candidato oficial” é usado.
+              </span>
+            </li>
+          </ul>
+        </section>
+
+        {/* Pré-candidatura vs registro oficial */}
+        <section className="rounded-xl border border-zinc-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">
+            Pré-candidatura x registro oficial
+          </h2>
+          <p className="text-sm text-zinc-600 leading-relaxed mb-3">
+            A diferença é factual, não editorial. <strong>Pré-candidatura</strong>{' '}
+            é uma intenção declarada — pela pessoa ou pelo partido — antes do
+            prazo oficial de registro. <strong>Registro oficial</strong> é o
+            ato formal perante a Justiça Eleitoral, publicado no DivulgaCand/TSE.
+          </p>
+          <ul className="space-y-2 text-sm text-zinc-600">
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              Antes do registro no TSE, usamos somente “nome monitorado”,
+              “pré-candidatura declarada”, “anunciado pelo partido” ou
+              “movimentação pública”.
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              Quando o DivulgaCand estiver disponível, o registro oficial
+              prevalece sobre a classificação anterior.
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              Mandato atual (ex.: deputado distrital em exercício) não implica
+              candidatura em 2026; é somente mandato.
+            </li>
+          </ul>
+        </section>
+
+        {/* Datas */}
+        <section className="rounded-xl border border-zinc-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">Datas</h2>
+          <p className="text-sm text-zinc-600 mb-4 leading-relaxed">
+            Cada registro mantém três datas separadas, para preservar a
+            distinção entre o fato, a coleta e a verificação:
           </p>
           <ul className="space-y-2 text-sm text-zinc-600">
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
               <span>
-                <strong className="text-zinc-800">CLDF (P1):</strong> consulta
-                periódica à lista oficial de deputados, comissões e, quando
-                disponível, proposições e presença. A frequência exata ainda
-                está em definição conforme a API da CLDF é integrada.
+                <strong className="text-zinc-800">publicadaEm:</strong> data
+                em que a fonte publicou o conteúdo (data da reportagem, do
+                anúncio ou do registro oficial).
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
               <span>
-                <strong className="text-zinc-800">Google News RSS (P1):</strong>{' '}
-                agregação de notícias em ciclos curtos, com deduplicação e
-                atribuição de fonte e data de publicação quando informadas pelo
-                feed.
+                <strong className="text-zinc-800">coletadaEm:</strong> data em
+                que o agente coletou o dado pela primeira vez.
               </span>
             </li>
             <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-blue-500 flex-shrink-0" />
               <span>
-                <strong className="text-zinc-800">Instagram (P2):</strong>{' '}
-                coleta em implementação; sem frequência definida até a fonte
-                estar integrada.
-              </span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              <span>
-                <strong className="text-zinc-800">DivulgaCand/TSE (P2):</strong>{' '}
-                coleta em implementação; atualização prevista conforme o
-                calendário eleitoral oficial do TSE.
+                <strong className="text-zinc-800">verificadaEm:</strong> data
+                da última verificação do agente contra a fonte.
               </span>
             </li>
           </ul>
+          <p className="text-sm text-zinc-600 mt-4 leading-relaxed">
+            Datas futuras ou inconsistentes são rejeitadas. Ausência de data
+            significa que a coleta ainda não foi registrada.
+          </p>
+        </section>
+
+        {/* Fotografias e licenças */}
+        <section className="rounded-xl border border-zinc-200 bg-white p-6">
+          <h2 className="text-xl font-semibold text-zinc-900 mb-3">
+            Fotografias e licenças de imagem
+          </h2>
+          <p className="text-sm text-zinc-600 mb-4 leading-relaxed">
+            Toda foto registra arquivo ou URL, fonte, URL da fonte, data de
+            verificação e licença/base de uso. A ordem de preferência é:
+          </p>
+          <ol className="space-y-2 text-sm text-zinc-600 list-decimal pl-5">
+            <li>
+              <strong className="text-zinc-800">DivulgaCand/TSE</strong> — foto
+              oficial da candidatura registrada.
+            </li>
+            <li>
+              <strong className="text-zinc-800">
+                Página institucional oficial
+              </strong>{' '}
+              (CLDF, Câmara dos Deputados, Senado Federal).
+            </li>
+            <li>
+              <strong className="text-zinc-800">Site oficial do partido</strong>.
+            </li>
+            <li>
+              <strong className="text-zinc-800">
+                Site ou assessoria oficial da pessoa
+              </strong>.
+            </li>
+            <li>
+              <strong className="text-zinc-800">
+                Imprensa com licença explícita
+              </strong>{' '}
+              de reutilização. Crédito isolado não substitui licença.
+            </li>
+          </ol>
+          <p className="text-sm text-zinc-600 mt-4 leading-relaxed">
+            Na ausência de foto reutilizável, mantemos um{' '}
+            <strong>placeholder honesto</strong>. Não usamos hotlink de imprensa
+            sem permissão. Validamos identidade, resposta HTTP, MIME de imagem e
+            dimensões mínimas.
+          </p>
         </section>
 
         {/* Limites de interpretação */}
@@ -200,30 +351,36 @@ export default function MetodologiaPage() {
           </h2>
           <p className="text-sm text-zinc-600 leading-relaxed mb-4">
             Este monitor prioriza <strong>fatos atribuídos</strong> sobre
-            interpretações. Os dados apresentados descrevem atividade
-            observável, não juízo de valor sobre os deputados. Em particular:
+            interpretações. Em particular:
           </p>
           <ul className="space-y-2 text-sm text-zinc-600">
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
               <span>
                 <strong className="text-zinc-800">
-                  Volume não mede popularidade, apoio ou intenção de voto.
+                  Sem rumor anônimo ou conteúdo sem data.
                 </strong>{' '}
-                A quantidade de posts, notícias, proposições ou menções reflete
-                apenas atividade registrada nas fontes monitoradas. Não
-                representa popularidade, apoio da população, intenção de voto
-                nem probabilidade de reeleição ou derrota eleitoral.
+                Não usamos publicação sem autoria identificável, rumor anônimo
+                ou conteúdo sem data. O resumo não acrescenta fatos ausentes na
+                fonte.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
               <span>
                 <strong className="text-zinc-800">
-                  Cobertura não é exaustiva.
+                  Volume não mede popularidade, apoio ou intenção de voto.
                 </strong>{' '}
-                A ausência de uma notícia, proposição ou post não significa que
-                o fato não ocorreu — apenas que não foi capturado pelas fontes
+                A quantidade de notícias, proposições ou menções reflete
+                apenas atividade registrada nas fontes monitoradas.
+              </span>
+            </li>
+            <li className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
+              <span>
+                <strong className="text-zinc-800">Cobertura não é exaustiva.</strong>{' '}
+                A ausência de uma notícia ou evidência não significa que o fato
+                não ocorreu — apenas que não foi capturado pelas fontes
                 monitoradas no período.
               </span>
             </li>
@@ -234,19 +391,19 @@ export default function MetodologiaPage() {
                   Sem ranking editorial enganoso.
                 </strong>{' '}
                 Listagens e ordenações usam critérios objetivos (ex.: data ou
-                nome) e não constituem um ranking de mérito político. Comparações
-                entre deputados usam somente indicadores de fonte clara.
+                nome) e não constituem um ranking de mérito político.
               </span>
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-zinc-400 flex-shrink-0" />
               <span>
                 <strong className="text-zinc-800">
-                  Dados desatualizados são marcados.
+                  Associação exige citação na fonte.
                 </strong>{' '}
-                Cada bloco de informação indica a data de coleta quando
-                disponível; ausência de data significa que a coleta ainda não
-                foi registrada.
+                Uma notícia é associada a uma pessoa apenas quando ela é citada
+                ou está diretamente relacionada na fonte. Pesquisa de opinião,
+                menção ou presença em evento não comprova intenção de
+                candidatura.
               </span>
             </li>
           </ul>
@@ -260,10 +417,9 @@ export default function MetodologiaPage() {
           <ul className="space-y-2 text-sm text-zinc-600">
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              Os dados de presença e gastos individuais por deputado ainda
-              estão sendo integrados da API da CLDF. As proposições já são
-              coletadas da API pública do PLE/CLDF, mas a amostra publicada
-              prioriza 2026 e pode não incluir todo o histórico.
+              O DivulgaCand/TSE para a eleição 2026 pode ainda não estar
+              disponível; até lá, o monitor registra somente pré-candidaturas e
+              movimentações públicas, nunca candidatos oficiais.
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
@@ -272,17 +428,18 @@ export default function MetodologiaPage() {
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              O monitoramento de redes sociais (Instagram) depende de scraping
-              público e pode sofrer limitações de acesso.
+              O monitoramento de Instagram serve somente para confirmar links
+              oficiais; não coleta posts, frequência ou métricas.
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              Este site não é oficial e não tem vínculo com a CLDF, partidos
-              políticos ou candidatos.
+              Este site não é oficial e não tem vínculo com o TSE, CLDF,
+              partidos políticos ou candidatos.
             </li>
             <li className="flex items-start gap-2">
               <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-amber-500 flex-shrink-0" />
-              Erros podem ocorrer. Se encontrar algum problema, abra uma issue no{' '}
+              Erros podem ocorrer. Se encontrar algum problema, abra uma issue
+              no{' '}
               <a
                 href="https://github.com/gustavomelofr/deputados-distritais-df-2026/issues"
                 target="_blank"
@@ -322,16 +479,16 @@ export default function MetodologiaPage() {
         {/* Navegação */}
         <div className="flex flex-wrap gap-4">
           <Link
-            href="/deputados-distritais"
+            href="/cenario-2026"
             className="rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-blue-500 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-            aria-label="Ver lista dos 24 deputados distritais do DF"
+            aria-label="Ver cenário eleitoral 2026 no DF"
           >
-            Ver deputados
+            Cenário 2026
           </Link>
           <Link
             href="/noticias"
             className="rounded-lg border border-zinc-300 bg-white px-5 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:ring-offset-2"
-            aria-label="Ver últimas notícias sobre a CLDF e deputados distritais"
+            aria-label="Ver últimas notícias eleitorais do DF"
           >
             Últimas notícias
           </Link>

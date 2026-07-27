@@ -11,11 +11,15 @@ export const metadata: Metadata = {
     canonical: '/deputados-distritais',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Deputados Distritais — Lista dos 24 Deputados do DF 2026',
     description:
       'Os 24 deputados da CLDF na legislatura 2023–2026, com filtros combináveis e perfil individual de cada parlamentar.',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Deputados Distritais — Lista dos 24 Deputados do DF 2026',
     description:
       'Os 24 deputados da CLDF na legislatura 2023–2026, com filtros combináveis e perfil individual de cada parlamentar.',

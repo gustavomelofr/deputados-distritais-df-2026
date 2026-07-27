@@ -177,6 +177,7 @@ export default async function CompararPage({ searchParams }: Props) {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <button
             type="submit"
+            aria-label="Comparar os deputados distritais selecionados lado a lado"
             className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 transition"
           >
             Comparar

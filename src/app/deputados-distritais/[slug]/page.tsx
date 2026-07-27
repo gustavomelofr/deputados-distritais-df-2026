@@ -174,6 +174,7 @@ export default async function DeputadoPage({ params }: Props) {
               {dep.contatos.email && (
                 <a
                   href={`mailto:${dep.contatos.email}`}
+                  aria-label={`E-mail de ${dep.nome}: ${dep.contatos.email}`}
                   className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 text-zinc-700 text-sm font-medium px-3 py-1 hover:bg-zinc-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -186,6 +187,7 @@ export default async function DeputadoPage({ params }: Props) {
               {dep.contatos.telefone && (
                 <a
                   href={`tel:${dep.contatos.telefone.replace(/[^\d+]/g, '')}`}
+                  aria-label={`Telefone de ${dep.nome}: ${dep.contatos.telefone}`}
                   className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 text-zinc-700 text-sm font-medium px-3 py-1 hover:bg-zinc-200 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">

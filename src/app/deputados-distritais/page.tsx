@@ -394,7 +394,11 @@ export default async function DeputadosPage({ searchParams }: Props) {
       </form>
 
       {/* Summary stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2">
+      <div
+        className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-2"
+        role="group"
+        aria-label="Resumo estatístico da legislatura: total de deputados, partidos, em exercício e comissões"
+      >
         <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
           <p className="text-2xl font-bold text-blue-600">{deputados.length}</p>
           <p className="text-xs text-zinc-500 mt-1">Deputados</p>
@@ -410,10 +414,8 @@ export default async function DeputadosPage({ searchParams }: Props) {
           <p className="text-xs text-zinc-500 mt-1">Em exercício</p>
         </div>
         <div className="rounded-lg border border-zinc-200 bg-white p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">
-            {new Set(deputados.map((d) => d.partido)).size}
-          </p>
-          <p className="text-xs text-zinc-500 mt-1">Partidos/Blocos</p>
+          <p className="text-2xl font-bold text-blue-600">{comissoes.length}</p>
+          <p className="text-xs text-zinc-500 mt-1">Comissões</p>
         </div>
       </div>
       <p className="text-xs text-zinc-400 mb-10 text-center">

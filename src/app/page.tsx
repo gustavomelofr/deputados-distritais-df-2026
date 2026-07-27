@@ -34,25 +34,33 @@ export default function Home() {
       <section className="bg-gradient-to-b from-blue-950 via-blue-900 to-zinc-900 text-white">
         <div className="mx-auto max-w-5xl px-4 py-20 md:py-28 text-center">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-            Atividade legislativa do{" "}
+            Eleições de 2026 no{" "}
             <span className="text-blue-400">Distrito Federal</span> em monitoramento independente
           </h1>
           <p className="mt-6 text-lg md:text-xl text-blue-200 max-w-2xl mx-auto leading-relaxed">
-            Os 24 deputados da Câmara Legislativa do Distrito Federal em exercício,
-            movimentações para 2026, proposições, votações e atividade pública.
-            Cada dado com recorte, data e limite de interpretação.
+            Cobertura factual dos cargos do DF em disputa: governador e
+            vice-governador, senador, deputado federal e deputado distrital.
+            Cada nome, evidência e notícia é registrado com fonte específica,
+            data e estágio — antes do registro no TSE, ninguém é tratado como
+            candidato oficial.
+          </p>
+          <p className="mt-4 text-sm md:text-base text-blue-300/90 max-w-2xl mx-auto leading-relaxed">
+            Monitor independente, sem vínculo com partido ou órgão público:
+            usamos apenas fontes verificáveis (TSE, TRE-DF, CLDF, Câmara dos
+            Deputados, Senado, sites oficiais e imprensa identificada) e
+            deixamos explícito o que ainda não foi coletado.
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
-              href="/deputados-distritais"
-              aria-label="Consultar os 24 deputados distritais do DF em exercício"
+              href="/cenario-2026"
+              aria-label="Ver o cenário eleitoral de 2026 no DF por cargo"
               className="rounded-lg bg-blue-600 px-6 py-3 font-semibold text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
             >
-              Consultar deputados
+              Ver cenário 2026
             </Link>
             <Link
               href="/noticias"
-              aria-label="Ver as últimas notícias sobre a Câmara Legislativa do DF"
+              aria-label="Ver as últimas notícias sobre as eleições de 2026 no DF"
               className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white hover:bg-white/10 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900"
             >
               Últimas notícias

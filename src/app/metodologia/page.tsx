@@ -9,11 +9,15 @@ export const metadata: Metadata = {
     canonical: '/metodologia',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Metodologia — Deputados Distritais DF 2026',
     description:
       'Fontes P1/P2, frequência de coleta e limites de interpretação do monitor dos deputados distritais do DF.',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Metodologia — Deputados Distritais DF 2026',
     description:
       'Fontes P1/P2, frequência de coleta e limites de interpretação do monitor dos deputados distritais do DF.',

@@ -317,6 +317,7 @@ export default function Home() {
                   <Link
                     key={partido}
                     href={`/deputados-distritais?partido=${encodeURIComponent(partido)}`}
+                    aria-label={`Ver ${count} ${count === 1 ? 'deputado' : 'deputados'} filiados a ${partido} (${pct}% da CLDF)`}
                     className="flex items-center gap-3 group rounded-md focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     title={`Ver deputados filiados a ${partido}`}
                   >

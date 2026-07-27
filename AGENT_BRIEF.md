@@ -153,7 +153,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 
 ### P2 — Ampliar para 100 notícias dos últimos seis meses
 
-- [ ] Adicionar notícias verificadas até atingir 35 registros válidos.
+- [x] Adicionar notícias verificadas até atingir 35 registros válidos.
   Critério: no máximo 10 novas, recentes, relevantes aos cargos do DF e com URL específica.
 
 - [ ] Adicionar notícias verificadas até atingir 45 registros válidos.

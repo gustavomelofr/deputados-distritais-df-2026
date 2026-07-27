@@ -6,12 +6,18 @@ const os = require('node:os');
 const path = require('node:path');
 
 const {
+  compactSummary,
   createPullRequest,
   deliverPullRequest,
+  extractReview,
   hasPendingBacklog,
   isTransientError,
+  parseLoopResult,
   pendingBacklogItems,
+  recurringTasks,
   runWithRetry,
+  selectTask,
+  telegramMessage,
 } = require('../loop-runner');
 
 const delivery = {
@@ -41,6 +47,73 @@ test('fila concluída não possui itens pendentes', () => {
 
 test('falha fechada quando a seção da fila não existe', () => {
   assert.throws(() => pendingBacklogItems('- [ ] tarefa solta'), /não encontrada/);
+});
+
+test('ignora itens concluídos e bloqueados na seleção da fila', () => {
+  const content = `## Fila de melhorias priorizada
+- [x] concluído
+- [!] bloqueado
+- [ ] elegível
+
+## Rotinas recorrentes
+`;
+  assert.deepEqual(pendingBacklogItems(content), ['elegível']);
+  assert.equal(selectTask(content, {}).title, 'elegível');
+});
+
+test('interpreta rotina recorrente e respeita frequência', () => {
+  const content = `## Fila de melhorias priorizada
+- [x] concluído
+
+## Rotinas recorrentes
+- [r] noticias-eleitorais: Notícias eleitorais recentes
+  Frequência: 24h
+  Limite por ciclo: 10
+  Instrução: buscar notícias verificadas.
+  Critério: sem novidade, retornar NO_CHANGE.
+`;
+  const [routine] = recurringTasks(content);
+  assert.equal(routine.id, 'noticias-eleitorais');
+  assert.equal(routine.limit, 10);
+  assert.equal(selectTask(content, {}, Date.parse('2026-07-27T12:00:00Z')).id, routine.id);
+  const ledger = { recurring: { [routine.id]: { lastRunAt: '2026-07-27T11:00:00Z' } } };
+  assert.equal(selectTask(content, ledger, Date.parse('2026-07-27T12:00:00Z')), null);
+  assert.equal(selectTask(content, ledger, Date.parse('2026-07-28T12:00:00Z')).id, routine.id);
+});
+
+test('brief real possui fila pendente e três rotinas diárias válidas', () => {
+  const content = fs.readFileSync(path.join(__dirname, '..', 'AGENT_BRIEF.md'), 'utf8');
+  assert.ok(pendingBacklogItems(content).length > 20);
+  const routines = recurringTasks(content);
+  assert.equal(routines.length, 3);
+  assert.ok(routines.every((routine) => routine.intervalMs === 24 * 60 * 60 * 1000));
+  assert.ok(routines.every((routine) => routine.limit === 10));
+});
+
+test('interpreta NO_CHANGE e bloqueio com ação humana', () => {
+  assert.deepEqual(parseLoopResult('LOOP_RESULT: NO_CHANGE — nenhuma notícia nova'), {
+    status: 'NO_CHANGE', reason: 'nenhuma notícia nova', humanAction: null,
+  });
+  assert.deepEqual(parseLoopResult('LOOP_RESULT: BLOCKED — licença ausente\nHUMAN_ACTION: fornecer autorização'), {
+    status: 'BLOCKED', reason: 'licença ausente', humanAction: 'fornecer autorização',
+  });
+});
+
+test('extrai resumo e quantidade do verifier', () => {
+  const review = extractReview('{"verdict":"APPROVE","reason":"válido","summary":"8 notícias adicionadas.","records_changed":8,"next_prompt":null}');
+  assert.equal(review.summary, '8 notícias adicionadas.');
+  assert.equal(review.records_changed, 8);
+});
+
+test('formata mensagem curta do Telegram com resumo', () => {
+  const message = telegramMessage({
+    icon: '✅', title: 'Ciclo concluído', task: 'Notícias eleitorais',
+    summary: '8 notícias adicionadas com fonte e data.', lines: ['PR: https://example.test/1'],
+  });
+  assert.match(message, /Resumo: 8 notícias adicionadas/);
+  assert.match(message, /Tarefa: Notícias eleitorais/);
+  assert.ok(compactSummary('x'.repeat(500)).length <= 320);
+  assert.ok(message.length < 3900);
 });
 
 test('repete erros transitórios sem consumir o resultado final', () => {

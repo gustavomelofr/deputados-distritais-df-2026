@@ -1,4 +1,4 @@
-# Loop L3 — Deputados Distritais DF 2026
+# Loop L3 — Monitor Eleitoral DF 2026
 
 ## Ciclo
 - Serviço: `deputados-loop.service`;
@@ -6,7 +6,11 @@
 - Cadência: 15 minutos após o fim do ciclo anterior;
 - Implementer: até 45 minutos; verifier: até 3 minutos;
 - Timeout com diff: worktree e patch em `.loop/partial/` são retomados no ciclo seguinte;
-- Fila concluída: o loop entra em `idle`, sem criar worktree ou chamar agentes, e retoma ao detectar novo checkbox pendente;
+- Tarefa única: o primeiro item `[ ]` da fila sempre tem prioridade;
+- Rotina recorrente: quando a fila não possui `[ ]`, o loop executa no máximo uma rotina `[r]` vencida conforme frequência e limite declarados no brief;
+- Sem novidade: `LOOP_RESULT: NO_CHANGE` registra a execução, não cria PR e não envia Telegram;
+- Espera: se nenhuma rotina estiver vencida, o estado é `waiting`, sem worktree ou chamada de agente;
+- Idle: usado somente quando não existem tarefas únicas nem rotinas recorrentes configuradas;
 - Entrega interrompida: branch e metadados ficam em `delivery_pending`; o ciclo seguinte recupera ou cria o PR sem reimplementar;
 - GitHub e modelo: erros transitórios recebem retry com backoff; criação de PR usa REST como fallback;
 - Escalonamento: dois timeouts ou 24h de trabalho parcial;
@@ -24,6 +28,8 @@ origin/main
   → verifier independente
      → APPROVE: branch, PR e auto-merge após CI
      → REJECT: prompt de correção no mesmo worktree
+     → NO_CHANGE recorrente: registra e aguarda a próxima janela, sem PR
+     → BLOCKED: registra motivo e ação humana necessária
      → segunda rejeição: escala ao humano
 ```
 
@@ -31,7 +37,9 @@ origin/main
 - `loop-gate.json` bloqueia secrets, infraestrutura, dependências e configuração do loop;
 - erro, timeout ou resposta inválida do verifier falha fechada: sem PR;
 - `.loop-pause` pausa novas execuções;
-- `idle` não desliga o serviço: ele apenas aguarda uma nova tarefa na fila;
+- `waiting` e `idle` não desligam o serviço;
+- cada Telegram contém tarefa, `Resumo:`, resultado e PR/ação necessária quando aplicável;
+- rotina sem novidade permanece silenciosa no Telegram;
 - o estado operacional está em `.loop/` e não polui a branch `main`;
 - nenhum agente pode enviar mudanças diretamente à `main`.
 

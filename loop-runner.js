@@ -89,6 +89,86 @@ function hasPendingBacklog(file = path.join(ROOT, 'AGENT_BRIEF.md')) {
   return pendingBacklogItems(fs.readFileSync(file, 'utf8')).length > 0;
 }
 
+function recurringTasks(content) {
+  const marker = '## Rotinas recorrentes';
+  const start = content.indexOf(marker);
+  if (start < 0) return [];
+  const section = content.slice(start);
+  const tasks = [];
+  const pattern = /^- \[r\] ([a-z0-9-]+): (.+)\n((?:  .+(?:\n|$))*)/gm;
+  for (const match of section.matchAll(pattern)) {
+    const fields = match[3];
+    const frequency = fields.match(/^  Frequência: (\d+)h$/m);
+    const limit = fields.match(/^  Limite por ciclo: (\d+)$/m);
+    const instruction = fields.match(/^  Instrução: (.+)$/m);
+    const acceptance = fields.match(/^  Critério: (.+)$/m);
+    if (!frequency || !limit || !instruction || !acceptance) {
+      throw new Error(`Rotina recorrente inválida: ${match[1]}.`);
+    }
+    tasks.push({
+      kind: 'recurring',
+      id: match[1],
+      title: match[2].trim(),
+      intervalMs: Number(frequency[1]) * 60 * 60 * 1000,
+      limit: Number(limit[1]),
+      instruction: instruction[1].trim(),
+      acceptance: acceptance[1].trim(),
+    });
+  }
+  return tasks;
+}
+
+function selectTask(content, ledger = {}, now = Date.now()) {
+  const pending = pendingBacklogItems(content);
+  if (pending.length) {
+    return { kind: 'backlog', id: `backlog:${pending[0]}`, title: pending[0] };
+  }
+  const recurringState = ledger.recurring || {};
+  return recurringTasks(content).find((task) => {
+    const lastRunAt = recurringState[task.id]?.lastRunAt;
+    return !lastRunAt || now - Date.parse(lastRunAt) >= task.intervalMs;
+  }) || null;
+}
+
+function parseLoopResult(output) {
+  const marker = output.match(/LOOP_RESULT:\s*(UPDATED|NO_CHANGE|BLOCKED)(?:\s*[—–:-]\s*(.+))?/i);
+  const humanAction = output.match(/HUMAN_ACTION:\s*(.+)/i);
+  return {
+    status: marker?.[1]?.toUpperCase() || 'UPDATED',
+    reason: marker?.[2]?.trim() || null,
+    humanAction: humanAction?.[1]?.trim() || null,
+  };
+}
+
+function compactSummary(value, fallback = 'O ciclo terminou sem resumo detalhado.') {
+  const normalized = String(value || fallback).replace(/\s+/g, ' ').trim();
+  return normalized.length > 320 ? `${normalized.slice(0, 317)}...` : normalized;
+}
+
+function telegramMessage({ icon, title, task, summary, lines = [] }) {
+  return [
+    `${icon} ${title}`,
+    '',
+    task ? `Tarefa: ${compactSummary(task, '').slice(0, 140)}` : null,
+    `Resumo: ${compactSummary(summary)}`,
+    ...lines.filter(Boolean),
+  ].filter((line) => line !== null).join('\n').slice(0, 3900);
+}
+
+function recurringLedger(ledger, taskSpec, outcome, details = {}) {
+  if (taskSpec?.kind !== 'recurring') return ledger.recurring || {};
+  return {
+    ...(ledger.recurring || {}),
+    [taskSpec.id]: {
+      ...(ledger.recurring?.[taskSpec.id] || {}),
+      lastRunAt: new Date().toISOString(),
+      lastOutcome: outcome,
+      recordsChanged: details.recordsChanged ?? null,
+      summary: details.summary || null,
+    },
+  };
+}
+
 function writeJson(file, value) {
   const temp = `${file}.tmp`;
   fs.writeFileSync(temp, `${JSON.stringify(value, null, 2)}\n`);
@@ -109,12 +189,16 @@ function ensureRuntime() {
   }
   if (!fs.existsSync(LEDGER_FILE)) {
     writeJson(LEDGER_FILE, {
-      version: 1,
+      version: 2,
       totalRuns: 0,
       consecutiveFailures: 0,
       lastOutcome: null,
       active: null,
+      recurring: {},
     });
+  } else {
+    const ledger = readJson(LEDGER_FILE, {});
+    if ((ledger.version || 1) < 2) writeJson(LEDGER_FILE, { ...ledger, version: 2, recurring: ledger.recurring || {} });
   }
 }
 
@@ -194,13 +278,17 @@ function preserveTimeout(active, worktree, branch, runId, task, attempt) {
   const timeouts = (active?.timeouts || 0) + 1;
   const partial = partialPaths(runId);
   fs.writeFileSync(partial.patch, makePatch(worktree));
-  const saved = { runId, task, branch, worktree, status: 'timed_out', attempt, timeouts, timedOutAt: new Date().toISOString(), partialPatch: partial.patch };
+  const saved = { runId, task, taskSpec: active?.taskSpec || null, branch, worktree, status: 'timed_out', attempt, timeouts, timedOutAt: new Date().toISOString(), partialPatch: partial.patch };
   fs.writeFileSync(partial.meta, `${JSON.stringify(saved, null, 2)}\n`);
   if (timeouts >= MAX_TIMEOUTS) {
     appendRun({ runId, outcome: 'escalated', task, reason: `Implementer atingiu ${timeouts} timeouts`, partialPatch: partial.patch });
     updateRuntime({ status: 'escalated', lastError: `Implementer atingiu ${timeouts} timeouts.` }, { lastOutcome: 'escalated', active: null });
-    notify(`⚠️ Loop escalado após ${timeouts} timeouts\nTarefa: ${task}\nPatch salvo: ${partial.patch}`);
-    removeWorktree(worktree);
+    notify(telegramMessage({
+      icon: '⚠️', title: 'Ciclo escalado', task: active?.taskSpec?.title || task,
+      summary: `O implementer atingiu ${timeouts} timeouts; o trabalho parcial foi preservado.`,
+      lines: [`Patch: ${partial.patch}`],
+    }));
+    discardWorktree(worktree, branch);
     return true;
   }
   appendRun({ runId, outcome: 'partial_saved', task, timeouts, partialPatch: partial.patch });
@@ -222,6 +310,11 @@ function createWorktree(runId) {
 
 function removeWorktree(worktree) {
   try { run('git', ['worktree', 'remove', '--force', worktree], { cwd: ROOT, timeout: 60000 }); } catch (error) { log(`Limpeza de worktree falhou: ${error.message}`); }
+}
+
+function discardWorktree(worktree, branch) {
+  removeWorktree(worktree);
+  try { run('git', ['branch', '-D', branch], { cwd: ROOT, timeout: 60000 }); } catch (error) { log(`Limpeza da branch local ${branch} falhou: ${error.message}`); }
 }
 
 function runAgent(agent, instruction, cwd, files = []) {
@@ -273,14 +366,18 @@ function extractReview(output) {
       const parsed = JSON.parse(candidate);
       if (['APPROVE', 'REJECT'].includes(parsed.verdict) && typeof parsed.reason === 'string') {
         if (parsed.verdict === 'REJECT' && typeof parsed.next_prompt !== 'string') continue;
-        return parsed;
+        return {
+          ...parsed,
+          summary: compactSummary(parsed.summary || parsed.reason),
+          records_changed: Number.isFinite(parsed.records_changed) ? Math.max(0, parsed.records_changed) : null,
+        };
       }
     } catch {}
   }
   return null;
 }
 
-function review(worktree, runId, task, tests) {
+function review(worktree, runId, task, tests, loopResult = { status: 'UPDATED' }) {
   const changed = listChangedFiles(worktree);
   const blocked = changed.filter(violatesGate);
   if (blocked.length) return { verdict: 'REJECT', reason: `Caminhos protegidos alterados: ${blocked.join(', ')}`, next_prompt: 'Desfaça as alterações em caminhos protegidos. Trabalhe somente em arquivos de produto permitidos.' };
@@ -292,7 +389,7 @@ function review(worktree, runId, task, tests) {
   const patchFile = path.join(RUNTIME_DIR, `${runId}.patch`);
   fs.writeFileSync(patchFile, patch);
   const testEvidence = tests.map((item) => `${item.name}: ${item.passed ? 'PASSOU' : 'FALHOU'}\n${item.output}`).join('\n\n');
-  const instruction = `Você é o reviewer independente. Tarefa: ${task}. Revise o diff anexado e esta evidência de testes:\n${testEvidence}\n\nRegras: não edite arquivos; rejeite caminhos protegidos, dados não atribuídos sobre deputados, regressões de TypeScript, mudanças fora de escopo, testes falhos e alterações sem valor de produto. Responda EXCLUSIVAMENTE com JSON válido em uma única linha: {"verdict":"APPROVE"|"REJECT","reason":"...","next_prompt":null|"instrução objetiva de correção"}. Para REJECT, next_prompt é obrigatório e deve pedir correção apenas dos problemas apontados.`;
+  const instruction = `Você é o reviewer independente. Tarefa: ${task}. Resultado declarado pelo implementer: ${loopResult.status}. Revise o diff anexado e esta evidência de testes:\n${testEvidence}\n\nRegras: não edite arquivos; rejeite caminhos protegidos, dados ou nomes eleitorais sem fonte, links genéricos de notícia, fotos sem origem/licença, regressões de TypeScript, lote acima do limite, mudanças fora de escopo e testes falhos. Uma alteração apenas em AGENT_BRIEF.md pode ser aprovada quando muda exatamente a tarefa atual de [ ] ou [r] para [!] e documenta bloqueio externo real e ação humana necessária. Produza summary em linguagem simples, factual, com até 280 caracteres e quantidade de registros quando aplicável. Responda EXCLUSIVAMENTE com JSON válido em uma única linha: {"verdict":"APPROVE"|"REJECT","reason":"...","summary":"breve resumo do resultado visível","records_changed":0|null|número,"next_prompt":null|"instrução objetiva de correção"}. Para REJECT, next_prompt é obrigatório e deve pedir correção apenas dos problemas apontados.`;
   const result = runAgent('verifier', instruction, worktree, [patchFile]);
   if (!result.ok) return { verdict: 'REJECT', reason: `Verifier indisponível: ${result.error.slice(-300)}`, next_prompt: 'Não faça novas mudanças. Aguarde escalonamento humano.' };
   const parsed = extractReview(result.output);
@@ -300,13 +397,20 @@ function review(worktree, runId, task, tests) {
   return parsed;
 }
 
-function deliveryMetadata(branch, runId, task) {
+function deliveryMetadata(branch, runId, task, details = {}) {
+  const cycleSummary = compactSummary(details.cycleSummary || 'Alteração aprovada pelo verifier.');
+  const taskTitle = details.taskSpec?.title || task;
   return {
     branch,
     runId,
     task,
-    title: `🤖 Loop: ${task.slice(0, 72)}`,
-    body: `Mudança criada pelo loop autônomo.\n\n- Run: \`${runId}\`\n- Verifier: aprovado\n- Testes: TypeScript e build executados\n- Entrega: auto-merge solicitado após CI.`,
+    taskSpec: details.taskSpec || null,
+    cycleSummary,
+    recordsChanged: details.recordsChanged ?? null,
+    resultStatus: details.resultStatus || 'UPDATED',
+    humanAction: details.humanAction || null,
+    title: `🤖 Loop: ${taskTitle.slice(0, 72)}`,
+    body: `Mudança criada pelo loop autônomo.\n\n- Run: \`${runId}\`\n- Tarefa: ${taskTitle}\n- Resumo: ${cycleSummary}\n- Verifier: aprovado\n- Testes: TypeScript e build executados\n- Entrega: auto-merge solicitado após CI.`,
   };
 }
 
@@ -370,9 +474,15 @@ function commitApprovedWork(worktree, branch, runId) {
   return git(worktree, ['rev-parse', 'HEAD']);
 }
 
-function buildTask(state) {
-  if (state.pendingFeedback) return state.pendingFeedback;
-  return 'Leia AGENT_BRIEF.md e execute SOMENTE o primeiro item não concluído da seção Fila de melhorias priorizada, começando por P0. Não faça exploração ampla, não narre plano e não pesquise tarefas alternativas: leia apenas os arquivos diretamente necessários para esse item e comece a editar. Atenda todos os critérios de aceite com dados reais ou estados honestos de indisponibilidade. Ao concluir, marque o checkbox correspondente como [x] no AGENT_BRIEF.md. Não faça commit, push ou merge. Não rode TypeScript, build ou testes pesados: o orquestrador validará a mudança depois. Reporte objetivamente os arquivos alterados.';
+function buildTask(state, taskSpec) {
+  if (state.pendingFeedback) {
+    return `Continue somente a tarefa "${taskSpec.title}" e corrija este feedback:\n${state.pendingFeedback}`;
+  }
+  const common = 'Leia AGENT_BRIEF.md e cumpra suas regras de fonte, evidência, fotografia e escopo. Não faça exploração ampla, não narre plano, não procure tarefa alternativa, não faça commit/push/merge e não rode TypeScript ou build.';
+  if (taskSpec.kind === 'recurring') {
+    return `${common}\n\nExecute SOMENTE a rotina recorrente "${taskSpec.title}" (${taskSpec.id}). Limite por ciclo: ${taskSpec.limit}. Instrução: ${taskSpec.instruction} Critério: ${taskSpec.acceptance}\n\nNão altere [r] para [x]. Se não encontrar novidade válida após consultar as fontes permitidas, não edite arquivos e finalize exatamente com "LOOP_RESULT: NO_CHANGE — motivo objetivo". Se houver atualização, reporte arquivos e quantidades objetivamente.`;
+  }
+  return `${common}\n\nExecute SOMENTE o primeiro item marcado [ ]: "${taskSpec.title}". Atenda integralmente o critério logo abaixo desse item e marque apenas esse checkbox como [x] no mesmo diff. Se existir bloqueio externo real, marque apenas esse item como [!], adicione "Bloqueio:" e "Ação humana necessária:" e finalize com LOOP_RESULT: BLOCKED. Reporte objetivamente arquivos e quantidades alteradas.`;
 }
 
 function updateRuntime(statePatch, ledgerPatch) {
@@ -405,15 +515,25 @@ async function mainLoop() {
   if (previous?.status === 'delivery_pending') {
     try {
       const prUrl = deliverPullRequest(previous, previous.worktree || ROOT);
-      updateRuntime({ status: 'approved', lastAction: previous.task, pendingFeedback: null, prUrl, lastError: null }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
-      appendRun({ runId: previous.runId, outcome: 'delivery_recovered', attempt: previous.attempt, task: previous.task, prUrl, tests: previous.tests });
-      notify(`✅ Entrega recuperada\nPR: ${prUrl}\nAuto-merge ativado após CI.`);
-      if (previous.worktree && fs.existsSync(previous.worktree)) removeWorktree(previous.worktree);
+      const currentLedger = readJson(LEDGER_FILE, {});
+      const recurring = recurringLedger(currentLedger, previous.taskSpec, 'updated', { recordsChanged: previous.recordsChanged, summary: previous.cycleSummary });
+      updateRuntime({ status: 'approved', lastAction: previous.task, pendingFeedback: null, prUrl, lastError: null, cycleSummary: previous.cycleSummary }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null, recurring });
+      appendRun({ runId: previous.runId, outcome: 'delivery_recovered', attempt: previous.attempt, task: previous.task, taskSpec: previous.taskSpec, summary: previous.cycleSummary, recordsChanged: previous.recordsChanged, prUrl, tests: previous.tests });
+      notify(telegramMessage({
+        icon: '✅', title: 'Entrega recuperada', task: previous.taskSpec?.title || previous.task,
+        summary: previous.cycleSummary,
+        lines: [`Validação: TypeScript e build passaram.`, `PR: ${prUrl}`],
+      }));
+      if (previous.worktree && fs.existsSync(previous.worktree)) discardWorktree(previous.worktree, previous.branch);
     } catch (error) {
       const deliveryFailures = (previous.deliveryFailures || 0) + 1;
       log(`Entrega ainda pendente (${deliveryFailures}): ${error.message}`);
       updateRuntime({ status: 'delivery_pending', lastError: error.message }, { lastOutcome: 'delivery_pending', active: { ...previous, deliveryFailures } });
-      if (deliveryFailures === 1) notify(`⚠️ Entrega pendente; será retomada automaticamente\nBranch: ${previous.branch}\n${error.message.slice(0, 300)}`);
+      if (deliveryFailures === 1) notify(telegramMessage({
+        icon: '⏳', title: 'Entrega pendente', task: previous.taskSpec?.title || previous.task,
+        summary: previous.cycleSummary || 'O código foi aprovado, mas o GitHub não confirmou a entrega.',
+        lines: [`Situação: branch ${previous.branch} preservada; nova tentativa será automática.`],
+      }));
     }
     return;
   }
@@ -421,63 +541,134 @@ async function mainLoop() {
   if (previous?.status === 'timed_out' && (!fs.existsSync(previous.worktree) || Date.now() - Date.parse(previous.timedOutAt || 0) >= PARTIAL_TTL_MS)) {
     appendRun({ runId: previous.runId, outcome: 'escalated', task: previous.task, reason: 'Trabalho parcial expirou após 24h', partialPatch: previous.partialPatch });
     updateRuntime({ status: 'escalated', lastError: 'Trabalho parcial expirou após 24h.' }, { lastOutcome: 'escalated', active: null });
-    notify(`⚠️ Loop escalado: trabalho parcial expirou após 24h\nPatch: ${previous.partialPatch}`);
-    if (fs.existsSync(previous.worktree)) removeWorktree(previous.worktree);
+    notify(telegramMessage({
+      icon: '⚠️', title: 'Trabalho parcial expirado', task: previous.taskSpec?.title || previous.task,
+      summary: 'O trabalho parcial não foi concluído em 24 horas e precisa de revisão humana.',
+      lines: [`Patch: ${previous.partialPatch}`],
+    }));
+    if (fs.existsSync(previous.worktree)) discardWorktree(previous.worktree, previous.branch);
     return;
   }
   const resumable = previous?.status === 'timed_out' && fs.existsSync(previous.worktree) && (previous.timeouts || 0) < MAX_TIMEOUTS ? previous : null;
-  if (!resumable && !hasPendingBacklog()) {
-    const enteringIdle = state.status !== 'idle';
-    updateRuntime({ status: 'idle', pendingFeedback: null, lastError: null }, { lastOutcome: 'idle', active: null });
+  const briefContent = fs.readFileSync(path.join(ROOT, 'AGENT_BRIEF.md'), 'utf8');
+  const taskSpec = resumable?.taskSpec || selectTask(briefContent, ledger);
+  if (!resumable && !taskSpec) {
+    const hasRoutines = recurringTasks(briefContent).length > 0;
+    const nextStatus = hasRoutines ? 'waiting' : 'idle';
+    const enteringIdle = nextStatus === 'idle' && state.status !== 'idle';
+    updateRuntime({ status: nextStatus, pendingFeedback: null, lastError: null }, { lastOutcome: nextStatus, active: null });
     if (enteringIdle) {
-      appendRun({ outcome: 'idle', reason: 'Fila de melhorias concluída' });
-      log('Fila de melhorias concluída; loop em idle.');
-      notify('⏸️ Loop em idle\nTodos os itens da fila foram concluídos. Adicione um novo checkbox pendente para retomar.');
+      appendRun({ outcome: 'idle', reason: 'Fila e rotinas concluídas' });
+      log('Sem tarefas únicas ou rotinas recorrentes; loop em idle.');
+      notify(telegramMessage({
+        icon: '⏸️', title: 'Loop em espera',
+        summary: 'Todos os itens únicos e rotinas configuradas foram concluídos; nenhuma tarefa foi executada.',
+      }));
     }
     return;
   }
-  if (state.status === 'idle') log('Novo item pendente detectado; loop retomado.');
+  if (['idle', 'waiting'].includes(state.status)) log(`Tarefa elegível detectada: ${taskSpec.title}.`);
   const runId = resumable?.runId || new Date().toISOString().replace(/[:.]/g, '-');
-  const task = resumable?.task || buildTask(state);
+  const task = resumable?.task || buildTask(state, taskSpec);
   const created = resumable || createWorktree(runId);
   const worktree = created.worktree;
   const branch = created.branch;
   const firstAttempt = resumable?.attempt || 1;
-  updateRuntime({ status: resumable ? 'resuming' : 'running', lastRun: new Date().toISOString() }, { totalRuns: (ledger.totalRuns || 0) + 1, active: { ...(resumable || {}), runId, task, branch, worktree, status: 'running', attempt: firstAttempt, timeouts: resumable?.timeouts || 0 } });
+  updateRuntime({ status: resumable ? 'resuming' : 'running', lastRun: new Date().toISOString() }, { totalRuns: (ledger.totalRuns || 0) + 1, active: { ...(resumable || {}), runId, task, taskSpec, branch, worktree, status: 'running', attempt: firstAttempt, timeouts: resumable?.timeouts || 0 } });
   try {
     for (let attempt = firstAttempt; attempt <= MAX_ATTEMPTS; attempt += 1) {
       const active = readJson(LEDGER_FILE, {}).active;
-      updateRuntime({}, { active: { ...(active || {}), runId, task, branch, worktree, status: 'running', attempt } });
+      updateRuntime({}, { active: { ...(active || {}), runId, task, taskSpec, branch, worktree, status: 'running', attempt } });
       const prompt = resumable && attempt === firstAttempt
         ? `Continue exatamente a tarefa já iniciada: ${task}\n\nLeia o diff atual e o patch em ${resumable.partialPatch}. Preserve alterações válidas, complete apenas os critérios pendentes, não inicie outra tarefa e não rode testes/build.`
-        : (attempt === 1 ? task : readJson(RUNTIME_STATE, {}).pendingFeedback);
+        : (attempt === 1 ? task : buildTask(readJson(RUNTIME_STATE, {}), taskSpec));
       const implementation = runAgent('implementer', prompt, worktree);
       if (!implementation.ok) {
         if (implementation.timedOut && preserveTimeout(active, worktree, branch, runId, task, attempt)) return;
         throw new Error(`Implementer falhou: ${implementation.error.slice(-700)}`);
       }
-      const tests = runTests(worktree);
-      const verdict = review(worktree, runId, task, tests);
-      log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
-      if (verdict.verdict === 'APPROVE') {
-        const sha = commitApprovedWork(worktree, branch, runId);
-        const delivery = { ...deliveryMetadata(branch, runId, task), status: 'delivery_pending', worktree, sha, attempt, tests, deliveryFailures: 0 };
-        updateRuntime({ status: 'delivery_pending', lastAction: task, pendingFeedback: null, lastError: null }, { lastOutcome: 'delivery_pending', active: delivery });
-        const prUrl = deliverPullRequest(delivery, worktree);
-        updateRuntime({ status: 'approved', lastAction: task, pendingFeedback: null, prUrl, lastError: null }, { consecutiveFailures: 0, lastOutcome: 'approved', active: null });
-        appendRun({ runId, outcome: 'approved', attempt, task, prUrl, tests });
-        notify(`✅ Loop aprovado\nPR: ${prUrl}\nTentativas: ${attempt}\nAuto-merge ativado após CI.`);
-        removeWorktree(worktree);
+      const loopResult = parseLoopResult(implementation.output);
+      const changedFiles = listChangedFiles(worktree);
+      if (taskSpec.kind === 'recurring' && !changedFiles.length && loopResult.status === 'NO_CHANGE') {
+        const summary = compactSummary(loopResult.reason, 'A rotina consultou as fontes permitidas e não encontrou novidade válida.');
+        const currentLedger = readJson(LEDGER_FILE, {});
+        const recurring = recurringLedger(currentLedger, taskSpec, 'no_change', { recordsChanged: 0, summary });
+        updateRuntime({ status: 'waiting', lastAction: taskSpec.title, pendingFeedback: null, lastError: null, cycleSummary: summary }, { lastOutcome: 'no_change', active: null, recurring });
+        appendRun({ runId, outcome: 'no_change', task: taskSpec.title, taskSpec, summary, recordsChanged: 0 });
+        log(`Rotina ${taskSpec.id}: sem novidades; nenhum PR criado.`);
+        discardWorktree(worktree, branch);
         return;
       }
-      updateRuntime({ status: 'review_rejected', pendingFeedback: verdict.next_prompt, lastReview: verdict.reason }, { lastOutcome: 'review_rejected', active: { runId, task, attempt, review: verdict.reason } });
+      if (taskSpec.kind === 'recurring' && !changedFiles.length && loopResult.status === 'BLOCKED') {
+        const summary = compactSummary(loopResult.reason, 'A rotina encontrou um bloqueio externo e não alterou arquivos.');
+        const currentLedger = readJson(LEDGER_FILE, {});
+        const recurring = recurringLedger(currentLedger, taskSpec, 'blocked', { recordsChanged: 0, summary });
+        updateRuntime({ status: 'blocked', lastAction: taskSpec.title, pendingFeedback: null, lastError: summary, cycleSummary: summary }, { lastOutcome: 'blocked', active: null, recurring });
+        appendRun({ runId, outcome: 'blocked', task: taskSpec.title, taskSpec, summary, humanAction: loopResult.humanAction });
+        notify(telegramMessage({
+          icon: '⚠️', title: 'Rotina bloqueada', task: taskSpec.title, summary,
+          lines: [loopResult.humanAction ? `Ação necessária: ${loopResult.humanAction}` : null],
+        }));
+        discardWorktree(worktree, branch);
+        return;
+      }
+      if (loopResult.status === 'NO_CHANGE' && changedFiles.length) {
+        throw new Error('Implementer declarou NO_CHANGE, mas alterou arquivos.');
+      }
+      const tests = runTests(worktree);
+      let verdict = review(worktree, runId, task, tests, loopResult);
+      if (verdict.verdict === 'APPROVE' && taskSpec.kind === 'recurring' && verdict.records_changed !== null && verdict.records_changed > taskSpec.limit) {
+        verdict = {
+          verdict: 'REJECT',
+          reason: `Lote recorrente excedeu o limite de ${taskSpec.limit}: verifier contou ${verdict.records_changed}.`,
+          summary: `O lote excedeu o limite de ${taskSpec.limit} registros e não foi entregue.`,
+          next_prompt: `Reduza o lote para no máximo ${taskSpec.limit} registros e preserve somente itens verificáveis.`,
+        };
+      }
+      log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
+      if (verdict.verdict === 'APPROVE') {
+        const cycleSummary = compactSummary(verdict.summary || verdict.reason);
+        const sha = commitApprovedWork(worktree, branch, runId);
+        const delivery = {
+          ...deliveryMetadata(branch, runId, task, {
+            taskSpec, cycleSummary, recordsChanged: verdict.records_changed,
+            resultStatus: loopResult.status, humanAction: loopResult.humanAction,
+          }),
+          status: 'delivery_pending', worktree, sha, attempt, tests, deliveryFailures: 0,
+        };
+        updateRuntime({ status: 'delivery_pending', lastAction: taskSpec.title, pendingFeedback: null, lastError: null, cycleSummary }, { lastOutcome: 'delivery_pending', active: delivery });
+        const prUrl = deliverPullRequest(delivery, worktree);
+        const finalOutcome = loopResult.status === 'BLOCKED' ? 'blocked' : 'approved';
+        const currentLedger = readJson(LEDGER_FILE, {});
+        const recurring = recurringLedger(currentLedger, taskSpec, finalOutcome === 'approved' ? 'updated' : 'blocked', { recordsChanged: verdict.records_changed, summary: cycleSummary });
+        updateRuntime({ status: finalOutcome, lastAction: taskSpec.title, pendingFeedback: null, prUrl, lastError: finalOutcome === 'blocked' ? cycleSummary : null, cycleSummary }, { consecutiveFailures: 0, lastOutcome: finalOutcome, active: null, recurring });
+        appendRun({ runId, outcome: finalOutcome, attempt, task: taskSpec.title, taskSpec, summary: cycleSummary, recordsChanged: verdict.records_changed, prUrl, tests });
+        notify(telegramMessage({
+          icon: finalOutcome === 'blocked' ? '⚠️' : '✅',
+          title: finalOutcome === 'blocked' ? 'Tarefa bloqueada' : 'Ciclo concluído',
+          task: taskSpec.title,
+          summary: cycleSummary,
+          lines: [
+            loopResult.humanAction ? `Ação necessária: ${loopResult.humanAction}` : null,
+            'Validação: TypeScript e build passaram.',
+            `PR: ${prUrl}`,
+          ],
+        }));
+        discardWorktree(worktree, branch);
+        return;
+      }
+      updateRuntime({ status: 'review_rejected', pendingFeedback: verdict.next_prompt, lastReview: verdict.reason, cycleSummary: verdict.summary || null }, { lastOutcome: 'review_rejected', active: { runId, task, taskSpec, attempt, review: verdict.reason } });
       if (attempt === MAX_ATTEMPTS) {
         const patch = path.join(RUNTIME_DIR, `${runId}.patch`);
         const evidence = fs.existsSync(patch) ? ` Diff salvo em ${patch}.` : '';
         appendRun({ runId, outcome: 'escalated', attempt, task, reason: verdict.reason, tests });
         updateRuntime({ status: 'escalated' }, { consecutiveFailures: (ledger.consecutiveFailures || 0) + 1, lastOutcome: 'escalated', active: null });
-        notify(`⚠️ Loop escalado após ${MAX_ATTEMPTS} tentativas\nMotivo: ${verdict.reason.slice(0, 500)}.${evidence}`);
-        removeWorktree(worktree);
+        notify(telegramMessage({
+          icon: '⚠️', title: 'Ciclo escalado', task: taskSpec.title,
+          summary: verdict.summary || `A tarefa foi rejeitada após ${MAX_ATTEMPTS} tentativas.`,
+          lines: [`Motivo: ${compactSummary(verdict.reason)}`, evidence ? evidence.trim() : null],
+        }));
+        discardWorktree(worktree, branch);
         return;
       }
     }
@@ -488,14 +679,22 @@ async function mainLoop() {
       log(`Entrega pendente após aprovação (${deliveryFailures}): ${error.message}`);
       appendRun({ runId, outcome: 'delivery_pending', task, branch, sha: active.sha, error: error.message.slice(0, 1000) });
       updateRuntime({ status: 'delivery_pending', lastError: error.message }, { lastOutcome: 'delivery_pending', active: { ...active, deliveryFailures } });
-      notify(`⚠️ Código aprovado e enviado, mas a entrega está pendente\nBranch: ${branch}\nO próximo ciclo retomará sem reimplementar.`);
+      notify(telegramMessage({
+        icon: '⏳', title: 'Entrega pendente', task: taskSpec.title,
+        summary: active.cycleSummary || 'O código foi aprovado e enviado, mas o GitHub não confirmou o PR.',
+        lines: [`Situação: branch ${branch} preservada; o próximo ciclo retomará sem reimplementar.`],
+      }));
       return;
     }
     log(`Ciclo falhou: ${error.message}`);
     appendRun({ runId, outcome: 'failed', error: error.message.slice(0, 1000) });
     updateRuntime({ status: 'failed', lastError: error.message }, { consecutiveFailures: (ledger.consecutiveFailures || 0) + 1, lastOutcome: 'failed', active: null });
-    notify(`❌ Loop falhou sem enviar código\n${error.message.slice(0, 500)}`);
-    if (worktree) removeWorktree(worktree);
+    notify(telegramMessage({
+      icon: '❌', title: 'Ciclo falhou', task: taskSpec?.title || task,
+      summary: 'O ciclo foi interrompido antes de produzir uma entrega aprovada; nenhum código foi enviado.',
+      lines: [`Motivo: ${compactSummary(error.message)}`],
+    }));
+    if (worktree) discardWorktree(worktree, branch);
   }
 }
 
@@ -503,7 +702,17 @@ async function start() {
   ensureRuntime();
   log(`Loop L3 seguro iniciado; intervalo ${POLL_INTERVAL_MS / 60000} min; implementer ${IMPLEMENTER_TIMEOUT_MS / 60000} min; máximo ${MAX_TIMEOUTS} timeouts.`);
   while (true) {
-    await mainLoop();
+    try {
+      await mainLoop();
+    } catch (error) {
+      log(`Falha de orquestração: ${error.stack || error.message}`);
+      updateRuntime({ status: 'failed', lastError: error.message }, { lastOutcome: 'failed' });
+      notify(telegramMessage({
+        icon: '❌', title: 'Falha de orquestração',
+        summary: 'O ciclo não chegou a iniciar uma tarefa; nenhum código foi enviado.',
+        lines: [`Motivo: ${compactSummary(error.message)}`],
+      }));
+    }
     await new Promise((resolve) => setTimeout(resolve, POLL_INTERVAL_MS));
   }
 }
@@ -514,11 +723,17 @@ process.on('unhandledRejection', (error) => log(`Unhandled rejection: ${error}`)
 if (require.main === module) start();
 
 module.exports = {
+  compactSummary,
   createPullRequest,
   deliverPullRequest,
+  extractReview,
   findPullRequest,
   hasPendingBacklog,
   isTransientError,
+  parseLoopResult,
   pendingBacklogItems,
+  recurringTasks,
   runWithRetry,
+  selectTask,
+  telegramMessage,
 };

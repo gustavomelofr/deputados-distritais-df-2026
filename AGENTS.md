@@ -1,23 +1,29 @@
-# AGENTS.md — Opencode Minimal Loop
+# AGENTS.md — Monitor Eleitoral DF 2026
 
-These rules are loaded by opencode before loop work.
+## Autorização do loop
 
-## Loop Mode
+O processo `loop-runner.js` opera em L3 com autorização humana permanente para executar a tarefa específica enviada pelo orquestrador dentro de um worktree isolado.
 
-- Start in L1 report-only mode.
-- Read `STATE.md` before any triage.
-- Update `STATE.md` after every loop run.
-- Do not edit source code until the human explicitly enables L2.
+- Leia `AGENT_BRIEF.md` antes de editar.
+- Execute somente a tarefa exata recebida.
+- Não selecione tarefa alternativa e não altere outros checkboxes.
+- Uma tarefa por ciclo; escopo pequeno e verificável.
+- O implementer edita, mas nunca faz commit, push, merge ou checkout da `main`.
+- O verifier não edita nem executa shell.
+- O orquestrador é o único responsável por testes, commit, PR e auto-merge.
 
-## Safety
+## Segurança editorial
 
-- Never push or merge without human approval.
-- Never edit `.env`, `.env.*`, `auth/`, `payments/`, `secrets/`, or `credentials/`.
-- Use a git worktree for every code-changing attempt.
-- Max 3 fix attempts per item; escalate after that.
+- Nunca invente notícia, pessoa, candidatura, partido, cargo, declaração, data, foto ou fonte.
+- Antes do registro no TSE, não chame ninguém de candidato oficial.
+- Notícia exige URL específica; homepage de veículo não é evidência.
+- Foto exige origem e base de uso; imprensa somente com licença explícita.
+- Respeite o limite de registros declarado para a tarefa recorrente.
+- Sem novidade recorrente, não edite arquivos e retorne `LOOP_RESULT: NO_CHANGE`.
 
-## Verification
+## Segurança operacional
 
-- For L2+ changes, dispatch a verifier sub-agent after implementation.
-- Run the project's documented tests before proposing a fix.
-- Record test evidence in `STATE.md`.
+- Nunca altere `.env`, secrets, credenciais, dependências, workflows, configuração do loop ou caminhos bloqueados em `loop-gate.json`.
+- Nunca use `git commit`, `git push`, `git merge`, `git reset --hard` ou `rm -rf`.
+- Não rode TypeScript, build ou testes pesados; o orquestrador executa a validação.
+- Em bloqueio externo real, siga o formato definido em `AGENT_BRIEF.md`.

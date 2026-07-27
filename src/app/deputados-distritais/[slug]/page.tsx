@@ -121,6 +121,7 @@ export default async function DeputadoPage({ params }: Props) {
             <img
               src={dep.foto}
               alt={dep.nome}
+              loading="lazy"
               className="h-full w-full object-cover"
             />
           </div>

@@ -1,6 +1,26 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { deputados } from '@/data/deputados';
 import { noticias } from '@/data/noticias';
+
+export const metadata: Metadata = {
+  title: 'Cenário Eleitoral 2026 — Deputados Distritais DF',
+  description:
+    'Cenário eleitoral de 2026 para a Câmara Legislativa do DF, organizado por estágio de evidência: pré-candidatura declarada, movimentação pública e em observação.',
+  alternates: {
+    canonical: '/cenario-2026',
+  },
+  openGraph: {
+    title: 'Cenário Eleitoral 2026 — Deputados Distritais DF',
+    description:
+      'Pré-candidaturas e movimentações políticas para as eleições distritais de 2026, por estágio de evidência.',
+  },
+  twitter: {
+    title: 'Cenário Eleitoral 2026 — Deputados Distritais DF',
+    description:
+      'Pré-candidaturas e movimentações políticas para as eleições distritais de 2026, por estágio de evidência.',
+  },
+};
 
 // Estágios de evidência para o cenário eleitoral de 2026.
 // Cada item publicado deve trazer fonte e data — nenhum dado é inventado.

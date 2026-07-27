@@ -1,6 +1,26 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { deputados } from '@/data/deputados';
 import { proposicoesPorDeputado, ProposicaoComAutor } from '@/data/proposicoes';
+
+export const metadata: Metadata = {
+  title: 'Comparar Deputados — Deputados Distritais DF 2026',
+  description:
+    'Comparação lado a lado de até 3 deputados distritais do DF usando indicadores de fonte clara (CLDF). Sem ranking editorial enganoso.',
+  alternates: {
+    canonical: '/comparar',
+  },
+  openGraph: {
+    title: 'Comparar Deputados — Deputados Distritais DF 2026',
+    description:
+      'Comparação lado a lado de deputados distritais com indicadores de fonte clara.',
+  },
+  twitter: {
+    title: 'Comparar Deputados — Deputados Distritais DF 2026',
+    description:
+      'Comparação lado a lado de deputados distritais com indicadores de fonte clara.',
+  },
+};
 
 interface Props {
   searchParams: Promise<{

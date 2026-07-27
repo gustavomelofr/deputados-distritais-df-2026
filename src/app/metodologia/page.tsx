@@ -1,4 +1,24 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Metodologia — Deputados Distritais DF 2026',
+  description:
+    'Metodologia, fontes de dados (CLDF, Google News RSS, Instagram, DivulgaCand/TSE), frequência de coleta e limites de interpretação do monitor independente dos 24 deputados distritais do DF.',
+  alternates: {
+    canonical: '/metodologia',
+  },
+  openGraph: {
+    title: 'Metodologia — Deputados Distritais DF 2026',
+    description:
+      'Fontes P1/P2, frequência de coleta e limites de interpretação do monitor dos deputados distritais do DF.',
+  },
+  twitter: {
+    title: 'Metodologia — Deputados Distritais DF 2026',
+    description:
+      'Fontes P1/P2, frequência de coleta e limites de interpretação do monitor dos deputados distritais do DF.',
+  },
+};
 
 export default function MetodologiaPage() {
   return (

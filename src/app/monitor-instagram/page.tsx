@@ -1,4 +1,24 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Radar Instagram — Deputados Distritais DF 2026',
+  description:
+    'Monitoramento da atividade pública dos 24 deputados distritais do DF no Instagram. Coleta ainda não iniciada (fonte P2).',
+  alternates: {
+    canonical: '/monitor-instagram',
+  },
+  openGraph: {
+    title: 'Radar Instagram — Deputados Distritais DF 2026',
+    description:
+      'Atividade pública dos deputados distritais no Instagram (fonte P2, coleta pendente).',
+  },
+  twitter: {
+    title: 'Radar Instagram — Deputados Distritais DF 2026',
+    description:
+      'Atividade pública dos deputados distritais no Instagram (fonte P2, coleta pendente).',
+  },
+};
 
 export default function MonitorInstagramPage() {
   return (

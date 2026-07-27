@@ -443,11 +443,13 @@ export default function Home() {
                 title: "CLDF",
                 desc: "Perfis dos 24 deputados distritais com biografia, foto, comissões e contatos, extraídos diretamente da Câmara Legislativa.",
                 status: "ativo",
+                href: "/deputados-distritais",
               },
               {
                 title: "Notícias",
                 desc: "Cobertura jornalística sobre a CLDF e cada deputado, agregada do Google News RSS de veículos como G1, Correio Braziliense, Brasil de Fato e outros.",
                 status: "ativo",
+                href: "/noticias",
               },
               {
                 title: "Instagram Radar",

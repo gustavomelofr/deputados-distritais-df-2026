@@ -128,7 +128,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Criar base eleitoral independente das notícias.
   Critério: cenário deixa de depender de palavras-chave nos títulos; base inicial pode estar vazia, com schema, validação e estado honesto.
 
-- [ ] Criar validação automatizada de integridade editorial.
+- [x] Criar validação automatizada de integridade editorial.
   Critério: detectar IDs e URLs duplicados, links genéricos, datas inválidas, fonte ausente, slug inexistente e evidência sem cargo.
 
 ### P1 — Corrigir as 25 notícias atuais

@@ -139,7 +139,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Corrigir links e metadados das notícias 6–10.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Corrigir links e metadados das notícias 11–15.
+- [x] Corrigir links e metadados das notícias 11–15.
   Critério: mesmos requisitos do lote anterior.
 
 - [ ] Corrigir links e metadados das notícias 16–20.

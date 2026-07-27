@@ -113,7 +113,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 
 ### P0 — Identidade e modelo editorial
 
-- [ ] Atualizar marca e metadados globais para “Monitor Eleitoral DF 2026”.
+- [x] Atualizar marca e metadados globais para “Monitor Eleitoral DF 2026”.
   Critério: título, descrição, cabeçalho e rodapé deixam claro que a cobertura inclui governo, Senado, Câmara Federal e CLDF, sem quebrar rotas atuais.
 
 - [ ] Atualizar a mensagem principal da Home para o novo escopo eleitoral.

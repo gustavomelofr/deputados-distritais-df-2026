@@ -190,7 +190,7 @@ export default async function DeputadosPage({ searchParams }: Props) {
                 defaultValue={busca ?? ''}
                 placeholder="Buscar por nome ou biografia…"
                 aria-label="Buscar deputado distrital por nome"
-                className="w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="w-full rounded-lg border border-zinc-300 bg-white pl-9 pr-4 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 focus-visible:ring-2 focus-visible:ring-blue-500"
               />
               <button
                 type="submit"

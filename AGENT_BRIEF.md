@@ -122,7 +122,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Atualizar metodologia para notícias, evidências eleitorais, fotos e links oficiais.
   Critério: explicar fontes, estágios, datas, licenças de imagem, limites e diferença entre pré-candidatura e registro oficial.
 
-- [ ] Criar tipos de pessoa eleitoral, evidência, fotografia e notícia eleitoral.
+- [x] Criar tipos de pessoa eleitoral, evidência, fotografia e notícia eleitoral.
   Critério: tipos contemplam os quatro grupos de cargos, fonte, URL, datas separadas, estágio e licença da foto sem quebrar dados atuais.
 
 - [ ] Criar base eleitoral independente das notícias.

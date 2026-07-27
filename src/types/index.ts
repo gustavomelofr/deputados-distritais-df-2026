@@ -58,6 +58,12 @@ export interface Noticia {
   data: string;
   resumo: string;
   deputadosRelacionados: string[];
+  /** Data de coleta (distinta da publicação e da verificação). */
+  coletadaEm?: string;
+  /** Data de verificação editorial da URL, fonte e associações. */
+  verificadaEm?: string;
+  /** Tipo editorial da notícia eleitoral (quando classificada). */
+  tipo?: TipoNoticiaEleitoral;
 }
 
 export interface PostInstagram {

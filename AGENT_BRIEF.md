@@ -133,7 +133,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 
 ### P1 — Corrigir as 25 notícias atuais
 
-- [ ] Corrigir links e metadados das notícias 1–5.
+- [x] Corrigir links e metadados das notícias 1–5.
   Critério: URL específica, publicação, coleta, tipo e associações verificadas; remover item que não puder ser confirmado.
 
 - [ ] Corrigir links e metadados das notícias 6–10.

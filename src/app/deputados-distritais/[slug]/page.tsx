@@ -148,6 +148,7 @@ export default async function DeputadoPage({ params }: Props) {
                   href={`https://instagram.com/${dep.contatos.instagram}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Perfil @${dep.contatos.instagram} de ${dep.nome} no Instagram (abre em nova aba)`}
                   className="inline-flex items-center gap-1.5 rounded-full bg-pink-50 text-pink-700 text-sm font-medium px-3 py-1 hover:bg-pink-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-500"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">
@@ -161,6 +162,7 @@ export default async function DeputadoPage({ params }: Props) {
                   href={`https://twitter.com/${dep.contatos.twitter}`}
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`Perfil @${dep.contatos.twitter} de ${dep.nome} no Twitter/X (abre em nova aba)`}
                   className="inline-flex items-center gap-1.5 rounded-full bg-sky-50 text-sky-700 text-sm font-medium px-3 py-1 hover:bg-sky-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
                 >
                   <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor" aria-hidden="true">

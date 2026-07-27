@@ -1,7 +1,27 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { noticias } from '@/data/noticias';
 import { proposicoes } from '@/data/proposicoes';
 import { deputados } from '@/data/deputados';
+
+export const metadata: Metadata = {
+  title: 'Análise Descritiva — Deputados Distritais DF 2026',
+  description:
+    'Análise descritiva de temas e volume das fontes monitoradas (CLDF e Google News RSS). Volume não mede popularidade, apoio ou intenção de voto.',
+  alternates: {
+    canonical: '/analise',
+  },
+  openGraph: {
+    title: 'Análise Descritiva — Deputados Distritais DF 2026',
+    description:
+      'Contagens por tipo, fonte, período e deputado. Volume não mede popularidade ou intenção de voto.',
+  },
+  twitter: {
+    title: 'Análise Descritiva — Deputados Distritais DF 2026',
+    description:
+      'Contagens por tipo, fonte, período e deputado. Volume não mede popularidade ou intenção de voto.',
+  },
+};
 
 // Análise descritiva de temas e volume.
 // Esta página consolida contagens reais derivadas das fontes monitoradas

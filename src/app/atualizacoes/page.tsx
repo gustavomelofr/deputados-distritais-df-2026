@@ -1,7 +1,27 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { noticias } from '@/data/noticias';
 import { deputados } from '@/data/deputados';
 import { proposicoes } from '@/data/proposicoes';
+
+export const metadata: Metadata = {
+  title: 'Atualizações Monitoradas — Deputados Distritais DF 2026',
+  description:
+    'Feed unificado de notícias, proposições e atividade pública dos deputados distritais do DF. Cada item mostra fonte, data e deputado relacionado.',
+  alternates: {
+    canonical: '/atualizacoes',
+  },
+  openGraph: {
+    title: 'Atualizações Monitoradas — Deputados Distritais DF 2026',
+    description:
+      'Feed unificado de notícias, proposições e atividade pública da CLDF.',
+  },
+  twitter: {
+    title: 'Atualizações Monitoradas — Deputados Distritais DF 2026',
+    description:
+      'Feed unificado de notícias, proposições e atividade pública da CLDF.',
+  },
+};
 
 // Lookup de slug -> nome do deputado, derivado dos dados (sem hardcoding).
 const deputadoPorSlug = Object.fromEntries(

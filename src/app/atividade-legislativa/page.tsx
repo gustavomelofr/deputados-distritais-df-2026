@@ -1,6 +1,26 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { proposicoes, type ProposicaoComAutor } from '@/data/proposicoes';
 import { deputados } from '@/data/deputados';
+
+export const metadata: Metadata = {
+  title: 'Atividade Legislativa — Deputados Distritais DF 2026',
+  description:
+    'Proposições da Câmara Legislativa do Distrito Federal organizadas por tipo, status e deputado autor. Fonte: API pública do Processo Legislativo Eletrônico (PLE/CLDF).',
+  alternates: {
+    canonical: '/atividade-legislativa',
+  },
+  openGraph: {
+    title: 'Atividade Legislativa — Deputados Distritais DF 2026',
+    description:
+      'Proposições da CLDF por tipo, status e deputado autor. Fonte: PLE/CLDF (P1).',
+  },
+  twitter: {
+    title: 'Atividade Legislativa — Deputados Distritais DF 2026',
+    description:
+      'Proposições da CLDF por tipo, status e deputado autor. Fonte: PLE/CLDF (P1).',
+  },
+};
 
 // Lookup de slug -> nome do deputado, derivado dos dados (sem hardcoding).
 const deputadoPorSlug = Object.fromEntries(

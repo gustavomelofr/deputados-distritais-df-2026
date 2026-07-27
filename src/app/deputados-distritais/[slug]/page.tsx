@@ -17,9 +17,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const dep = getDeputadoBySlug(slug);
   if (!dep) return { title: 'Deputado não encontrado' };
+  const title = `${dep.nome} (${dep.partido}) — Deputado Distrital DF`;
+  const description = `Perfil do deputado distrital ${dep.nome} (${dep.partido}) na Câmara Legislativa do DF. Biografia, proposições e notícias relacionadas.`;
   return {
-    title: `${dep.nome} (${dep.partido}) — Deputado Distrital DF`,
-    description: `Perfil do deputado distrital ${dep.nome} (${dep.partido}) na Câmara Legislativa do DF. Biografia, proposições e notícias relacionadas.`,
+    title,
+    description,
+    alternates: {
+      canonical: `/deputados-distritais/${slug}`,
+    },
+    openGraph: {
+      type: 'profile',
+      locale: 'pt_BR',
+      siteName: 'Deputados Distritais DF 2026',
+      title,
+      description,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
   };
 }
 

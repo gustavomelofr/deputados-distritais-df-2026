@@ -145,7 +145,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Corrigir links e metadados das notícias 16–20.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Corrigir links e metadados das notícias 21–25.
+- [x] Corrigir links e metadados das notícias 21–25.
   Critério: mesmos requisitos do lote anterior.
 
 - [ ] Criar coletor de descoberta de notícias eleitorais.

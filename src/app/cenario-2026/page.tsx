@@ -11,11 +11,15 @@ export const metadata: Metadata = {
     canonical: '/cenario-2026',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Cenário Eleitoral 2026 — Deputados Distritais DF',
     description:
       'Pré-candidaturas e movimentações políticas para as eleições distritais de 2026, por estágio de evidência.',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Cenário Eleitoral 2026 — Deputados Distritais DF',
     description:
       'Pré-candidaturas e movimentações políticas para as eleições distritais de 2026, por estágio de evidência.',

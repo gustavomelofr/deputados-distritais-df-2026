@@ -12,11 +12,15 @@ export const metadata: Metadata = {
     canonical: '/atualizacoes',
   },
   openGraph: {
+    type: 'website',
+    locale: 'pt_BR',
+    siteName: 'Deputados Distritais DF 2026',
     title: 'Atualizações Monitoradas — Deputados Distritais DF 2026',
     description:
       'Feed unificado de notícias, proposições e atividade pública da CLDF.',
   },
   twitter: {
+    card: 'summary_large_image',
     title: 'Atualizações Monitoradas — Deputados Distritais DF 2026',
     description:
       'Feed unificado de notícias, proposições e atividade pública da CLDF.',

@@ -106,6 +106,7 @@ export default async function CompararPage({ searchParams }: Props) {
           coletados e aparecem como indisponíveis. Veja{' '}
           <Link
             href="/metodologia"
+            aria-label="Ver metodologia e limites da comparação"
             className="underline rounded-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
           >
             metodologia
@@ -203,6 +204,7 @@ export default async function CompararPage({ searchParams }: Props) {
                     >
                       <Link
                         href={`/deputados-distritais/${d.slug}`}
+                        aria-label={`Ver perfil de ${d.nome} (${d.partido})`}
                         className="font-semibold text-zinc-900 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                       >
                         {d.nome}

@@ -362,7 +362,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
               aria-label="Limpar filtros e exibir todas as proposições"
               className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-blue-600 hover:text-blue-500 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
             >
-              Limpar filtros →
+              Limpar filtros <span aria-hidden="true">→</span>
             </Link>
           </div>
         ) : (
@@ -441,7 +441,7 @@ export default async function AtividadeLegislativaPage({ searchParams }: Props) 
                     aria-label={`Abrir proposição ${p.sigla} na CLDF em nova aba`}
                     className="mt-3 inline-flex items-center gap-1 text-xs text-blue-600 font-medium hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded"
                   >
-                    Abrir na CLDF →
+                    Abrir na CLDF <span aria-hidden="true">→</span>
                   </a>
                 </article>
               );

@@ -508,7 +508,12 @@ export default function Home() {
           </p>
           <div className="grid md:grid-cols-2 gap-6">
             {/* Notícias */}
-            <div className="rounded-xl border border-zinc-200 p-6">
+            <Link
+              href="/noticias"
+              aria-label="Ver notícias coletadas"
+              className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+            <div className="rounded-xl border border-zinc-200 p-6 hover:border-zinc-300 transition">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-zinc-900">Notícias</h3>
                 <span className="rounded-full bg-green-100 text-green-700 text-xs font-medium px-2.5 py-0.5">
@@ -550,6 +555,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
+            </Link>
 
             {/* Instagram */}
             <div className="rounded-xl border border-zinc-200 p-6">
@@ -584,7 +590,12 @@ export default function Home() {
             </div>
 
             {/* Proposições */}
-            <div className="rounded-xl border border-zinc-200 p-6">
+            <Link
+              href="/atividade-legislativa"
+              aria-label="Ver atividade legislativa e proposições"
+              className="block rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+            >
+            <div className="rounded-xl border border-zinc-200 p-6 hover:border-zinc-300 transition">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="font-semibold text-zinc-900">Proposições</h3>
                 <span className="rounded-full bg-green-100 text-green-700 text-xs font-medium px-2.5 py-0.5">
@@ -635,6 +646,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
+            </Link>
 
             {/* Presença */}
             <div className="rounded-xl border border-zinc-200 p-6">

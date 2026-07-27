@@ -125,7 +125,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Criar tipos de pessoa eleitoral, evidência, fotografia e notícia eleitoral.
   Critério: tipos contemplam os quatro grupos de cargos, fonte, URL, datas separadas, estágio e licença da foto sem quebrar dados atuais.
 
-- [ ] Criar base eleitoral independente das notícias.
+- [x] Criar base eleitoral independente das notícias.
   Critério: cenário deixa de depender de palavras-chave nos títulos; base inicial pode estar vazia, com schema, validação e estado honesto.
 
 - [ ] Criar validação automatizada de integridade editorial.

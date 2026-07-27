@@ -1,7 +1,9 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { deputados } from '@/data/deputados';
-import { noticias } from '@/data/noticias';
+import { cenarioEleitoral } from '@/data/cenario-eleitoral';
+import { validarCenarioEleitoral } from '@/lib/validar-cenario-eleitoral';
+import type { PessoaEleitoral } from '@/types';
 
 export const metadata: Metadata = {
   title: 'Cenário Eleitoral 2026 — Deputados Distritais DF',
@@ -44,55 +46,45 @@ interface ItemCenario {
   estagio: EstagioEvidencia;
 }
 
-// Mapeia notícias reais já coletadas (Google News RSS — P1) para o estágio
-// de evidência correspondente. Apenas notícias diretamente relacionadas ao
-// cenário eleitoral de 2026 são incluídas; o restante (atividade legislativa
-// corrente) fica em /noticias e /atividade-legislativa.
-const itensCenario: ItemCenario[] = noticias
-  .filter((n) => {
-    const t = n.titulo.toLowerCase();
-    const r = n.resumo.toLowerCase();
-    return (
-      t.includes('candidat') ||
-      t.includes('nominata') ||
-      t.includes('cadeiras') ||
-      t.includes('vagas') ||
-      t.includes('disputar') ||
-      t.includes('preferido') ||
-      t.includes('panorama') ||
-      (r.includes('elei') && r.includes('2026')) ||
-      (r.includes('candidat') && r.includes('2026')) ||
-      r.includes('nominata') ||
-      r.includes('eleitoral')
-    );
-  })
-  .map((n) => {
-    const titulo = n.titulo;
-    const resumo = n.resumo;
-    const t = n.titulo.toLowerCase();
-    const r = n.resumo.toLowerCase();
-    let estagio: EstagioEvidencia = 'movimentacao-publica';
-    // "pré-candidatura declarada" exigiria declaração explícita de candidatura
-    // por parte do próprio interessado ou registro oficial. Nenhuma notícia
-    // coletada até agora atende a esse critério — não forçamos a classificação.
-    if (
-      t.includes('preferido') ||
-      r.includes('pesquisa de opinião') ||
-      r.includes('mais bem avaliado')
-    ) {
-      estagio = 'em-observacao';
-    }
+// Mapeia o estágio eleitoral do schema (5 valores) para o estágio de
+// evidência da página (3 valores). "pre_candidatura_declarada",
+// "anunciado_pelo_partido" e "registro_oficial" são evidência direta;
+// "movimentacao_publica" é indireta; "nome_monitorado" é circunstancial.
+function estagioPagina(estagio: PessoaEleitoral['estagio']): EstagioEvidencia {
+  switch (estagio) {
+    case 'pre_candidatura_declarada':
+    case 'anunciado_pelo_partido':
+    case 'registro_oficial':
+      return 'pre-candidatura-declarada';
+    case 'movimentacao_publica':
+      return 'movimentacao-publica';
+    case 'nome_monitorado':
+      return 'em-observacao';
+  }
+}
+
+// Base eleitoral independente das notícias (src/data/cenario-eleitoral.ts).
+// A classificação por estágio vem do campo `estagio` do registro, NÃO de
+// palavras-chave em títulos de notícia. Pessoas sem evidência não são exibidas.
+const itensCenario: ItemCenario[] = cenarioEleitoral
+  .filter((p) => p.evidencias.length > 0)
+  .map((p) => {
+    const evMaisRecente = p.evidencias
+      .slice()
+      .sort((a, b) => b.dataEvidencia.localeCompare(a.dataEvidencia))[0];
     return {
-      id: n.id,
-      titulo,
-      resumo,
-      fonte: n.fonte,
-      url: n.url,
-      data: n.data,
-      deputadosRelacionados: n.deputadosRelacionados,
-      estagio,
+      id: p.id,
+      titulo: p.nome,
+      resumo: evMaisRecente.descricao,
+      fonte: evMaisRecente.fonte,
+      url: evMaisRecente.url,
+      data: evMaisRecente.dataEvidencia,
+      deputadosRelacionados: [p.slug],
+      estagio: estagioPagina(p.estagio),
     };
   });
+
+const errosValidacao = validarCenarioEleitoral(cenarioEleitoral);
 
 const ESTAGIOS: {
   id: EstagioEvidencia;
@@ -168,6 +160,30 @@ export default function Cenario2026Page() {
         publicado traz fonte e data; o que ainda não foi coletado é informado
         com transparência.
       </p>
+
+      {errosValidacao.length > 0 && (
+        <section
+          className="rounded-xl border border-red-200 bg-red-50 p-6 mb-8"
+          role="alert"
+          aria-labelledby="heading-validacao"
+        >
+          <h2 id="heading-validacao" className="text-xl font-semibold text-red-900 mb-2">
+            Base eleitoral com inconsistências
+          </h2>
+          <p className="text-sm text-red-700 leading-relaxed mb-3">
+            A validação de integridade detectou {errosValidacao.length} inconsistência
+            {errosValidacao.length > 1 ? 's' : ''} na base eleitoral. Os registros
+            afetados não devem ser considerados confiáveis até a correção.
+          </p>
+          <ul className="space-y-1 text-xs text-red-700">
+            {errosValidacao.slice(0, 10).map((e, i) => (
+              <li key={i}>
+                {e.pessoaId} — {e.campo}: {e.mensagem}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       {/* Explicação dos estágios */}
       <section className="rounded-xl border border-zinc-200 bg-white p-6 mb-8">
@@ -372,10 +388,13 @@ export default function Cenario2026Page() {
           Sobre esta página
         </h2>
         <p className="text-sm text-zinc-500 leading-relaxed">
-          Os itens publicados nos estágios de evidência são derivados das
-          notícias já coletadas via Google News RSS (P1). A classificação por
-          estágio descreve o tipo de evidência observável, não juízo sobre a
-          probabilidade de candidatura. Quando a fonte oficial de candidaturas
+          Os itens publicados nos estágios de evidência vêm de uma{' '}
+          <strong>base eleitoral independente</strong>{' '}
+          (<code className="text-xs">src/data/cenario-eleitoral.ts</code>), não de
+          palavras-chave nos títulos de notícias. Cada registro exige fonte
+          específica, data e estágio de evidência. A base inicial é vazia;
+          conforme as tarefas P3 coletam evidências para cada cargo, os
+          registros são adicionados. Quando a fonte oficial de candidaturas
           (DivulgaCand/TSE — P2) estiver integrada, o estágio “Pré-candidatura
           declarada” passará a exibir registros oficiais com fonte e data.
         </p>

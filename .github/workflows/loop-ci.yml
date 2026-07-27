@@ -18,5 +18,6 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - run: npm run test:loop
       - run: npx tsc --noEmit
       - run: NODE_OPTIONS="--max-old-space-size=768" npm run build

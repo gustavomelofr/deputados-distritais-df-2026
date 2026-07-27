@@ -6,6 +6,9 @@
 - Cadência: 15 minutos após o fim do ciclo anterior;
 - Implementer: até 45 minutos; verifier: até 3 minutos;
 - Timeout com diff: worktree e patch em `.loop/partial/` são retomados no ciclo seguinte;
+- Fila concluída: o loop entra em `idle`, sem criar worktree ou chamar agentes, e retoma ao detectar novo checkbox pendente;
+- Entrega interrompida: branch e metadados ficam em `delivery_pending`; o ciclo seguinte recupera ou cria o PR sem reimplementar;
+- GitHub e modelo: erros transitórios recebem retry com backoff; criação de PR usa REST como fallback;
 - Escalonamento: dois timeouts ou 24h de trabalho parcial;
 - Modelo: configurado no OpenCode;
 - Tentativas: no máximo 2 por tarefa;
@@ -28,6 +31,7 @@ origin/main
 - `loop-gate.json` bloqueia secrets, infraestrutura, dependências e configuração do loop;
 - erro, timeout ou resposta inválida do verifier falha fechada: sem PR;
 - `.loop-pause` pausa novas execuções;
+- `idle` não desliga o serviço: ele apenas aguarda uma nova tarefa na fila;
 - o estado operacional está em `.loop/` e não polui a branch `main`;
 - nenhum agente pode enviar mudanças diretamente à `main`.
 

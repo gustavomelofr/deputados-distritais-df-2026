@@ -39,25 +39,25 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Deputados Distritais DF 2026 — Monitor Independente",
+  title: "Monitor Eleitoral DF 2026 — Monitor Independente",
   description:
-    "Monitoramento independente dos 24 deputados distritais do Distrito Federal. Proposições, votações, presença, gastos e cobertura jornalística organizados com contexto editorial.",
+    "Monitoramento independente das eleições de 2026 no Distrito Federal para governador e vice, senador, deputado federal e deputado distrital. Notícias, evidências de pré-candidatura, registros oficiais e atividade legislativa da CLDF organizados com contexto editorial.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "pt_BR",
-    siteName: "Deputados Distritais DF 2026",
-    title: "Deputados Distritais DF 2026 — Monitor Independente",
+    siteName: "Monitor Eleitoral DF 2026",
+    title: "Monitor Eleitoral DF 2026 — Monitor Independente",
     description:
-      "Monitoramento independente dos 24 deputados distritais do Distrito Federal. Proposições, votações, presença, gastos e cobertura jornalística organizados com contexto editorial.",
+      "Monitoramento independente das eleições de 2026 no Distrito Federal para governador e vice, senador, deputado federal e deputado distrital. Notícias, evidências de pré-candidatura, registros oficiais e atividade legislativa da CLDF organizados com contexto editorial.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Deputados Distritais DF 2026 — Monitor Independente",
+    title: "Monitor Eleitoral DF 2026 — Monitor Independente",
     description:
-      "Monitoramento independente dos 24 deputados distritais do Distrito Federal. Proposições, votações, presença, gastos e cobertura jornalística organizados com contexto editorial.",
+      "Monitoramento independente das eleições de 2026 no Distrito Federal para governador e vice, senador, deputado federal e deputado distrital. Notícias, evidências de pré-candidatura, registros oficiais e atividade legislativa da CLDF organizados com contexto editorial.",
   },
 };
 
@@ -83,10 +83,10 @@ export default function RootLayout({
             <div className="flex items-center gap-3 min-w-0">
               <a
                 href="/"
-                aria-label="Deputados Distritais DF 2026 — página inicial"
+                aria-label="Monitor Eleitoral DF 2026 — página inicial"
                 className="text-lg font-bold tracking-tight text-zinc-900 shrink-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
-                Deputados Distritais <span className="text-blue-600">DF 2026</span>
+                Monitor Eleitoral <span className="text-blue-600">DF 2026</span>
               </a>
               <span
                 aria-label="Agente autônomo ativo: monitoramento contínuo de fontes públicas"
@@ -108,12 +108,15 @@ export default function RootLayout({
         <footer className="border-t border-zinc-200 bg-zinc-100 py-8 text-xs text-zinc-500">
           <div className="mx-auto max-w-6xl px-4 text-center">
             <p className="font-semibold text-zinc-700 text-sm mb-2">
-              Deputados Distritais DF 2026
+              Monitor Eleitoral DF 2026
             </p>
-            <p>Monitor independente dos 24 deputados distritais do Distrito Federal.</p>
+            <p>
+              Monitor independente das eleições de 2026 no Distrito Federal:
+              governo e vice, Senado, Câmara Federal e CLDF.
+            </p>
             <p className="mt-2">
               Dados públicos organizados para fins informativos e analíticos.
-              Não é página oficial da CLDF ou de órgão público.
+              Não é página oficial de órgão público ou partido.
             </p>
             <p className="mt-4 text-zinc-400 text-[11px]">
               {ultimaAtualizacao

@@ -162,7 +162,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Adicionar notícias verificadas até atingir 55 registros válidos.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Adicionar notícias verificadas até atingir 65 registros válidos.
+- [x] Adicionar notícias verificadas até atingir 65 registros válidos.
   Critério: mesmos requisitos do lote anterior.
 
 - [ ] Adicionar notícias verificadas até atingir 75 registros válidos.

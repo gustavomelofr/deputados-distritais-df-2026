@@ -174,7 +174,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Adicionar notícias verificadas até atingir 95 registros válidos.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Adicionar notícias verificadas até atingir 100 registros válidos.
+- [x] Adicionar notícias verificadas até atingir 100 registros válidos.
   Critério: completar a meta sem duplicatas, links genéricos ou conteúdo fora da janela de seis meses.
 
 ### P3 — Nomes monitorados para 2026

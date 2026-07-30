@@ -252,3 +252,137 @@ test('auditoria preserva mapeamento eleitoral 2026: 8 com, 2 sem', () => {
     'auditoria deve derivar pessoaEleitoralId por slug',
   );
 });
+
+const DEPUTADOS_SLUGS_ESPERADOS_LOTE3 = [
+  'rogerio-morro-da-cruz',
+  'roosevelt-vilela',
+  'thiago-manzoni',
+  'wellington-luiz',
+];
+
+function auditoriaLote3Ranges() {
+  const source = readFileSafe(AUDIT_FILE);
+  const m = source.match(
+    /auditoriaFotosDeputadosDistritaisLote3:\s*AuditoriaFoto\[\]\s*=\s*\[([\s\S]*?)\]/,
+  );
+  if (!m) return [];
+  const re = /itemComComprovacao\(\s*(\d+)\s*,/g;
+  return [...m[1].matchAll(re)].map((x) => Number(x[1]));
+}
+
+test('slugs dos deputados distritais 21–24 batem com a lista oficial', () => {
+  const deps = deputadosFonte().slice(20, 24);
+  assert.deepEqual(
+    deps.map((d) => d.slug),
+    DEPUTADOS_SLUGS_ESPERADOS_LOTE3,
+    'ordem dos slugs do lote 3 divergente da esperada',
+  );
+});
+
+test('auditoria do lote 3 cobre exatamente os deputados distritais 21–24 em ordem', () => {
+  const calls = auditoriaLote3Ranges();
+  assert.deepEqual(
+    calls,
+    [21, 22, 23, 24],
+    `auditoria do lote 3 deve chamar itemComComprovacao(21) a itemComComprovacao(24); chamadas encontradas: ${calls.join(',')}`,
+  );
+});
+
+test('identidade registrada no lote 3: deputadoId, slug, nome e url por posição', () => {
+  const deps = deputadosFonte().slice(20, 24);
+  const calls = auditoriaLote3Ranges();
+  assert.equal(calls.length, deps.length);
+  for (let i = 0; i < deps.length; i++) {
+    const pos = calls[i];
+    const dep = deps[pos - 21];
+    assert.ok(dep, `posição ${pos} sem deputado correspondente`);
+    assert.equal(dep.id, String(pos), `deputado da posição ${pos} tem id divergente`);
+    assert.ok(dep.slug, `deputado ${pos}: slug ausente`);
+    assert.ok(dep.nome, `deputado ${pos}: nome ausente`);
+  }
+});
+
+test('URL da foto do lote 3 é HTTPS específica da CLDF', () => {
+  const deps = deputadosFonte().slice(20, 24);
+  for (const dep of deps) {
+    const u = new URL(dep.foto);
+    assert.equal(u.protocol, 'https:', `${dep.slug}: foto não HTTPS`);
+    assert.match(
+      u.hostname,
+      /(^|\.)cl\.df\.gov\.br$/,
+      `${dep.slug}: host fora da CLDF (${u.hostname})`,
+    );
+    assert.notEqual(u.pathname, '/', `${dep.slug}: pathname raiz`);
+  }
+});
+
+test('lote 3 exporta validador determinístico 21–24', () => {
+  const fonte = readFileSafe(AUDIT_FILE);
+  assert.match(
+    fonte,
+    /export function validarAuditoriaFotosDeputados21a24/,
+    'validador do lote 3 ausente',
+  );
+  assert.match(
+    fonte,
+    /auditoriaFotosDeputadosDistritaisLote3/,
+    'array do lote 3 ausente',
+  );
+});
+
+test('lote 3 registra comprovação determinística (HTTP, MIME, dimensões) para cada item', () => {
+  const fonte = readFileSafe(AUDIT_FILE);
+  assert.match(
+    fonte,
+    /comprovacao:\s*\{/,
+    'lote 3 deve registrar campo comprovacao',
+  );
+  assert.match(
+    fonte,
+    /httpStatus:\s*200/,
+    'lote 3 deve registrar HTTP 200',
+  );
+  assert.match(
+    fonte,
+    /mime:\s*'image\/jpeg'/,
+    'lote 3 deve registrar MIME image/jpeg',
+  );
+  assert.match(
+    fonte,
+    /largura:\s*\d+/,
+    'lote 3 deve registrar largura',
+  );
+  assert.match(
+    fonte,
+    /altura:\s*\d+/,
+    'lote 3 deve registrar altura',
+  );
+  assert.match(
+    fonte,
+    /COMPROVACAO_VERIFICADA_EM\s*=\s*'2026-07-30T23:16:00Z'/,
+    'lote 3 deve registrar data/hora ISO 8601 da comprovação',
+  );
+});
+
+test('lote 3 registra licencaReutilizacao como pendente (não comprovada)', () => {
+  const fonte = readFileSafe(AUDIT_FILE);
+  assert.match(
+    fonte,
+    /licencaReutilizacao:\s*'pendente'/,
+    'lote 3 deve registrar licencaReutilizacao como pendente',
+  );
+  assert.doesNotMatch(
+    fonte,
+    /licencaReutilizacao:\s*'comprovada'/,
+    'lote 3 não deve afirmar licencaReutilizacao comprovada',
+  );
+});
+
+test('lote 3 documenta que licença de reutilização não foi comprovada', () => {
+  const fonte = readFileSafe(AUDIT_FILE);
+  assert.match(
+    fonte,
+    /Licença\/autorização de reutilização NÃO comprovada/,
+    'lote 3 deve documentar honestamente que a licença de reutilização não foi comprovada',
+  );
+});

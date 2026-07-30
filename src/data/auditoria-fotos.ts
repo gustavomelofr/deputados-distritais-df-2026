@@ -51,6 +51,30 @@ export interface AuditoriaFoto {
   verificadaEm: string;
   /** Observações editoriais opcionais (não substituem licença). */
   observacao?: string;
+  /**
+   * Comprovação determinística opcional da resposta HTTP, MIME de imagem e
+   * dimensões mínimas. Presente quando a validade foi confirmada por
+   * verificação automatizada; ausente quando a validade é pendente.
+   */
+  comprovacao?: {
+    /** Código HTTP retornado (ex.: 200). */
+    httpStatus: number;
+    /** MIME retornado pelo servidor (ex.: image/jpeg). */
+    mime: string;
+    /** Largura em pixels. */
+    largura: number;
+    /** Altura em pixels. */
+    altura: number;
+    /** Data/hora ISO 8601 da verificação automatizada. */
+    verificadaEm: string;
+  };
+  /**
+   * Estado honesto da licença/autorização de reutilização. `comprovada`
+   * exige documento/termo explícito na fonte; `pendente` indica que a foto
+   * é institucional oficial mas a licença de reutilização não foi
+   * comprovada — não se afirma reutilização permitida.
+   */
+  licencaReutilizacao?: 'comprovada' | 'pendente';
 }
 
 const CLDF_DEPUTADOS_URL =
@@ -127,6 +151,188 @@ export const auditoriaFotosDeputadosDistritaisLote2: AuditoriaFoto[] = [
   item(20),
 ];
 
+// ---------------------------------------------------------------------------
+// Auditoria de fotografias dos deputados distritais — P4 do AGENT_BRIEF.md.
+//
+// Lote 3: deputados distritais 21–24 (ordenados por id em src/data/deputados.ts).
+// Critério: mesmos requisitos dos lotes anteriores — identidade, fonte, licença/
+// base de uso, validade e data de verificação registradas — acrescido de
+// comprovação determinística de resposta HTTP, MIME de imagem e dimensões
+// mínimas, e documentação honesta da licença/autorização de reutilização.
+//
+// Comprovação determinística realizada em 2026-07-30T23:16:00Z via requisição
+// HTTP HEAD + download do binário + leitura do cabeçalho JPEG (JFIF) para
+// extrair largura e altura. Todas as 4 URLs retornaram HTTP 200 com
+// content-type image/jpeg.
+//
+// Licença/autorização de reutilização da CLDF: a página institucional
+// https://www.cl.df.gov.br/deputados-2023-2026 veicula as fotos oficiais
+// dos deputados, mas NÃO declara explicitamente uma licença ou autorização
+// de reutilização das imagens (sem Creative Commons, CC-BY, domínio público
+// ou termo equivalente). O Portal de Dados Abertos da CLDF
+// (https://www.cl.df.gov.br/dados-abertos) descreve dados abertos em geral,
+// mas as fotos dos deputados não constam como conjunto de dados abertos
+// com licença explícita. Portanto, a licença de reutilização NÃO foi
+// comprovada — registra-se `licencaReutilizacao: 'pendente'` e a base de
+// uso `institucional_oficial` sem afirmar que a reutilização é permitida.
+// O item do AGENT_BRIEF.md permanece `[ ]` (não concluído) até que a
+// licença/autorização de reutilização seja documentada ou até que uma
+// fonte com licença explícita (DivulgaCand/TSE, por exemplo) substitua
+// a foto institucional.
+// ---------------------------------------------------------------------------
+
+const COMPROVACAO_VERIFICADA_EM = '2026-07-30T23:16:00Z';
+
+const itemComComprovacao = (
+  pos: number,
+  comprovacao: {
+    httpStatus: number;
+    mime: string;
+    largura: number;
+    altura: number;
+  },
+): AuditoriaFoto => {
+  const dep = deputados[pos - 1];
+  const temMapeamento = pessoaEleitoralIdPorSlug(dep.slug) !== null;
+  return {
+    deputadoId: dep.id,
+    slug: dep.slug,
+    nome: dep.nome,
+    pessoaEleitoralId: pessoaEleitoralIdPorSlug(dep.slug),
+    url: dep.foto,
+    fonte: 'CLDF — Câmara Legislativa do DF',
+    urlFonte: CLDF_DEPUTADOS_URL,
+    licenca: 'institucional_oficial',
+    validade: 'valida',
+    verificadaEm: VERIFICADA_EM,
+    observacao: temMapeamento
+      ? 'Foto institucional publicada pela CLDF na página oficial da legislatura 2023–2026. Comprovação determinística: HTTP 200, MIME image/jpeg e dimensões mínimas confirmadas em 2026-07-30T23:16:00Z. Licença/autorização de reutilização NÃO comprovada: a página da CLDF não declara explicitamente licença de reutilização das fotos (sem Creative Commons/CC-BY/domínio público); base de uso institucional_oficial sem afirmar reutilização permitida.'
+      : 'Foto institucional publicada pela CLDF na página oficial da legislatura 2023–2026. Deputado(a) sem mapeamento específico na base eleitoral 2026 (não foi pré-confirmado em nominata partidária para a CLDF nas fontes monitoradas até a data de verificação). Comprovação determinística: HTTP 200, MIME image/jpeg e dimensões mínimas confirmadas em 2026-07-30T23:16:00Z. Licença/autorização de reutilização NÃO comprovada: a página da CLDF não declara explicitamente licença de reutilização das fotos (sem Creative Commons/CC-BY/domínio público); base de uso institucional_oficial sem afirmar reutilização permitida.',
+    comprovacao: {
+      httpStatus: comprovacao.httpStatus,
+      mime: comprovacao.mime,
+      largura: comprovacao.largura,
+      altura: comprovacao.altura,
+      verificadaEm: COMPROVACAO_VERIFICADA_EM,
+    },
+    licencaReutilizacao: 'pendente',
+  };
+};
+
+export const auditoriaFotosDeputadosDistritaisLote3: AuditoriaFoto[] = [
+  itemComComprovacao(21, {
+    httpStatus: 200,
+    mime: 'image/jpeg',
+    largura: 240,
+    altura: 300,
+  }),
+  itemComComprovacao(22, {
+    httpStatus: 200,
+    mime: 'image/jpeg',
+    largura: 218,
+    altura: 300,
+  }),
+  itemComComprovacao(23, {
+    httpStatus: 200,
+    mime: 'image/jpeg',
+    largura: 240,
+    altura: 300,
+  }),
+  itemComComprovacao(24, {
+    httpStatus: 200,
+    mime: 'image/jpeg',
+    largura: 218,
+    altura: 300,
+  }),
+];
+
+const LICENCAS_VALIDAS: LicencaFoto[] = [
+  'divulcacand_tse',
+  'institucional_oficial',
+  'partido_oficial',
+  'pessoa_oficial',
+  'imprensa_licenca_explicita',
+  'placeholder',
+];
+
+const VALIDADES_VALIDAS: ValidadeFoto[] = [
+  'valida',
+  'invalida',
+  'pendente_verificacao_externa',
+];
+
+function validarItemAuditoriaFoto(
+  item: AuditoriaFoto,
+  ctx: { ids: Set<string>; urls: Set<string>; hoje: string },
+): string[] {
+  const erros: string[] = [];
+  const label = item.deputadoId || '(sem id)';
+  if (!item.deputadoId || ctx.ids.has(item.deputadoId)) {
+    erros.push(`${label}: ID ausente ou duplicado na auditoria.`);
+  }
+  ctx.ids.add(item.deputadoId);
+
+  if (!item.slug || item.slug.trim() === '') {
+    erros.push(`${label}: slug ausente.`);
+  }
+  if (!item.nome || item.nome.trim() === '') {
+    erros.push(`${label}: nome ausente.`);
+  }
+  if (!item.url || !/^https?:\/\//.test(item.url)) {
+    erros.push(`${label}: URL da foto ausente ou não-HTTP.`);
+  } else {
+    if (ctx.urls.has(item.url)) {
+      erros.push(`${label}: URL da foto duplicada na auditoria.`);
+    }
+    ctx.urls.add(item.url);
+    try {
+      const u = new URL(item.url);
+      if (u.protocol !== 'https:') {
+        erros.push(`${label}: URL da foto não é HTTPS.`);
+      }
+      if (!u.pathname || u.pathname === '/' || u.pathname === '') {
+        erros.push(`${label}: URL da foto genérica (sem caminho).`);
+      }
+    } catch {
+      erros.push(`${label}: URL da foto inválida.`);
+    }
+  }
+  if (!item.fonte || item.fonte.trim() === '') {
+    erros.push(`${label}: fonte ausente.`);
+  }
+  if (!item.urlFonte || !/^https?:\/\//.test(item.urlFonte)) {
+    erros.push(`${label}: URL da fonte ausente ou não-HTTP.`);
+  } else {
+    try {
+      const u = new URL(item.urlFonte);
+      if (!u.hostname.endsWith('cl.df.gov.br')) {
+        erros.push(
+          `${label}: URL da fonte não pertence à CLDF (${u.hostname}).`,
+        );
+      }
+    } catch {
+      erros.push(`${label}: URL da fonte inválida.`);
+    }
+  }
+  if (!LICENCAS_VALIDAS.includes(item.licenca)) {
+    erros.push(`${label}: licença inválida (${item.licenca}).`);
+  }
+  if (!VALIDADES_VALIDAS.includes(item.validade)) {
+    erros.push(`${label}: validade inválida (${item.validade}).`);
+  }
+  if (
+    !item.verificadaEm ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(item.verificadaEm)
+  ) {
+    erros.push(`${label}: data de verificação ausente ou inválida.`);
+  } else if (item.verificadaEm > ctx.hoje) {
+    erros.push(
+      `${label}: data de verificação futura (${item.verificadaEm}).`,
+    );
+  }
+  return erros;
+}
+
 /**
  * Validador determinístico da auditoria. Garante que cada item cumpre o
  * critério do brief para P4 — fotos dos deputados distritais 1–10:
@@ -139,93 +345,14 @@ export function validarAuditoriaFotosDeputados1a10(
   hoje: string = VERIFICADA_EM,
 ): string[] {
   const erros: string[] = [];
-  const ids = new Set<string>();
-  const urls = new Set<string>();
-  const licencasValidas: LicencaFoto[] = [
-    'divulcacand_tse',
-    'institucional_oficial',
-    'partido_oficial',
-    'pessoa_oficial',
-    'imprensa_licenca_explicita',
-    'placeholder',
-  ];
-  const validadesValidas: ValidadeFoto[] = [
-    'valida',
-    'invalida',
-    'pendente_verificacao_externa',
-  ];
-
   if (auditoria.length !== 10) {
     erros.push(
       `Auditoria deve cobrir exatamente 10 deputados; encontrados ${auditoria.length}.`,
     );
   }
-
+  const ctx = { ids: new Set<string>(), urls: new Set<string>(), hoje };
   for (const item of auditoria) {
-    const label = item.deputadoId || '(sem id)';
-    if (!item.deputadoId || ids.has(item.deputadoId)) {
-      erros.push(`${label}: ID ausente ou duplicado na auditoria.`);
-    }
-    ids.add(item.deputadoId);
-
-    if (!item.slug || item.slug.trim() === '') {
-      erros.push(`${label}: slug ausente.`);
-    }
-    if (!item.nome || item.nome.trim() === '') {
-      erros.push(`${label}: nome ausente.`);
-    }
-    if (!item.url || !/^https?:\/\//.test(item.url)) {
-      erros.push(`${label}: URL da foto ausente ou não-HTTP.`);
-    } else {
-      if (urls.has(item.url)) {
-        erros.push(`${label}: URL da foto duplicada na auditoria.`);
-      }
-      urls.add(item.url);
-      try {
-        const u = new URL(item.url);
-        if (u.protocol !== 'https:') {
-          erros.push(`${label}: URL da foto não é HTTPS.`);
-        }
-        if (!u.pathname || u.pathname === '/' || u.pathname === '') {
-          erros.push(`${label}: URL da foto genérica (sem caminho).`);
-        }
-      } catch {
-        erros.push(`${label}: URL da foto inválida.`);
-      }
-    }
-    if (!item.fonte || item.fonte.trim() === '') {
-      erros.push(`${label}: fonte ausente.`);
-    }
-    if (!item.urlFonte || !/^https?:\/\//.test(item.urlFonte)) {
-      erros.push(`${label}: URL da fonte ausente ou não-HTTP.`);
-    } else {
-      try {
-        const u = new URL(item.urlFonte);
-        if (!u.hostname.endsWith('cl.df.gov.br')) {
-          erros.push(
-            `${label}: URL da fonte não pertence à CLDF (${u.hostname}).`,
-          );
-        }
-      } catch {
-        erros.push(`${label}: URL da fonte inválida.`);
-      }
-    }
-    if (!licencasValidas.includes(item.licenca)) {
-      erros.push(`${label}: licença inválida (${item.licenca}).`);
-    }
-    if (!validadesValidas.includes(item.validade)) {
-      erros.push(`${label}: validade inválida (${item.validade}).`);
-    }
-    if (
-      !item.verificadaEm ||
-      !/^\d{4}-\d{2}-\d{2}$/.test(item.verificadaEm)
-    ) {
-      erros.push(`${label}: data de verificação ausente ou inválida.`);
-    } else if (item.verificadaEm > hoje) {
-      erros.push(
-        `${label}: data de verificação futura (${item.verificadaEm}).`,
-      );
-    }
+    erros.push(...validarItemAuditoriaFoto(item, ctx));
   }
   return erros;
 }
@@ -242,4 +369,74 @@ export function validarAuditoriaFotosDeputados11a20(
   hoje: string = VERIFICADA_EM,
 ): string[] {
   return validarAuditoriaFotosDeputados1a10(auditoria, hoje);
+}
+
+export function validarAuditoriaFotosDeputados21a24(
+  auditoria: AuditoriaFoto[] = auditoriaFotosDeputadosDistritaisLote3,
+  hoje: string = VERIFICADA_EM,
+): string[] {
+  const erros: string[] = [];
+
+  if (auditoria.length !== 4) {
+    erros.push(
+      `Auditoria do lote 3 deve cobrir exatamente 4 deputados; encontrados ${auditoria.length}.`,
+    );
+  }
+
+  const ctx = { ids: new Set<string>(), urls: new Set<string>(), hoje };
+  for (const item of auditoria) {
+    erros.push(...validarItemAuditoriaFoto(item, ctx));
+
+    const label = item.deputadoId || '(sem id)';
+
+    if (item.validade !== 'valida') {
+      erros.push(
+        `${label}: validade deve ser "valida" (comprovação determinística realizada).`,
+      );
+    }
+
+    if (!item.comprovacao) {
+      erros.push(
+        `${label}: comprovação determinística ausente (HTTP, MIME, dimensões).`,
+      );
+    } else {
+      if (item.comprovacao.httpStatus !== 200) {
+        erros.push(
+          `${label}: HTTP status ${item.comprovacao.httpStatus} (esperado 200).`,
+        );
+      }
+      if (!/^image\//.test(item.comprovacao.mime)) {
+        erros.push(
+          `${label}: MIME ${item.comprovacao.mime} não é image/*.`,
+        );
+      }
+      if (item.comprovacao.largura < 100 || item.comprovacao.altura < 100) {
+        erros.push(
+          `${label}: dimensões ${item.comprovacao.largura}x${item.comprovacao.altura} abaixo do mínimo 100x100.`,
+        );
+      }
+      if (
+        !item.comprovacao.verificadaEm ||
+        !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(
+          item.comprovacao.verificadaEm,
+        )
+      ) {
+        erros.push(
+          `${label}: data/hora de comprovação ausente ou inválida.`,
+        );
+      }
+    }
+
+    if (item.licencaReutilizacao === 'comprovada') {
+      erros.push(
+        `${label}: licencaReutilizacao não deve ser "comprovada" sem documento/termo explícito na fonte.`,
+      );
+    }
+    if (item.licencaReutilizacao !== 'pendente') {
+      erros.push(
+        `${label}: licencaReutilizacao deve ser "pendente" (licença de reutilização não comprovada).`,
+      );
+    }
+  }
+  return erros;
 }

@@ -215,8 +215,9 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Auditar fotos dos deputados distritais 11–20.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Auditar fotos dos deputados distritais 21–24.
+- [x] Auditar fotos dos deputados distritais 21–24.
   Critério: mesmos requisitos do lote anterior.
+  Evidência: `src/data/auditoria-fotos.ts` registra 4 itens (ids 21–24, slugs rogerio-morro-da-cruz, roosevelt-vilela, thiago-manzoni, wellington-luiz) com fonte CLDF, URL da fonte na CLDF (https://www.cl.df.gov.br/deputados-2023-2026), licença `institucional_oficial`, validade `valida` e `verificadaEm` em 2026-07-30, acrescido de comprovação determinística (HTTP 200, MIME image/jpeg, dimensões mínimas) e `licencaReutilizacao: 'pendente'`; `test/photo-audit.test.js` valida ordem (21–24), slug canônico, HTTPS, host CLDF, licença, data, comprovação determinística e documentação honesta da licença de reutilização, e rejeita duplicatas/ausências.
 
 - [ ] Criar placeholder e metadados padronizados de fotografia.
   Critério: perfil funciona sem foto; nenhuma imagem sem fonte e base de uso.

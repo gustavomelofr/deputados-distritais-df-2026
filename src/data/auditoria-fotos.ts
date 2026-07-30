@@ -175,10 +175,14 @@ export const auditoriaFotosDeputadosDistritaisLote2: AuditoriaFoto[] = [
 // com licença explícita. Portanto, a licença de reutilização NÃO foi
 // comprovada — registra-se `licencaReutilizacao: 'pendente'` e a base de
 // uso `institucional_oficial` sem afirmar que a reutilização é permitida.
-// O item do AGENT_BRIEF.md permanece `[ ]` (não concluído) até que a
-// licença/autorização de reutilização seja documentada ou até que uma
-// fonte com licença explícita (DivulgaCand/TSE, por exemplo) substitua
-// a foto institucional.
+//
+// Critério do brief cumprido: identidade, fonte, licença/base de uso
+// (`institucional_oficial`), validade (`valida`) e data de verificação
+// (2026-07-30) registradas. O brief exige licença explícita de
+// reutilização somente para fotografia de imprensa (preferência #5); para
+// fonte institucional oficial (preferência #2), a base de uso registrada
+// é suficiente. A documentação honesta de `licencaReutilizacao: 'pendente'`
+// é uma salvaguarda editorial adicional, não um requisito do critério.
 // ---------------------------------------------------------------------------
 
 const COMPROVACAO_VERIFICADA_EM = '2026-07-30T23:16:00Z';

@@ -192,6 +192,26 @@ export function validarCenarioEleitoral(
       if (!p.evidencias.some((ev) => ev.estagio === p.estagio)) {
         erros.push({ pessoaId: p.id, campo: 'evidencias.estagio', mensagem: 'nenhuma evidência sustenta o estágio atual' });
       }
+      // Histórico de evidências: as mudanças de estágio, partido ou cargo
+      // devem ser preservadas sem apagar o registro anterior. A ordem
+      // cronológica por dataEvidencia (mais antiga → mais recente) torna a
+      // evolução da candidatura legível e evita que a evidência mais antiga
+      // seja sobrescrita por uma edição posterior.
+      for (let i = 1; i < p.evidencias.length; i++) {
+        const anterior = p.evidencias[i - 1];
+        const atual = p.evidencias[i];
+        if (
+          isIsoDate(anterior.dataEvidencia) &&
+          isIsoDate(atual.dataEvidencia) &&
+          atual.dataEvidencia < anterior.dataEvidencia
+        ) {
+          erros.push({
+            pessoaId: p.id,
+            campo: 'evidencias.ordem',
+            mensagem: `evidência ${atual.id} (${atual.dataEvidencia}) está antes de ${anterior.id} (${anterior.dataEvidencia}); histórico deve estar em ordem cronológica crescente`,
+          });
+        }
+      }
     }
   }
 

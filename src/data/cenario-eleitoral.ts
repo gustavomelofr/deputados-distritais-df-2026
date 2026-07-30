@@ -200,21 +200,6 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     noticiasRelacionadas: ['n100', 'n28'],
     evidencias: [
       {
-        id: 'e-arruda-n100',
-        pessoaId: 'jose-roberto-arruda',
-        cargo: 'governador',
-        estagio: 'movimentacao_publica',
-        partido: 'PSD',
-        fonte: 'ND Mais',
-        fonteCategoria: 'veiculo_jornalistico',
-        url: 'https://ndmais.com.br/politica/arruda-pode-disputar-o-gdf-em-2026-entenda-o-caso/',
-        descricao:
-          'Ex-governador José Roberto Arruda é pré-candidato do PSD ao Palácio do Buriti e afirma ter voltado a ser elegível após mudanças na Lei da Ficha Limpa.',
-        dataEvidencia: '2026-07-20',
-        coletadaEm: '2026-07-28',
-        verificadaEm: '2026-07-30',
-      },
-      {
         id: 'e-arruda-n28',
         pessoaId: 'jose-roberto-arruda',
         cargo: 'governador',
@@ -227,6 +212,21 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
           'Levantamento do cenário eleitoral inclui José Roberto Arruda entre os nomes apresentados como pré-candidatos ao GDF.',
         dataEvidencia: '2026-07-16',
         coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-arruda-n100',
+        pessoaId: 'jose-roberto-arruda',
+        cargo: 'governador',
+        estagio: 'movimentacao_publica',
+        partido: 'PSD',
+        fonte: 'ND Mais',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ndmais.com.br/politica/arruda-pode-disputar-o-gdf-em-2026-entenda-o-caso/',
+        descricao:
+          'Ex-governador José Roberto Arruda é pré-candidato do PSD ao Palácio do Buriti e afirma ter voltado a ser elegível após mudanças na Lei da Ficha Limpa.',
+        dataEvidencia: '2026-07-20',
+        coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
     ],
@@ -374,21 +374,6 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     noticiasRelacionadas: ['n34', 'n28'],
     evidencias: [
       {
-        id: 'e-paula-n34',
-        pessoaId: 'paula-belmonte',
-        cargo: 'governador',
-        estagio: 'movimentacao_publica',
-        partido: 'PSDB',
-        fonte: 'Misto Brasil',
-        fonteCategoria: 'veiculo_jornalistico',
-        url: 'https://mistobrasil.com/2026/07/26/veja-os-partidos-no-df-que-ja-fizeram-e-terao-suas-convencoes/',
-        descricao:
-          'Calendário de convenções mostra oficialização da candidatura da deputada distrital Paula Belmonte (PSDB) ao GDF em 4 de agosto.',
-        dataEvidencia: '2026-07-26',
-        coletadaEm: '2026-07-27',
-        verificadaEm: '2026-07-30',
-      },
-      {
         id: 'e-paula-n28',
         pessoaId: 'paula-belmonte',
         cargo: 'governador',
@@ -400,6 +385,21 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         descricao:
           'Levantamento do cenário eleitoral inclui Paula Belmonte entre os nomes apresentados como pré-candidatos ao GDF.',
         dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-paula-n34',
+        pessoaId: 'paula-belmonte',
+        cargo: 'governador',
+        estagio: 'movimentacao_publica',
+        partido: 'PSDB',
+        fonte: 'Misto Brasil',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://mistobrasil.com/2026/07/26/veja-os-partidos-no-df-que-ja-fizeram-e-terao-suas-convencoes/',
+        descricao:
+          'Calendário de convenções mostra oficialização da candidatura da deputada distrital Paula Belmonte (PSDB) ao GDF em 4 de agosto.',
+        dataEvidencia: '2026-07-26',
         coletadaEm: '2026-07-27',
         verificadaEm: '2026-07-30',
       },
@@ -1557,21 +1557,6 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     noticiasRelacionadas: ['n57', 'n60'],
     evidencias: [
       {
-        id: 'e-hermeto-n57',
-        pessoaId: 'hermeto',
-        cargo: 'deputado_distrital',
-        estagio: 'movimentacao_publica',
-        partido: 'MDB',
-        fonte: 'Brasil de Fato',
-        fonteCategoria: 'veiculo_jornalistico',
-        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
-        descricao:
-          'Levantamento do Brasil de Fato DF indica que o deputado distrital Hermeto (MDB) articula reeleição na CLDF nas eleições de 2026.',
-        dataEvidencia: '2026-07-16',
-        coletadaEm: '2026-07-28',
-        verificadaEm: '2026-07-30',
-      },
-      {
         id: 'e-hermeto-n60',
         pessoaId: 'hermeto',
         cargo: 'deputado_distrital',
@@ -1583,6 +1568,21 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         descricao:
           'Análise do Blog do GBU sobre a nominata do MDB para a CLDF em 2026 inclui Hermeto entre os nomes do partido para a disputa na Câmara Legislativa.',
         dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-hermeto-n57',
+        pessoaId: 'hermeto',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que o deputado distrital Hermeto (MDB) articula reeleição na CLDF nas eleições de 2026.',
+        dataEvidencia: '2026-07-16',
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
@@ -1605,21 +1605,6 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     noticiasRelacionadas: ['n57', 'n60'],
     evidencias: [
       {
-        id: 'e-jaqueline-silva-n57',
-        pessoaId: 'jaqueline-silva',
-        cargo: 'deputado_distrital',
-        estagio: 'movimentacao_publica',
-        partido: 'MDB',
-        fonte: 'Brasil de Fato',
-        fonteCategoria: 'veiculo_jornalistico',
-        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
-        descricao:
-          'Levantamento do Brasil de Fato DF indica que a deputada distrital Jaqueline Silva (MDB) articula reeleição na CLDF nas eleições de 2026.',
-        dataEvidencia: '2026-07-16',
-        coletadaEm: '2026-07-28',
-        verificadaEm: '2026-07-30',
-      },
-      {
         id: 'e-jaqueline-silva-n60',
         pessoaId: 'jaqueline-silva',
         cargo: 'deputado_distrital',
@@ -1631,6 +1616,21 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         descricao:
           'Análise do Blog do GBU sobre a nominata do MDB para a CLDF em 2026 inclui Jaqueline Silva entre os nomes do partido para a disputa na Câmara Legislativa.',
         dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-jaqueline-silva-n57',
+        pessoaId: 'jaqueline-silva',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que a deputada distrital Jaqueline Silva (MDB) articula reeleição na CLDF nas eleições de 2026.',
+        dataEvidencia: '2026-07-16',
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
@@ -1757,21 +1757,6 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     noticiasRelacionadas: ['n57', 'n60'],
     evidencias: [
       {
-        id: 'e-eduardo-pedrosa-n57',
-        pessoaId: 'eduardo-pedrosa',
-        cargo: 'deputado_distrital',
-        estagio: 'movimentacao_publica',
-        partido: 'União Brasil',
-        fonte: 'Brasil de Fato',
-        fonteCategoria: 'veiculo_jornalistico',
-        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
-        descricao:
-          'Levantamento do Brasil de Fato DF indica que a maioria dos 24 deputados distritais articula reeleição na CLDF, incluindo Eduardo Pedrosa (União Brasil).',
-        dataEvidencia: '2026-07-16',
-        coletadaEm: '2026-07-30',
-        verificadaEm: '2026-07-30',
-      },
-      {
         id: 'e-eduardo-pedrosa-n60',
         pessoaId: 'eduardo-pedrosa',
         cargo: 'deputado_distrital',
@@ -1783,6 +1768,21 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         descricao:
           'Análise do Blog do GBU sobre as nominatas para a CLDF em 2026 inclui Eduardo Pedrosa entre os nomes da Federação União Progressista.',
         dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-eduardo-pedrosa-n57',
+        pessoaId: 'eduardo-pedrosa',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'União Brasil',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que a maioria dos 24 deputados distritais articula reeleição na CLDF, incluindo Eduardo Pedrosa (União Brasil).',
+        dataEvidencia: '2026-07-16',
         coletadaEm: '2026-07-30',
         verificadaEm: '2026-07-30',
       },

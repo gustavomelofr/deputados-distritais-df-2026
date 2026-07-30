@@ -1638,4 +1638,220 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     coletadaEm: '2026-07-28',
     verificadaEm: '2026-07-30',
   },
+
+  // ---------------------------------------------------------------------------
+  // Ampliação P3 — deputado distrital (até 10 nomes adicionais). Cada nome
+  // sustentado por fonte específica: homologação em convenção partidária
+  // (anunciado_pelo_partido) ou duas reportagens independentes sobre nominata
+  // para a CLDF (movimentacao_publica). Sem inferir candidatura por mandato.
+  // ---------------------------------------------------------------------------
+
+  // 45. Doutora Jane (Republicanos) — deputada distrital que articula
+  //     reeleição na CLDF, incluída na nominata do Republicanos conforme
+  //     reportagens independentes da Vero Notícias e do Blog do GBU.
+  {
+    id: 'doutora-jane',
+    slug: 'doutora-jane',
+    nome: 'Doutora Jane',
+    nomeCompleto: 'Jane Klébia de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'Republicanos',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n24', 'n60'],
+    evidencias: [
+      {
+        id: 'e-doutora-jane-n24',
+        pessoaId: 'doutora-jane',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'Republicanos',
+        fonte: 'Vero Notícias',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://veronoticias.com/politica/republicanos-df-aposta-em-nominata-forte-e-mira-tres-cadeiras-na-cldf/',
+        descricao:
+          'O Republicanos no DF prepara nominata competitiva para a CLDF em 2026, com Doutora Jane entre os nomes relacionados ao partido.',
+        dataEvidencia: '2026-02-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-doutora-jane-n60',
+        pessoaId: 'doutora-jane',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'Republicanos',
+        fonte: 'Blog do GBU',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.blogdogbu.com.br/2026/04/eleicoes-quantos-distritais-o.html',
+        descricao:
+          'Análise do Blog do GBU sobre as nominatas para a CLDF em 2026 inclui Jane Klébia (Doutora Jane) entre os nomes do Republicanos.',
+        dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 46. Martins Machado (Republicanos) — deputado distrital que articula
+  //     reeleição na CLDF, incluído na nominata do Republicanos conforme
+  //     reportagens independentes da Vero Notícias e do Blog do GBU.
+  {
+    id: 'martins-machado',
+    slug: 'martins-machado',
+    nome: 'Martins Machado',
+    nomeCompleto: 'Martins Machado de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'Republicanos',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n24', 'n60'],
+    evidencias: [
+      {
+        id: 'e-martins-machado-n24',
+        pessoaId: 'martins-machado',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'Republicanos',
+        fonte: 'Vero Notícias',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://veronoticias.com/politica/republicanos-df-aposta-em-nominata-forte-e-mira-tres-cadeiras-na-cldf/',
+        descricao:
+          'O Republicanos no DF prepara nominata competitiva para a CLDF em 2026, com Martins Machado entre os nomes relacionados ao partido.',
+        dataEvidencia: '2026-02-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-martins-machado-n60',
+        pessoaId: 'martins-machado',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'Republicanos',
+        fonte: 'Blog do GBU',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.blogdogbu.com.br/2026/04/eleicoes-quantos-distritais-o.html',
+        descricao:
+          'Análise do Blog do GBU sobre as nominatas para a CLDF em 2026 inclui Martins Machado entre os nomes do Republicanos.',
+        dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 47. Eduardo Pedrosa (União Brasil) — deputado distrital que articula
+  //     reeleição na CLDF, incluído na nominata da Federação União
+  //     Progressista conforme reportagens independentes do Brasil de Fato
+  //     e do Blog do GBU.
+  {
+    id: 'eduardo-pedrosa',
+    slug: 'eduardo-pedrosa',
+    nome: 'Eduardo Pedrosa',
+    nomeCompleto: 'Eduardo Pedrosa de Paula',
+    cargo: 'deputado_distrital',
+    partido: 'União Brasil',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n57', 'n60'],
+    evidencias: [
+      {
+        id: 'e-eduardo-pedrosa-n57',
+        pessoaId: 'eduardo-pedrosa',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'União Brasil',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que a maioria dos 24 deputados distritais articula reeleição na CLDF, incluindo Eduardo Pedrosa (União Brasil).',
+        dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-eduardo-pedrosa-n60',
+        pessoaId: 'eduardo-pedrosa',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'União Brasil',
+        fonte: 'Blog do GBU',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.blogdogbu.com.br/2026/04/eleicoes-quantos-distritais-o.html',
+        descricao:
+          'Análise do Blog do GBU sobre as nominatas para a CLDF em 2026 inclui Eduardo Pedrosa entre os nomes da Federação União Progressista.',
+        dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 48. Christian Sena (UP) — pré-candidato à CLDF, homologado pela
+  //     Unidade Popular em convenção distrital.
+  {
+    id: 'christian-sena',
+    slug: 'christian-sena',
+    nome: 'Christian Sena',
+    nomeCompleto: 'Christian Sena',
+    cargo: 'deputado_distrital',
+    partido: 'UP',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n42'],
+    evidencias: [
+      {
+        id: 'e-christian-sena-n42',
+        pessoaId: 'christian-sena',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'UP',
+        fonte: 'NC News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ncnews.com.br/2026/07/23/up-homologa-candidaturas-e-aprova-programa-de-governo-em-convencao-distrital-no-df/',
+        descricao:
+          'A Unidade Popular homologou em convenção distrital no Sindsep-DF Christian Sena como candidato à CLDF, ao lado de Bárbara Calista.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 49. Bárbara Calista (UP) — pré-candidata à CLDF, homologada pela
+  //     Unidade Popular em convenção distrital.
+  {
+    id: 'barbara-calista',
+    slug: 'barbara-calista',
+    nome: 'Bárbara Calista',
+    nomeCompleto: 'Bárbara Calista',
+    cargo: 'deputado_distrital',
+    partido: 'UP',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n42'],
+    evidencias: [
+      {
+        id: 'e-barbara-calista-n42',
+        pessoaId: 'barbara-calista',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'UP',
+        fonte: 'NC News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ncnews.com.br/2026/07/23/up-homologa-candidaturas-e-aprova-programa-de-governo-em-convencao-distrital-no-df/',
+        descricao:
+          'A Unidade Popular homologou em convenção distrital no Sindsep-DF Bárbara Calista como candidata à CLDF, ao lado de Christian Sena.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
 ];

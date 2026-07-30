@@ -197,7 +197,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Mapear nomes para deputado distrital.
   Critério: lote inicial de até 10 nomes, incluindo incumbentes somente quando houver evidência eleitoral.
 
-- [ ] Ampliar nomes para deputado distrital.
+- [x] Ampliar nomes para deputado distrital.
   Critério: até 10 nomes adicionais, incluindo novos nomes quando sustentados por fonte.
 
 - [ ] Criar histórico de evidências por pessoa.

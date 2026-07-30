@@ -7,10 +7,14 @@ const path = require('node:path');
 
 const {
   compactSummary,
+  classifyPullRequest,
   createPullRequest,
   deliverPullRequest,
   extractReview,
+  failureState,
+  findOpenTaskPullRequest,
   hasPendingBacklog,
+  isCapacityError,
   isTransientError,
   parseLoopResult,
   pendingBacklogItems,
@@ -81,9 +85,9 @@ test('interpreta rotina recorrente e respeita frequência', () => {
   assert.equal(selectTask(content, ledger, Date.parse('2026-07-28T12:00:00Z')).id, routine.id);
 });
 
-test('brief real possui fila pendente e três rotinas diárias válidas', () => {
+test('brief real possui próxima tarefa e três rotinas diárias válidas', () => {
   const content = fs.readFileSync(path.join(__dirname, '..', 'AGENT_BRIEF.md'), 'utf8');
-  assert.ok(pendingBacklogItems(content).length > 20);
+  assert.equal(pendingBacklogItems(content)[0], 'Mapear nomes para governador e vice-governador do DF.');
   const routines = recurringTasks(content);
   assert.equal(routines.length, 3);
   assert.ok(routines.every((routine) => routine.intervalMs === 24 * 60 * 60 * 1000));
@@ -137,6 +141,38 @@ test('não repete erro permanente', () => {
   }, { delays: [0, 0], sleepFn: () => {} }), /validation failed/);
   assert.equal(calls, 1);
   assert.equal(isTransientError(new Error('litellm.APIConnectionError: terminated')), true);
+});
+
+test('abre circuit breaker após três falhas ou imediatamente sem créditos', () => {
+  assert.deepEqual(failureState(0, new Error('validation failed')), { count: 1, circuitOpen: false });
+  assert.deepEqual(failureState(2, new Error('validation failed')), { count: 3, circuitOpen: true });
+  assert.deepEqual(failureState(0, new Error('Not Enough Credits')), { count: 1, circuitOpen: true });
+  assert.equal(isCapacityError(new Error('insufficient quota')), true);
+});
+
+test('classifica PR somente como concluído depois do merge', () => {
+  assert.equal(classifyPullRequest({ state: 'OPEN', statusCheckRollup: [] }), 'pending');
+  assert.equal(classifyPullRequest({ state: 'MERGED', statusCheckRollup: [] }), 'merged');
+  assert.equal(classifyPullRequest({
+    state: 'OPEN', statusCheckRollup: [{ conclusion: 'FAILURE' }],
+  }), 'failed');
+  assert.equal(classifyPullRequest({
+    state: 'OPEN', statusCheckRollup: [{ state: 'FAILURE' }],
+  }), 'failed');
+  assert.equal(classifyPullRequest({ state: 'CLOSED', statusCheckRollup: [] }), 'failed');
+});
+
+test('localiza PR aberto pelo ID semântico da tarefa', () => {
+  const taskSpec = { id: 'backlog:Tarefa única', title: 'Tarefa única' };
+  const marker = encodeURIComponent(taskSpec.id);
+  const command = (_bin, args) => {
+    assert.deepEqual(args.slice(0, 4), ['pr', 'list', '--repo', 'gustavomelofr/deputados-distritais-df-2026']);
+    return JSON.stringify([
+      { url: 'https://github.com/example/repo/pull/11', body: '<!-- loop-task-id: outra -->', headRefName: 'loop/other' },
+      { url: 'https://github.com/example/repo/pull/12', body: `<!-- loop-task-id: ${marker} -->`, headRefName: 'loop/task' },
+    ]);
+  };
+  assert.equal(findOpenTaskPullRequest(taskSpec, '/tmp', command).url, 'https://github.com/example/repo/pull/12');
 });
 
 test('reutiliza PR aberto e não cria duplicado', () => {

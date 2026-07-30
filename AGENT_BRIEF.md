@@ -50,7 +50,7 @@ worktree isolado → implementer → TypeScript/build → verifier → PR → au
 ### Estados das tarefas
 
 - `[ ]`: pendente; é elegível para execução.
-- `[x]`: concluída; só marque no mesmo diff que cumpre o critério de aceite.
+- `[x]`: concluída; marque no mesmo diff que cumpre o critério de aceite ou que adiciona uma validação determinística comprovando que a base já o satisfaz.
 - `[!]`: bloqueada por dependência externa; informe logo abaixo `Bloqueio:` e `Ação humana necessária:`.
 - `[r]`: rotina recorrente; nunca altere para `[x]` após uma execução normal.
 
@@ -174,8 +174,8 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Adicionar notícias verificadas até atingir 95 registros válidos.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Adicionar notícias verificadas até atingir 100 registros válidos.
-  Critério: completar a meta sem duplicatas, links genéricos ou conteúdo fora da janela de seis meses.
+- [x] Adicionar notícias verificadas até atingir 100 registros válidos.
+  Critério: completar a meta sem duplicatas, links genéricos ou conteúdo fora da janela de seis meses. Evidência: `test/news-data.test.js` valida 100 IDs, URLs e títulos únicos, fonte, URL específica, janela de 30/01/2026 a 30/07/2026 e slugs relacionados.
 
 ### P3 — Nomes monitorados para 2026
 

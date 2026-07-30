@@ -185,7 +185,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Mapear nomes para governador e vice-governador do DF.
   Critério: incluir apenas pré-candidatura declarada, anúncio partidário ou movimentação com evidência suficiente; fonte e data obrigatórias.
 
-- [ ] Mapear nomes para as duas vagas do Senado pelo DF.
+- [x] Mapear nomes para as duas vagas do Senado pelo DF.
   Critério: mesmos requisitos de evidência.
 
 - [ ] Mapear nomes para deputado federal pelo DF.

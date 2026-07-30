@@ -188,7 +188,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Mapear nomes para as duas vagas do Senado pelo DF.
   Critério: mesmos requisitos de evidência.
 
-- [ ] Mapear nomes para deputado federal pelo DF.
+- [x] Mapear nomes para deputado federal pelo DF.
   Critério: lote inicial de até 10 nomes com evidência individual.
 
 - [ ] Ampliar nomes para deputado federal pelo DF.

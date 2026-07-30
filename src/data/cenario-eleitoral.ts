@@ -16,8 +16,9 @@ import { PessoaEleitoral } from '@/types';
 //    inferida só por mandato atual. Estágios anteriores ao registro no TSE
 //    nunca são "registro_oficial".
 //
-// A base ainda não inclui deputado distrital, deputado federal nem foto
-// desses nomes — estes ficam para os próximos itens da P3/P4.
+// A base ainda não inclui deputado distrital nem foto desses nomes — estes
+// ficam para os próximos itens da P3/P4. Deputado federal foi adicionado
+// no item "Mapear nomes para deputado federal pelo DF".
 // ---------------------------------------------------------------------------
 
 export const cenarioEleitoral: PessoaEleitoral[] = [
@@ -791,6 +792,336 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         descricao:
           'Clica DF registra a expectativa de definição da chapa do PSD/Avante ao Senado, no contexto da aliança com Arruda para o GDF.',
         dataEvidencia: '2026-07-20',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Deputado federal pelo DF — 8 vagas em disputa
+  //
+  // Critério: pré-candidatura declarada, anúncio partidário ou movimentação
+  // pública com evidência específica suficiente (URL e data). Cada registro
+  // aponta para notícia já validada em src/data/noticias.ts; sem inferência
+  // por mandato atual. Estágios anteriores ao registro no TSE nunca são
+  // "registro_oficial". Lote inicial de até 10 nomes (P3).
+  // ---------------------------------------------------------------------------
+
+  // 21. Agnelo Queiroz (PT) — pré-candidato a deputado federal, com
+  //     anúncio próprio e também na nominata do PT-DF.
+  {
+    id: 'agnelo-queiroz',
+    slug: 'agnelo-queiroz',
+    nome: 'Agnelo Queiroz',
+    nomeCompleto: 'Agnelo Queiroz',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'pre_candidatura_declarada',
+    noticiasRelacionadas: ['n89', 'n91'],
+    evidencias: [
+      {
+        id: 'e-agnelo-queiroz-n91',
+        pessoaId: 'agnelo-queiroz',
+        cargo: 'deputado_federal',
+        estagio: 'pre_candidatura_declarada',
+        partido: 'PT',
+        fonte: 'Jornal TaguaCei',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://jornaltaguacei.com.br/noticias/07/06/2026/ex-governador-agnelo-queiroz-lanca-pre-candidatura-a-deputado-federal-pelo-df-nossa-tarefa-e-retomar-as-politicas-publicas-e-recuperar-o-estado/',
+        descricao:
+          'O ex-governador do DF Agnelo Queiroz anunciou oficialmente sua pré-candidatura a deputado federal pelo PT-DF, com presença de Leandro Grass.',
+        dataEvidencia: '2026-06-07',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 22. Cristovam Buarque (PSB) — pré-candidato a deputado federal,
+  //     anunciado pelo PSB-DF.
+  {
+    id: 'cristovam-buarque',
+    slug: 'cristovam-buarque',
+    nome: 'Cristovam Buarque',
+    nomeCompleto: 'Cristovam Buarque',
+    cargo: 'deputado_federal',
+    partido: 'PSB',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n73'],
+    evidencias: [
+      {
+        id: 'e-cristovam-buarque-n73',
+        pessoaId: 'cristovam-buarque',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSB',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.correiobraziliense.com.br/cidades-df/2026/06/7445342-psb-lanca-dois-ex-governadores-como-pre-candidatos-a-camara-dos-deputados.html',
+        descricao:
+          'PSB-DF anunciou o ex-governador Cristovam Buarque como pré-candidato a deputado federal durante o lançamento da pré-candidatura de Ricardo Cappelli ao GDF.',
+        dataEvidencia: '2026-06-20',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 23. Fábio Felix (PSOL) — pré-candidato a deputado federal, oficializado
+  //     pela Federação Psol-Rede.
+  {
+    id: 'fabio-felix',
+    slug: 'fabio-felix',
+    nome: 'Fábio Felix',
+    nomeCompleto: 'Fábio Felix',
+    cargo: 'deputado_federal',
+    partido: 'PSOL',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n29'],
+    evidencias: [
+      {
+        id: 'e-fabio-felix-n29',
+        pessoaId: 'fabio-felix',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSOL',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/27/federacao-psol-e-rede-oficializa-candidaturas-a-camara-federal-e-distrital-e/',
+        descricao:
+          'A Federação Psol-Rede oficializou a candidatura de Fábio Felix a deputado federal nas Eleições 2026 no DF.',
+        dataEvidencia: '2026-07-27',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 24. Izalci Lucas (PL) — pré-candidato a deputado federal, desistiu da
+  //     disputa ao GDF e confirmou candidatura à Câmara.
+  {
+    id: 'izalci-lucas',
+    slug: 'izalci-lucas',
+    nome: 'Izalci Lucas',
+    nomeCompleto: 'Izalci Lucas',
+    cargo: 'deputado_federal',
+    partido: 'PL',
+    estagio: 'pre_candidatura_declarada',
+    noticiasRelacionadas: ['n96'],
+    evidencias: [
+      {
+        id: 'e-izalci-lucas-n96',
+        pessoaId: 'izalci-lucas',
+        cargo: 'deputado_federal',
+        estagio: 'pre_candidatura_declarada',
+        partido: 'PL',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.correiobraziliense.com.br/politica/2026/07/7466704-izalci-diz-que-sonho-de-disputar-o-gdf-foi-adiado-pelo-pl.html',
+        descricao:
+          'O senador Izalci Lucas (PL-DF) desistiu da corrida ao GDF e confirmou que será candidato a deputado federal pelo PL, por decisão da cúpula partidária.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 25. Márcia Abrahão Moura (PT) — pré-candidata a deputado federal,
+  //     anunciada na nominata do PT-DF.
+  {
+    id: 'marcia-abrahao-moura',
+    slug: 'marcia-abrahao-moura',
+    nome: 'Márcia Abrahão Moura',
+    nomeCompleto: 'Márcia Abrahão Moura',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n89'],
+    evidencias: [
+      {
+        id: 'e-marcia-abrahao-n89',
+        pessoaId: 'marcia-abrahao-moura',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/distrito-federal/pt-df-lanca-pre-candidaturas-a-camara-dos-deputados-veja-a-lista-de-nomes',
+        descricao:
+          'O PT-DF aprovou nominata com Márcia Abrahão Moura entre os sete pré-candidatos à Câmara dos Deputados.',
+        dataEvidencia: '2026-05-16',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 26. Marivaldo Pereira (PT) — pré-candidato a deputado federal, anunciado
+  //     na nominata do PT-DF.
+  {
+    id: 'marivaldo-pereira',
+    slug: 'marivaldo-pereira',
+    nome: 'Marivaldo Pereira',
+    nomeCompleto: 'Marivaldo Pereira',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n89'],
+    evidencias: [
+      {
+        id: 'e-marivaldo-pereira-n89',
+        pessoaId: 'marivaldo-pereira',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/distrito-federal/pt-df-lanca-pre-candidaturas-a-camara-dos-deputados-veja-a-lista-de-nomes',
+        descricao:
+          'O PT-DF aprovou nominata com Marivaldo Pereira entre os sete pré-candidatos à Câmara dos Deputados.',
+        dataEvidencia: '2026-05-16',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 27. Reginaldo Veras (PV) — pré-candidato à reeleição a deputado federal,
+  //     anunciou formalmente a candidatura.
+  {
+    id: 'reginaldo-veras',
+    slug: 'reginaldo-veras',
+    nome: 'Reginaldo Veras',
+    nomeCompleto: 'Reginaldo Veras',
+    cargo: 'deputado_federal',
+    partido: 'PV',
+    estagio: 'pre_candidatura_declarada',
+    noticiasRelacionadas: ['n88'],
+    evidencias: [
+      {
+        id: 'e-reginaldo-veras-n88',
+        pessoaId: 'reginaldo-veras',
+        cargo: 'deputado_federal',
+        estagio: 'pre_candidatura_declarada',
+        partido: 'PV',
+        fonte: 'Jornal de Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://jornaldebrasilia.com.br/blogs-e-colunas/do-alto-da-torre/reginaldo-veras-anuncia-candidatura-a-reeleicao/',
+        descricao:
+          'O deputado federal Reginaldo Veras (PV) anunciou formalmente que disputará a reeleição; já tinha garantido uma das duas vagas do PV na Federação Brasil da Esperança.',
+        dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 28. Roberto Policarpo (PT) — pré-candidato a deputado federal, anunciado
+  //     na nominata do PT-DF.
+  {
+    id: 'roberto-policarpo',
+    slug: 'roberto-policarpo',
+    nome: 'Roberto Policarpo',
+    nomeCompleto: 'Roberto Policarpo',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n89'],
+    evidencias: [
+      {
+        id: 'e-roberto-policarpo-n89',
+        pessoaId: 'roberto-policarpo',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/distrito-federal/pt-df-lanca-pre-candidaturas-a-camara-dos-deputados-veja-a-lista-de-nomes',
+        descricao:
+          'O PT-DF aprovou nominata com Roberto Policarpo entre os sete pré-candidatos à Câmara dos Deputados.',
+        dataEvidencia: '2026-05-16',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 29. Rodrigo Rollemberg (PSB) — pré-candidato a deputado federal,
+  //     anunciado pelo PSB-DF.
+  {
+    id: 'rodrigo-rollemberg',
+    slug: 'rodrigo-rollemberg',
+    nome: 'Rodrigo Rollemberg',
+    nomeCompleto: 'Rodrigo Rollemberg',
+    cargo: 'deputado_federal',
+    partido: 'PSB',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n73'],
+    evidencias: [
+      {
+        id: 'e-rodrigo-rollemberg-n73',
+        pessoaId: 'rodrigo-rollemberg',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSB',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.correiobraziliense.com.br/cidades-df/2026/06/7445342-psb-lanca-dois-ex-governadores-como-pre-candidatos-a-camara-dos-deputados.html',
+        descricao:
+          'PSB-DF anunciou o ex-governador Rodrigo Rollemberg como pré-candidato a deputado federal durante o lançamento da pré-candidatura de Ricardo Cappelli ao GDF.',
+        dataEvidencia: '2026-06-20',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 30. Rosilene Corrêa (PT) — pré-candidata a deputado federal, anunciada
+  //     na nominata do PT-DF.
+  {
+    id: 'rosilene-correa',
+    slug: 'rosilene-correa',
+    nome: 'Rosilene Corrêa',
+    nomeCompleto: 'Rosilene Corrêa',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n89'],
+    evidencias: [
+      {
+        id: 'e-rosilene-correa-n89',
+        pessoaId: 'rosilene-correa',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/distrito-federal/pt-df-lanca-pre-candidaturas-a-camara-dos-deputados-veja-a-lista-de-nomes',
+        descricao:
+          'O PT-DF aprovou nominata com Rosilene Corrêa entre os sete pré-candidatos à Câmara dos Deputados.',
+        dataEvidencia: '2026-05-16',
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },

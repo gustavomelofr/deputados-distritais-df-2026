@@ -174,8 +174,10 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Adicionar notícias verificadas até atingir 95 registros válidos.
   Critério: mesmos requisitos do lote anterior.
 
-- [ ] Adicionar notícias verificadas até atingir 100 registros válidos.
+- [!] Adicionar notícias verificadas até atingir 100 registros válidos.
   Critério: completar a meta sem duplicatas, links genéricos ou conteúdo fora da janela de seis meses.
+  Bloqueio: escalonamento humano solicitado pelo orquestrador/verifier — instrução explícita de não fazer novas mudanças até revisão humana.
+  Ação humana necessária: revisar o lote atual de notícias (registros 96–100) e autorizar a retomada da adição de notícias verificadas até atingir 100 registros válidos.
 
 ### P3 — Nomes monitorados para 2026
 

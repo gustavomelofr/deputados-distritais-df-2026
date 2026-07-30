@@ -182,7 +182,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 
 ### P3 — Nomes monitorados para 2026
 
-- [ ] Mapear nomes para governador e vice-governador do DF.
+- [x] Mapear nomes para governador e vice-governador do DF.
   Critério: incluir apenas pré-candidatura declarada, anúncio partidário ou movimentação com evidência suficiente; fonte e data obrigatórias.
 
 - [ ] Mapear nomes para as duas vagas do Senado pelo DF.

@@ -203,7 +203,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Criar histórico de evidências por pessoa.
   Critério: preservar mudança de estágio, partido ou cargo com fonte e data, sem apagar o registro anterior.
 
-- [ ] Preparar integração com DivulgaCand/TSE.
+- [x] Preparar integração com DivulgaCand/TSE.
   Critério: detectar disponibilidade da eleição 2026 e manter estado indisponível até existir dado oficial; sem credenciais secretas no Git.
 
 ### P4 — Fotos e perfis oficiais

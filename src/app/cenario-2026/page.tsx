@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { deputados } from '@/data/deputados';
 import { cenarioEleitoral } from '@/data/cenario-eleitoral';
+import { noticias } from '@/data/noticias';
 import { validarCenarioEleitoral } from '@/lib/validar-cenario-eleitoral';
 import type { PessoaEleitoral } from '@/types';
 
@@ -84,7 +85,7 @@ const itensCenario: ItemCenario[] = cenarioEleitoral
     };
   });
 
-const errosValidacao = validarCenarioEleitoral(cenarioEleitoral);
+const errosValidacao = validarCenarioEleitoral(cenarioEleitoral, undefined, noticias);
 
 const ESTAGIOS: {
   id: EstagioEvidencia;

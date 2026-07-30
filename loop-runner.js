@@ -14,9 +14,10 @@ const BASE_BRANCH = process.env.LOOP_BASE_BRANCH || 'main';
 const POLL_INTERVAL_MS = Number(process.env.LOOP_INTERVAL_MS || 15 * 60 * 1000);
 const MAX_ATTEMPTS = 2;
 const MAX_TIMEOUTS = 2;
+const MAX_VERIFIER_FAILURES = Number(process.env.LOOP_MAX_VERIFIER_FAILURES || 2);
 const MAX_CONSECUTIVE_FAILURES = Number(process.env.LOOP_MAX_CONSECUTIVE_FAILURES || 3);
 const IMPLEMENTER_TIMEOUT_MS = 45 * 60 * 1000;
-const VERIFIER_TIMEOUT_MS = 3 * 60 * 1000;
+const VERIFIER_TIMEOUT_MS = Number(process.env.LOOP_VERIFIER_TIMEOUT_MS || 8 * 60 * 1000);
 const PARTIAL_TTL_MS = 24 * 60 * 60 * 1000;
 const WORKTREE_ROOT = path.join(path.dirname(ROOT), 'deputados-loop-worktrees');
 const RUNTIME_DIR = path.join(ROOT, '.loop');
@@ -73,6 +74,32 @@ function failureState(consecutiveFailures = 0, error = '') {
   return {
     count,
     circuitOpen: count >= MAX_CONSECUTIVE_FAILURES || isCapacityError(error),
+  };
+}
+
+function verifierRecoveryAction(verdict, attempt = 1) {
+  if (verdict.infrastructureFailure) return 'retry_verifier';
+  if (verdict.verdict === 'APPROVE') return 'deliver';
+  return attempt >= MAX_ATTEMPTS ? 'escalate' : 'implementer_correction';
+}
+
+function verifierFailureState(active) {
+  const verifierFailures = (active.verifierFailures || 0) + 1;
+  return {
+    verifierFailures,
+    circuitOpen: verifierFailures >= MAX_VERIFIER_FAILURES,
+    saved: { ...active, status: 'verifier_pending', verifierFailures },
+  };
+}
+
+function enforceRecurringLimit(verdict, taskSpec) {
+  if (verdict.verdict !== 'APPROVE' || taskSpec?.kind !== 'recurring'
+    || verdict.records_changed === null || verdict.records_changed <= taskSpec.limit) return verdict;
+  return {
+    verdict: 'REJECT',
+    reason: `Lote recorrente excedeu o limite de ${taskSpec.limit}: verifier contou ${verdict.records_changed}.`,
+    summary: `O lote excedeu o limite de ${taskSpec.limit} registros e não foi entregue.`,
+    next_prompt: `Reduza o lote para no máximo ${taskSpec.limit} registros e preserve somente itens verificáveis.`,
   };
 }
 
@@ -278,7 +305,7 @@ function listChangedFiles(worktree) {
 function makePatch(worktree) {
   const untracked = git(worktree, ['ls-files', '--others', '--exclude-standard']).split('\n').filter(Boolean);
   if (untracked.length) run('git', ['add', '-N', '--', ...untracked], { cwd: worktree });
-  return git(worktree, ['diff', '--binary', 'HEAD']);
+  return run('git', ['diff', '--binary', 'HEAD'], { cwd: worktree });
 }
 
 function partialPaths(runId) {
@@ -359,9 +386,9 @@ function runTests(worktree) {
   ]) {
     try {
       const output = run(test.bin, test.args, { cwd: worktree, timeout: test.timeout });
-      results.push({ name: test.name, passed: true, output: output.slice(-1200) });
+      results.push({ name: test.name, passed: true, output: output.slice(-6000) });
     } catch (error) {
-      const output = `${error.stdout || ''}\n${error.stderr || ''}\n${error.message || ''}`.slice(-1800);
+      const output = `${error.stdout || ''}\n${error.stderr || ''}\n${error.message || ''}`.slice(-6000);
       results.push({ name: test.name, passed: false, output });
       break;
     }
@@ -396,23 +423,40 @@ function review(worktree, runId, task, tests, loopResult = { status: 'UPDATED' }
   const blocked = changed.filter(violatesGate);
   if (blocked.length) return { verdict: 'REJECT', reason: `Caminhos protegidos alterados: ${blocked.join(', ')}`, next_prompt: 'Desfaça as alterações em caminhos protegidos. Trabalhe somente em arquivos de produto permitidos.' };
   if (!changed.length) return { verdict: 'REJECT', reason: 'Nenhuma alteração de produto foi produzida.', next_prompt: 'Implemente uma alteração mínima e verificável para a tarefa atual. Não modifique apenas arquivos de estado ou log.' };
+  const failedTest = tests.find((test) => !test.passed);
+  if (failedTest) {
+    return {
+      verdict: 'REJECT',
+      reason: `${failedTest.name} falhou: ${compactSummary(failedTest.output, 'sem saída de erro')}`,
+      summary: `${failedTest.name} falhou; nenhuma entrega foi criada.`,
+      next_prompt: `Corrija a causa da falha em ${failedTest.name} sem alterar scripts ou testes operacionais protegidos.`,
+    };
+  }
 
   const untracked = git(worktree, ['ls-files', '--others', '--exclude-standard']).split('\n').filter(Boolean);
   if (untracked.length) run('git', ['add', '-N', '--', ...untracked], { cwd: worktree });
-  const patch = git(worktree, ['diff', '--binary', 'HEAD']);
+  const patch = run('git', ['diff', '--binary', 'HEAD'], { cwd: worktree });
   const patchFile = path.join(RUNTIME_DIR, `${runId}.patch`);
   fs.writeFileSync(patchFile, patch);
+  const evidenceFile = path.join(RUNTIME_DIR, `${runId}.evidence.json`);
+  try {
+    const evidence = run('node', ['scripts/validate-electoral-data.js', '--json'], { cwd: worktree, timeout: 30000 });
+    fs.writeFileSync(evidenceFile, evidence);
+  } catch (error) {
+    fs.writeFileSync(evidenceFile, JSON.stringify({ valid: false, error: errorText(error).slice(-6000) }, null, 2));
+  }
   const testEvidence = tests.map((item) => `${item.name}: ${item.passed ? 'PASSOU' : 'FALHOU'}\n${item.output}`).join('\n\n');
-  const instruction = `Você é o reviewer independente. Tarefa: ${task}. Resultado declarado pelo implementer: ${loopResult.status}. Revise o diff anexado, o estado COMPLETO dos arquivos no worktree e esta evidência de testes:\n${testEvidence}\n\nO diff mostra somente o que mudou neste ciclo. Quando o critério depender de dados já presentes na base, leia os arquivos completos no worktree e aceite uma reconciliação mínima de estado se a evidência atual satisfizer objetivamente o critério; nunca exija que conteúdo inalterado seja reintroduzido no diff. Regras: não edite arquivos; rejeite caminhos protegidos, dados ou nomes eleitorais sem fonte, links genéricos de notícia, fotos sem origem/licença, regressões de testes/TypeScript, lote acima do limite e mudanças fora de escopo. Uma alteração apenas em AGENT_BRIEF.md pode ser aprovada para reconciliar um critério comprovadamente já satisfeito na base ou quando muda exatamente a tarefa atual de [ ] ou [r] para [!] e documenta bloqueio externo real e ação humana necessária. Produza summary em linguagem simples, factual, com até 280 caracteres e quantidade de registros quando aplicável. Responda EXCLUSIVAMENTE com JSON válido em uma única linha: {"verdict":"APPROVE"|"REJECT","reason":"...","summary":"breve resumo do resultado visível","records_changed":0|null|número,"next_prompt":null|"instrução objetiva de correção"}. Para REJECT, next_prompt é obrigatório e deve pedir correção apenas dos problemas apontados.`;
+  const instruction = `Você é o reviewer independente. Tarefa: ${task}. Resultado declarado pelo implementer: ${loopResult.status}. Revise o diff anexado, os arquivos completos disponíveis e esta evidência de testes:\n${testEvidence}\n\nO arquivo evidence.json é produzido deterministicamente pelos scripts protegidos. Quando valid=true, aceite como comprovadas a existência dos IDs de notícias listados, integridade das relações, URLs canônicas, cargos e estágios; não repita a varredura de noticias.ts nem contradiga o relatório sem apontar erro concreto no próprio relatório. O diff mostra somente o que mudou neste ciclo. Quando o critério depender de dados já presentes na base, aceite reconciliação mínima comprovada; nunca exija reintroduzir conteúdo inalterado no diff. Regras: não edite arquivos; rejeite caminhos protegidos, dados ou nomes eleitorais sem fonte, links genéricos de notícia, fotos sem origem/licença, lote acima do limite e mudanças fora de escopo. Produza summary factual com até 280 caracteres e quantidade quando aplicável. Responda EXCLUSIVAMENTE com JSON válido em uma única linha: {"verdict":"APPROVE"|"REJECT","reason":"...","summary":"breve resumo do resultado visível","records_changed":0|null|número,"next_prompt":null|"instrução objetiva de correção"}. Para REJECT, next_prompt é obrigatório.`;
   const contextFiles = [...new Set([
     patchFile,
+    evidenceFile,
     path.join(worktree, 'AGENT_BRIEF.md'),
     ...changed.map((file) => path.join(worktree, file)),
   ])].filter((file) => fs.existsSync(file));
   const result = runAgent('verifier', instruction, worktree, contextFiles);
-  if (!result.ok) return { verdict: 'REJECT', reason: `Verifier indisponível: ${result.error.slice(-300)}`, next_prompt: 'Não faça novas mudanças. Aguarde escalonamento humano.' };
+  if (!result.ok) return { verdict: 'REJECT', infrastructureFailure: true, reason: `Verifier indisponível: ${result.error.slice(-600)}`, next_prompt: null };
   const parsed = extractReview(result.output);
-  if (!parsed) return { verdict: 'REJECT', reason: 'Verifier respondeu em formato inválido; falha fechada.', next_prompt: 'Não faça novas mudanças. Aguarde escalonamento humano.' };
+  if (!parsed) return { verdict: 'REJECT', infrastructureFailure: true, reason: 'Verifier respondeu em formato inválido; revisão será repetida sem nova implementação.', next_prompt: null };
   return parsed;
 }
 
@@ -515,10 +559,87 @@ function commitApprovedWork(worktree, branch, runId) {
   const files = listChangedFiles(worktree);
   const blocked = files.filter(violatesGate);
   if (blocked.length) throw new Error(`Gate bloqueou entrega: ${blocked.join(', ')}`);
-  run('git', ['add', '--', ...files], { cwd: worktree });
-  run('git', ['commit', '-m', `feat(loop): atualização aprovada ${runId}`], { cwd: worktree, timeout: 60000 });
+  if (files.length) {
+    run('git', ['add', '--', ...files], { cwd: worktree });
+    run('git', ['commit', '-m', `feat(loop): atualização aprovada ${runId}`], { cwd: worktree, timeout: 60000 });
+  } else {
+    const ahead = Number(git(worktree, ['rev-list', '--count', `origin/${BASE_BRANCH}..HEAD`]) || 0);
+    if (ahead < 1) throw new Error('Entrega aprovada não possui diff nem commit recuperável.');
+  }
   run('git', ['push', '--set-upstream', 'origin', branch], { cwd: worktree, timeout: 120000 });
   return git(worktree, ['rev-parse', 'HEAD']);
+}
+
+function continueApprovedDelivery(delivery) {
+  const { worktree, branch, runId, taskSpec, attempt, tests, cycleSummary } = delivery;
+  const sha = commitApprovedWork(worktree, branch, runId);
+  const pending = { ...delivery, status: 'delivery_pending', sha };
+  updateRuntime({ status: 'delivery_pending', lastAction: taskSpec.title, pendingFeedback: null, lastError: null, cycleSummary }, { lastOutcome: 'delivery_pending', active: pending });
+  const prUrl = deliverPullRequest(pending, worktree);
+  updateRuntime({ status: 'delivery_pending', lastAction: taskSpec.title, pendingFeedback: null, prUrl, lastError: null, cycleSummary }, { lastOutcome: 'delivery_pending', active: { ...pending, prUrl, worktree: null } });
+  appendRun({ runId, outcome: 'delivery_pending', attempt, task: taskSpec.title, taskSpec, summary: cycleSummary, recordsChanged: delivery.recordsChanged, prUrl, tests });
+  notify(telegramMessage({
+    icon: '⏳', title: 'Entrega aguardando CI', task: taskSpec.title, summary: cycleSummary,
+    lines: [
+      delivery.humanAction ? `Ação necessária: ${delivery.humanAction}` : null,
+      'Validação local passou; conclusão ocorrerá somente após CI e merge.',
+      `PR: ${prUrl}`,
+    ],
+  }));
+  discardWorktree(worktree, branch);
+}
+
+function deliverApprovedWork({ worktree, branch, runId, task, taskSpec, attempt, tests, verdict, loopResult }) {
+  const cycleSummary = compactSummary(verdict.summary || verdict.reason);
+  const approval = {
+    ...deliveryMetadata(branch, runId, task, {
+      taskSpec, cycleSummary, recordsChanged: verdict.records_changed,
+      resultStatus: loopResult.status, humanAction: loopResult.humanAction,
+    }),
+    status: 'approval_pending', worktree, attempt, tests, deliveryFailures: 0,
+  };
+  updateRuntime({ status: 'approval_pending', lastAction: taskSpec.title, pendingFeedback: null, lastError: null, cycleSummary }, { lastOutcome: 'approval_pending', active: approval });
+  continueApprovedDelivery(approval);
+}
+
+function preserveVerifierReview(active, verdict, dependencies = {}) {
+  const append = dependencies.appendRun || appendRun;
+  const update = dependencies.updateRuntime || updateRuntime;
+  const sendNotification = dependencies.notify || notify;
+  const writePause = dependencies.writePause || ((content) => fs.writeFileSync(PAUSE_FILE, content));
+  const writeLog = dependencies.log || log;
+  const failure = verifierFailureState(active);
+  const { verifierFailures } = failure;
+  const saved = { ...failure.saved, verifierError: verdict.reason };
+  append({ runId: active.runId, outcome: 'verifier_pending', task: active.task, attempt: active.attempt, verifierFailures, reason: verdict.reason });
+  if (failure.circuitOpen) {
+    writePause(`Verifier indisponível ${verifierFailures} vezes em ${new Date().toISOString()}\n`);
+    update({ status: 'circuit_open', lastError: verdict.reason }, { lastOutcome: 'circuit_open', active: saved });
+    sendNotification(telegramMessage({
+      icon: '⏸️', title: 'Revisão pausada', task: active.taskSpec?.title || active.task,
+      summary: `O verifier falhou ${verifierFailures} vezes; o worktree foi preservado sem chamar novamente o implementer.`,
+      lines: [`Worktree: ${active.worktree}`],
+    }));
+    return;
+  }
+  update({ status: 'verifier_pending', lastError: verdict.reason }, { lastOutcome: 'verifier_pending', active: saved });
+  writeLog(`Verifier pendente (${verifierFailures}/${MAX_VERIFIER_FAILURES}); worktree preservado para repetir somente a revisão.`);
+}
+
+function escalateRejectedReview({ runId, task, taskSpec, attempt, tests, verdict, worktree, branch }) {
+  const patch = path.join(RUNTIME_DIR, `${runId}.patch`);
+  const evidence = fs.existsSync(patch) ? ` Diff salvo em ${patch}.` : '';
+  appendRun({ runId, outcome: 'escalated', attempt, task, reason: verdict.reason, tests });
+  const currentLedger = readJson(LEDGER_FILE, {});
+  const failure = failureState(currentLedger.consecutiveFailures || 0, verdict.reason);
+  if (failure.circuitOpen) fs.writeFileSync(PAUSE_FILE, `Circuit breaker aberto em ${new Date().toISOString()}\n`);
+  updateRuntime({ status: failure.circuitOpen ? 'circuit_open' : 'escalated' }, { consecutiveFailures: failure.count, lastOutcome: failure.circuitOpen ? 'circuit_open' : 'escalated', active: null });
+  notify(telegramMessage({
+    icon: '⚠️', title: 'Ciclo escalado', task: taskSpec.title,
+    summary: verdict.summary || `A tarefa foi rejeitada após ${MAX_ATTEMPTS} tentativas.`,
+    lines: [`Motivo: ${compactSummary(verdict.reason)}`, evidence ? evidence.trim() : null],
+  }));
+  discardWorktree(worktree, branch);
 }
 
 function buildTask(state, taskSpec) {
@@ -578,6 +699,22 @@ async function mainLoop() {
       updateRuntime({ status: 'delivery_blocked', lastError: error.message }, { active: previous });
       return;
     }
+  }
+
+  if (previous?.status === 'approval_pending') {
+    try {
+      continueApprovedDelivery(previous);
+    } catch (error) {
+      const active = readJson(LEDGER_FILE, {}).active || previous;
+      const deliveryFailures = (active.deliveryFailures || 0) + 1;
+      log(`Aprovação preservada; entrega será retomada (${deliveryFailures}): ${error.message}`);
+      updateRuntime({ status: active.status, lastError: error.message }, { lastOutcome: active.status, active: { ...active, deliveryFailures } });
+      if (deliveryFailures === 1) notify(telegramMessage({
+        icon: '⏳', title: 'Entrega aprovada preservada', task: active.taskSpec?.title || active.task,
+        summary: 'A revisão foi aprovada, mas commit, push ou criação do PR não terminou. O próximo ciclo retomará sem reimplementar.',
+      }));
+    }
+    return;
   }
 
   if (previous?.status === 'delivery_failed') {
@@ -650,6 +787,35 @@ async function mainLoop() {
     return;
   }
 
+  if (previous?.status === 'verifier_pending') {
+    if (!previous.worktree || !fs.existsSync(previous.worktree)) {
+      updateRuntime({ status: 'escalated', lastError: 'Worktree da revisão pendente não existe mais.' }, { lastOutcome: 'escalated', active: null });
+      return;
+    }
+    let verdict = review(previous.worktree, previous.runId, previous.task, previous.tests || [], previous.loopResult || { status: 'UPDATED' });
+    verdict = enforceRecurringLimit(verdict, previous.taskSpec);
+    const recoveryAction = verifierRecoveryAction(verdict, previous.attempt || 1);
+    if (recoveryAction === 'retry_verifier') {
+      preserveVerifierReview(previous, verdict);
+      return;
+    }
+    log(`Revisão retomada: ${verdict.verdict} — ${verdict.reason}`);
+    if (recoveryAction === 'deliver') {
+      deliverApprovedWork({
+        worktree: previous.worktree, branch: previous.branch, runId: previous.runId,
+        task: previous.task, taskSpec: previous.taskSpec, attempt: previous.attempt,
+        tests: previous.tests || [], verdict, loopResult: previous.loopResult || { status: 'UPDATED' },
+      });
+      return;
+    }
+    if (recoveryAction === 'escalate') {
+      escalateRejectedReview({ ...previous, tests: previous.tests || [], verdict });
+      return;
+    }
+    previous = { ...previous, status: 'review_rejected', review: verdict.reason };
+    updateRuntime({ status: 'review_rejected', pendingFeedback: verdict.next_prompt, lastReview: verdict.reason, cycleSummary: verdict.summary || null }, { lastOutcome: 'review_rejected', active: previous });
+  }
+
   if (previous?.status === 'timed_out' && (!fs.existsSync(previous.worktree) || Date.now() - Date.parse(previous.timedOutAt || 0) >= PARTIAL_TTL_MS)) {
     appendRun({ runId: previous.runId, outcome: 'escalated', task: previous.task, reason: 'Trabalho parcial expirou após 24h', partialPatch: previous.partialPatch });
     updateRuntime({ status: 'escalated', lastError: 'Trabalho parcial expirou após 24h.' }, { lastOutcome: 'escalated', active: null });
@@ -661,7 +827,11 @@ async function mainLoop() {
     if (fs.existsSync(previous.worktree)) discardWorktree(previous.worktree, previous.branch);
     return;
   }
-  const resumable = previous?.status === 'timed_out' && fs.existsSync(previous.worktree) && (previous.timeouts || 0) < MAX_TIMEOUTS ? previous : null;
+  const resumable = (
+    previous?.status === 'timed_out' && fs.existsSync(previous.worktree) && (previous.timeouts || 0) < MAX_TIMEOUTS
+  ) || (
+    previous?.status === 'review_rejected' && fs.existsSync(previous.worktree) && (previous.attempt || 1) < MAX_ATTEMPTS
+  ) ? previous : null;
   const briefContent = fs.readFileSync(path.join(ROOT, 'AGENT_BRIEF.md'), 'utf8');
   const taskSpec = resumable?.taskSpec || selectTask(briefContent, ledger);
   if (!resumable && !taskSpec) {
@@ -715,13 +885,13 @@ async function mainLoop() {
   const created = resumable || createWorktree(runId);
   const worktree = created.worktree;
   const branch = created.branch;
-  const firstAttempt = resumable?.attempt || 1;
+  const firstAttempt = resumable?.status === 'review_rejected' ? (resumable.attempt || 1) + 1 : (resumable?.attempt || 1);
   updateRuntime({ status: resumable ? 'resuming' : 'running', lastRun: new Date().toISOString() }, { totalRuns: (ledger.totalRuns || 0) + 1, active: { ...(resumable || {}), runId, task, taskSpec, branch, worktree, status: 'running', attempt: firstAttempt, timeouts: resumable?.timeouts || 0 } });
   try {
     for (let attempt = firstAttempt; attempt <= MAX_ATTEMPTS; attempt += 1) {
       const active = readJson(LEDGER_FILE, {}).active;
       updateRuntime({}, { active: { ...(active || {}), runId, task, taskSpec, branch, worktree, status: 'running', attempt } });
-      const prompt = resumable && attempt === firstAttempt
+      const prompt = resumable?.status === 'timed_out' && attempt === firstAttempt
         ? `Continue exatamente a tarefa já iniciada: ${task}\n\nLeia o diff atual e o patch em ${resumable.partialPatch}. Preserve alterações válidas, complete apenas os critérios pendentes, não inicie outra tarefa e não rode testes/build.`
         : (attempt === 1 ? task : buildTask(readJson(RUNTIME_STATE, {}), taskSpec));
       const implementation = runAgent('implementer', prompt, worktree);
@@ -759,68 +929,31 @@ async function mainLoop() {
       }
       const tests = runTests(worktree);
       let verdict = review(worktree, runId, task, tests, loopResult);
-      if (verdict.verdict === 'APPROVE' && taskSpec.kind === 'recurring' && verdict.records_changed !== null && verdict.records_changed > taskSpec.limit) {
-        verdict = {
-          verdict: 'REJECT',
-          reason: `Lote recorrente excedeu o limite de ${taskSpec.limit}: verifier contou ${verdict.records_changed}.`,
-          summary: `O lote excedeu o limite de ${taskSpec.limit} registros e não foi entregue.`,
-          next_prompt: `Reduza o lote para no máximo ${taskSpec.limit} registros e preserve somente itens verificáveis.`,
-        };
-      }
-      log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
-      if (verdict.verdict === 'APPROVE') {
-        const cycleSummary = compactSummary(verdict.summary || verdict.reason);
-        const sha = commitApprovedWork(worktree, branch, runId);
-        const delivery = {
-          ...deliveryMetadata(branch, runId, task, {
-            taskSpec, cycleSummary, recordsChanged: verdict.records_changed,
-            resultStatus: loopResult.status, humanAction: loopResult.humanAction,
-          }),
-          status: 'delivery_pending', worktree, sha, attempt, tests, deliveryFailures: 0,
-        };
-        updateRuntime({ status: 'delivery_pending', lastAction: taskSpec.title, pendingFeedback: null, lastError: null, cycleSummary }, { lastOutcome: 'delivery_pending', active: delivery });
-        const prUrl = deliverPullRequest(delivery, worktree);
-        updateRuntime({ status: 'delivery_pending', lastAction: taskSpec.title, pendingFeedback: null, prUrl, lastError: null, cycleSummary }, { lastOutcome: 'delivery_pending', active: { ...delivery, prUrl, worktree: null } });
-        appendRun({ runId, outcome: 'delivery_pending', attempt, task: taskSpec.title, taskSpec, summary: cycleSummary, recordsChanged: verdict.records_changed, prUrl, tests });
-        notify(telegramMessage({
-          icon: '⏳',
-          title: 'Entrega aguardando CI',
-          task: taskSpec.title,
-          summary: cycleSummary,
-          lines: [
-            loopResult.humanAction ? `Ação necessária: ${loopResult.humanAction}` : null,
-            'Validação local passou; conclusão ocorrerá somente após CI e merge.',
-            `PR: ${prUrl}`,
-          ],
-        }));
-        discardWorktree(worktree, branch);
+      if (verdict.infrastructureFailure) {
+        const currentActive = readJson(LEDGER_FILE, {}).active || {};
+        preserveVerifierReview({ ...currentActive, runId, task, taskSpec, branch, worktree, attempt, tests, loopResult }, verdict);
         return;
       }
-      updateRuntime({ status: 'review_rejected', pendingFeedback: verdict.next_prompt, lastReview: verdict.reason, cycleSummary: verdict.summary || null }, { lastOutcome: 'review_rejected', active: { runId, task, taskSpec, attempt, review: verdict.reason } });
+      verdict = enforceRecurringLimit(verdict, taskSpec);
+      log(`Tentativa ${attempt}/${MAX_ATTEMPTS}: ${verdict.verdict} — ${verdict.reason}`);
+      if (verdict.verdict === 'APPROVE') {
+        deliverApprovedWork({ worktree, branch, runId, task, taskSpec, attempt, tests, verdict, loopResult });
+        return;
+      }
+      const rejectedActive = readJson(LEDGER_FILE, {}).active || {};
+      updateRuntime({ status: 'review_rejected', pendingFeedback: verdict.next_prompt, lastReview: verdict.reason, cycleSummary: verdict.summary || null }, { lastOutcome: 'review_rejected', active: { ...rejectedActive, runId, task, taskSpec, branch, worktree, status: 'review_rejected', attempt, review: verdict.reason } });
       if (attempt === MAX_ATTEMPTS) {
-        const patch = path.join(RUNTIME_DIR, `${runId}.patch`);
-        const evidence = fs.existsSync(patch) ? ` Diff salvo em ${patch}.` : '';
-        appendRun({ runId, outcome: 'escalated', attempt, task, reason: verdict.reason, tests });
-        const currentLedger = readJson(LEDGER_FILE, {});
-        const failure = failureState(currentLedger.consecutiveFailures || 0, verdict.reason);
-        if (failure.circuitOpen) fs.writeFileSync(PAUSE_FILE, `Circuit breaker aberto em ${new Date().toISOString()}\n`);
-        updateRuntime({ status: failure.circuitOpen ? 'circuit_open' : 'escalated' }, { consecutiveFailures: failure.count, lastOutcome: failure.circuitOpen ? 'circuit_open' : 'escalated', active: null });
-        notify(telegramMessage({
-          icon: '⚠️', title: 'Ciclo escalado', task: taskSpec.title,
-          summary: verdict.summary || `A tarefa foi rejeitada após ${MAX_ATTEMPTS} tentativas.`,
-          lines: [`Motivo: ${compactSummary(verdict.reason)}`, evidence ? evidence.trim() : null],
-        }));
-        discardWorktree(worktree, branch);
+        escalateRejectedReview({ runId, task, taskSpec, attempt, tests, verdict, worktree, branch });
         return;
       }
     }
   } catch (error) {
     const active = readJson(LEDGER_FILE, {}).active;
-    if (active?.status === 'delivery_pending') {
+    if (['approval_pending', 'delivery_pending'].includes(active?.status)) {
       const deliveryFailures = (active.deliveryFailures || 0) + 1;
       log(`Entrega pendente após aprovação (${deliveryFailures}): ${error.message}`);
       appendRun({ runId, outcome: 'delivery_pending', task, branch, sha: active.sha, error: error.message.slice(0, 1000) });
-      updateRuntime({ status: 'delivery_pending', lastError: error.message }, { lastOutcome: 'delivery_pending', active: { ...active, deliveryFailures } });
+      updateRuntime({ status: active.status, lastError: error.message }, { lastOutcome: active.status, active: { ...active, deliveryFailures } });
       notify(telegramMessage({
         icon: '⏳', title: 'Entrega pendente', task: taskSpec.title,
         summary: active.cycleSummary || 'O código foi aprovado e enviado, mas o GitHub não confirmou o PR.',
@@ -869,9 +1002,11 @@ if (require.main === module) start();
 
 module.exports = {
   compactSummary,
+  commitApprovedWork,
   createPullRequest,
   deliverPullRequest,
   extractReview,
+  enforceRecurringLimit,
   failureState,
   findPullRequest,
   findOpenTaskPullRequest,
@@ -882,7 +1017,12 @@ module.exports = {
   pendingBacklogItems,
   recurringTasks,
   classifyPullRequest,
+  makePatch,
   runWithRetry,
   selectTask,
   telegramMessage,
+  preserveVerifierReview,
+  violatesGate,
+  verifierFailureState,
+  verifierRecoveryAction,
 };

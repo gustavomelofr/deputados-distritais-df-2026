@@ -7,7 +7,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "test:loop": "node --test test/loop-runner.test.js test/news-data.test.js"
+    "test:loop": "node --test test/loop-runner.test.js test/news-data.test.js test/electoral-data.test.js"
   },
   "dependencies": {
     "next": "16.2.11",

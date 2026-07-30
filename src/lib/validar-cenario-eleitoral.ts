@@ -1,4 +1,4 @@
-import type { CargoEleitoral, EstagioEleitoral, PessoaEleitoral } from '@/types';
+import type { CargoEleitoral, EstagioEleitoral, Noticia, PessoaEleitoral } from '@/types';
 
 // ---------------------------------------------------------------------------
 // Validação de integridade da base eleitoral independente.
@@ -35,7 +35,9 @@ const CARGOS_VALIDOS = new Set<CargoEleitoral>([
 ]);
 
 function isIsoDate(s: string): boolean {
-  return typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s) && !Number.isNaN(Date.parse(s));
+  if (typeof s !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  const parsed = new Date(`${s}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === s;
 }
 
 function isFutureDate(s: string, hoje: string): boolean {
@@ -55,14 +57,29 @@ function isGenericLink(url: string): boolean {
   }
 }
 
+function canonicalUrl(url: string): string {
+  try {
+    const parsed = new URL(url);
+    parsed.hash = '';
+    parsed.searchParams.sort();
+    parsed.pathname = parsed.pathname.replace(/\/+$/, '') || '/';
+    return parsed.toString();
+  } catch {
+    return url;
+  }
+}
+
 export function validarCenarioEleitoral(
   base: PessoaEleitoral[],
   hoje: string = new Date().toISOString().slice(0, 10),
+  noticias: Noticia[] = [],
 ): ErroValidacao[] {
   const erros: ErroValidacao[] = [];
   const ids = new Set<string>();
   const slugs = new Set<string>();
-  const urlsVistos = new Set<string>();
+  const noticiasPorId = new Map(noticias.map((noticia) => [noticia.id, noticia]));
+  const noticiasPorUrl = new Map(noticias.map((noticia) => [canonicalUrl(noticia.url), noticia.id]));
+  const evidenciaIdsGlobais = new Set<string>();
 
   for (const p of base) {
     if (ids.has(p.id)) {
@@ -95,12 +112,22 @@ export function validarCenarioEleitoral(
       erros.push({ pessoaId: p.id, campo: 'verificadaEm', mensagem: 'data futura' });
     }
 
-    const evidenciaIds = new Set<string>();
+    const evidenciaUrls = new Set<string>();
+    const noticiasRelacionadas = new Set(p.noticiasRelacionadas);
+    for (const noticiaId of noticiasRelacionadas) {
+      if (noticias.length > 0 && !noticiasPorId.has(noticiaId)) {
+        erros.push({ pessoaId: p.id, campo: 'noticiasRelacionadas', mensagem: `notícia relacionada inexistente: ${noticiaId}` });
+      }
+    }
+    if (noticiasRelacionadas.size !== p.noticiasRelacionadas.length) {
+      erros.push({ pessoaId: p.id, campo: 'noticiasRelacionadas', mensagem: 'notícia relacionada duplicada' });
+    }
+
     for (const ev of p.evidencias) {
-      if (evidenciaIds.has(ev.id)) {
+      if (evidenciaIdsGlobais.has(ev.id)) {
         erros.push({ pessoaId: p.id, campo: 'evidencias.id', mensagem: `evidência com ID duplicado: ${ev.id}` });
       }
-      evidenciaIds.add(ev.id);
+      evidenciaIdsGlobais.add(ev.id);
 
       if (ev.pessoaId !== p.id) {
         erros.push({ pessoaId: p.id, campo: 'evidencias.pessoaId', mensagem: `evidência ${ev.id} pertence a outra pessoa (${ev.pessoaId})` });
@@ -114,11 +141,18 @@ export function validarCenarioEleitoral(
       if (!ev.url || !/^https?:\/\//.test(ev.url)) {
         erros.push({ pessoaId: p.id, campo: 'evidencias.url', mensagem: `URL ausente ou inválida na evidência ${ev.id}` });
       } else {
-        // URL duplicada entre todas as evidências da base.
-        if (urlsVistos.has(ev.url)) {
+        const canonica = canonicalUrl(ev.url);
+        // Uma matéria pode evidenciar mais de uma pessoa, mas variações
+        // cosméticas da mesma URL não podem duplicar evidência da mesma pessoa.
+        if (evidenciaUrls.has(canonica)) {
           erros.push({ pessoaId: p.id, campo: 'evidencias.url', mensagem: `URL duplicada na evidência ${ev.id}: ${ev.url}` });
         }
-        urlsVistos.add(ev.url);
+        evidenciaUrls.add(canonica);
+
+        const noticiaId = noticiasPorUrl.get(canonica);
+        if (noticiaId && !noticiasRelacionadas.has(noticiaId)) {
+          erros.push({ pessoaId: p.id, campo: 'noticiasRelacionadas', mensagem: `evidência ${ev.id} corresponde a ${noticiaId}, mas a notícia não está relacionada` });
+        }
 
         // Link genérico (homepage) — não é evidência válida.
         if (isGenericLink(ev.url)) {
@@ -147,6 +181,16 @@ export function validarCenarioEleitoral(
       }
       if (isFutureDate(ev.verificadaEm, hoje)) {
         erros.push({ pessoaId: p.id, campo: 'evidencias.verificadaEm', mensagem: `data futura na evidência ${ev.id}` });
+      }
+    }
+    if (p.evidencias.length === 0) {
+      erros.push({ pessoaId: p.id, campo: 'evidencias', mensagem: 'pessoa sem evidência' });
+    } else {
+      if (!p.evidencias.some((ev) => ev.cargo === p.cargo)) {
+        erros.push({ pessoaId: p.id, campo: 'evidencias.cargo', mensagem: 'nenhuma evidência sustenta o cargo atual' });
+      }
+      if (!p.evidencias.some((ev) => ev.estagio === p.estagio)) {
+        erros.push({ pessoaId: p.id, campo: 'evidencias.estagio', mensagem: 'nenhuma evidência sustenta o estágio atual' });
       }
     }
   }

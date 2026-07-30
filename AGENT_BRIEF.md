@@ -45,6 +45,7 @@ worktree isolado → implementer → TypeScript/build → verifier → PR → au
 - Se a tarefa for maior, entregue a menor parte que cumpra integralmente o critério atual; não invente subtarefas nem altere outros checkboxes.
 - Não faça exploração ampla, redesign oportunista, SEO não solicitado ou refatoração fora do item.
 - Não faça commit, push, merge ou alteração em caminhos protegidos.
+- Não altere scripts ou testes operacionais para acomodar o resultado de uma tarefa; corrija somente os dados ou o produto dentro do escopo recebido.
 - Não rode TypeScript, build ou testes pesados; o orquestrador valida depois.
 
 ### Estados das tarefas
@@ -104,6 +105,8 @@ O verifier deve rejeitar:
 - associação incorreta de pessoa, partido ou cargo;
 - alteração fora do item;
 - testes falhos ou caminhos protegidos.
+
+Antes da revisão por modelo, a validação determinística confirma IDs de notícias relacionadas, URLs canônicas, fontes, datas, cargos e estágios. Timeout ou indisponibilidade do verifier não gera novo trabalho do implementer: o mesmo diff fica preservado para repetir somente a revisão.
 
 Além do parecer técnico, o verifier produz um resumo curto e factual do resultado visível. Esse resumo será enviado ao Telegram junto do PR.
 

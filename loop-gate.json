@@ -10,6 +10,12 @@
     "loop-runner.js",
     "opencode.json",
     "loop-gate.json",
+    "test/loop-runner.test.js",
+    "test/news-data.test.js",
+    "test/electoral-data.test.js",
+    "scripts/validate-news-data.js",
+    "scripts/validate-electoral-data.js",
+    "package.json",
     "package-lock.json",
     ".github/workflows/**"
   ]

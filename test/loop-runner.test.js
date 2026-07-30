@@ -4,24 +4,32 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
+const { execFileSync } = require('node:child_process');
 
 const {
   compactSummary,
+  commitApprovedWork,
   classifyPullRequest,
   createPullRequest,
   deliverPullRequest,
+  enforceRecurringLimit,
   extractReview,
   failureState,
   findOpenTaskPullRequest,
   hasPendingBacklog,
   isCapacityError,
   isTransientError,
+  makePatch,
   parseLoopResult,
   pendingBacklogItems,
   recurringTasks,
   runWithRetry,
   selectTask,
   telegramMessage,
+  preserveVerifierReview,
+  verifierFailureState,
+  verifierRecoveryAction,
+  violatesGate,
 } = require('../loop-runner');
 
 const delivery = {
@@ -85,9 +93,10 @@ test('interpreta rotina recorrente e respeita frequência', () => {
   assert.equal(selectTask(content, ledger, Date.parse('2026-07-28T12:00:00Z')).id, routine.id);
 });
 
-test('brief real possui próxima tarefa e três rotinas diárias válidas', () => {
+test('brief real mantém seleção dinâmica e três rotinas diárias válidas', () => {
   const content = fs.readFileSync(path.join(__dirname, '..', 'AGENT_BRIEF.md'), 'utf8');
-  assert.equal(pendingBacklogItems(content)[0], 'Mapear nomes para governador e vice-governador do DF.');
+  const pending = pendingBacklogItems(content);
+  if (pending.length > 0) assert.equal(selectTask(content, {}).title, pending[0]);
   const routines = recurringTasks(content);
   assert.equal(routines.length, 3);
   assert.ok(routines.every((routine) => routine.intervalMs === 24 * 60 * 60 * 1000));
@@ -148,6 +157,116 @@ test('abre circuit breaker após três falhas ou imediatamente sem créditos', (
   assert.deepEqual(failureState(2, new Error('validation failed')), { count: 3, circuitOpen: true });
   assert.deepEqual(failureState(0, new Error('Not Enough Credits')), { count: 1, circuitOpen: true });
   assert.equal(isCapacityError(new Error('insufficient quota')), true);
+});
+
+test('timeout do verifier repete somente revisão e preserva o estado', () => {
+  const active = { runId: 'run-1', worktree: '/tmp/worktree', attempt: 1, status: 'running' };
+  assert.equal(verifierRecoveryAction({ infrastructureFailure: true, verdict: 'REJECT' }, 1), 'retry_verifier');
+  assert.equal(verifierRecoveryAction({ verdict: 'APPROVE' }, 1), 'deliver');
+  assert.equal(verifierRecoveryAction({ verdict: 'REJECT' }, 1), 'implementer_correction');
+  assert.equal(verifierRecoveryAction({ verdict: 'REJECT' }, 2), 'escalate');
+  const first = verifierFailureState(active);
+  assert.equal(first.circuitOpen, false);
+  assert.equal(first.saved.status, 'verifier_pending');
+  assert.equal(first.saved.worktree, active.worktree);
+  assert.equal(verifierFailureState(first.saved).circuitOpen, true);
+});
+
+test('transição verifier_pending preserva worktree sem abrir circuito na primeira falha', () => {
+  const updates = [];
+  const runs = [];
+  let paused = false;
+  preserveVerifierReview(
+    { runId: 'run-1', worktree: '/tmp/worktree', branch: 'loop/run-1', attempt: 1, task: 'tarefa' },
+    { infrastructureFailure: true, reason: 'timeout' },
+    {
+      appendRun: (entry) => runs.push(entry),
+      updateRuntime: (state, ledger) => updates.push({ state, ledger }),
+      notify: () => { throw new Error('não deve notificar na primeira falha'); },
+      writePause: () => { paused = true; },
+      log: () => {},
+    },
+  );
+  assert.equal(paused, false);
+  assert.equal(runs[0].outcome, 'verifier_pending');
+  assert.equal(updates[0].ledger.active.status, 'verifier_pending');
+  assert.equal(updates[0].ledger.active.worktree, '/tmp/worktree');
+  assert.equal(updates[0].ledger.active.branch, 'loop/run-1');
+});
+
+test('limite recorrente também se aplica após retomada do verifier', () => {
+  const verdict = enforceRecurringLimit(
+    { verdict: 'APPROVE', records_changed: 11, reason: 'ok' },
+    { kind: 'recurring', limit: 10 },
+  );
+  assert.equal(verdict.verdict, 'REJECT');
+  assert.match(verdict.reason, /excedeu o limite de 10/);
+  assert.equal(enforceRecurringLimit(
+    { verdict: 'APPROVE', records_changed: 10 },
+    { kind: 'recurring', limit: 10 },
+  ).verdict, 'APPROVE');
+});
+
+test('patch preservado mantém newline final e pode ser reaplicado', () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'loop-patch-'));
+  try {
+    execFileSync('git', ['init', '-q'], { cwd: dir });
+    fs.writeFileSync(path.join(dir, 'arquivo.txt'), 'antes\n');
+    execFileSync('git', ['add', 'arquivo.txt'], { cwd: dir });
+    execFileSync('git', ['-c', 'user.name=Teste', '-c', 'user.email=teste@example.test', 'commit', '-qm', 'base'], { cwd: dir });
+    fs.writeFileSync(path.join(dir, 'arquivo.txt'), 'depois\n');
+    const patch = makePatch(dir);
+    assert.equal(patch.endsWith('\n'), true);
+    execFileSync('git', ['checkout', '--', 'arquivo.txt'], { cwd: dir });
+    execFileSync('git', ['apply', '--check', '-'], { cwd: dir, input: patch });
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('gate protege scripts, testes operacionais e package.json', () => {
+  assert.equal(violatesGate('test/loop-runner.test.js'), true);
+  assert.equal(violatesGate('test/electoral-data.test.js'), true);
+  assert.equal(violatesGate('scripts/validate-electoral-data.js'), true);
+  assert.equal(violatesGate('package.json'), true);
+  assert.equal(violatesGate('src/data/cenario-eleitoral.ts'), false);
+});
+
+test('commit aprovado é idempotente após push concluído', () => {
+  const parent = fs.mkdtempSync(path.join(os.tmpdir(), 'loop-delivery-'));
+  const remote = path.join(parent, 'remote.git');
+  const repo = path.join(parent, 'repo');
+  const identity = {
+    GIT_AUTHOR_NAME: process.env.GIT_AUTHOR_NAME,
+    GIT_AUTHOR_EMAIL: process.env.GIT_AUTHOR_EMAIL,
+    GIT_COMMITTER_NAME: process.env.GIT_COMMITTER_NAME,
+    GIT_COMMITTER_EMAIL: process.env.GIT_COMMITTER_EMAIL,
+  };
+  try {
+    Object.assign(process.env, {
+      GIT_AUTHOR_NAME: 'Teste', GIT_AUTHOR_EMAIL: 'teste@example.test',
+      GIT_COMMITTER_NAME: 'Teste', GIT_COMMITTER_EMAIL: 'teste@example.test',
+    });
+    execFileSync('git', ['init', '--bare', '-q', remote]);
+    fs.mkdirSync(repo);
+    execFileSync('git', ['init', '-q', '-b', 'main'], { cwd: repo });
+    execFileSync('git', ['remote', 'add', 'origin', remote], { cwd: repo });
+    fs.writeFileSync(path.join(repo, 'produto.txt'), 'base\n');
+    execFileSync('git', ['add', 'produto.txt'], { cwd: repo });
+    execFileSync('git', ['-c', 'user.name=Teste', '-c', 'user.email=teste@example.test', 'commit', '-qm', 'base'], { cwd: repo });
+    execFileSync('git', ['push', '-q', '-u', 'origin', 'main'], { cwd: repo });
+    execFileSync('git', ['switch', '-q', '-c', 'loop/test'], { cwd: repo });
+    fs.writeFileSync(path.join(repo, 'produto.txt'), 'aprovado\n');
+    const firstSha = commitApprovedWork(repo, 'loop/test', 'run-test');
+    const secondSha = commitApprovedWork(repo, 'loop/test', 'run-test');
+    assert.equal(secondSha, firstSha);
+  } finally {
+    for (const [key, value] of Object.entries(identity)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+    fs.rmSync(parent, { recursive: true, force: true });
+  }
 });
 
 test('classifica PR somente como concluído depois do merge', () => {

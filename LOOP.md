@@ -4,7 +4,7 @@
 - Serviço: `deputados-loop.service`;
 - Runtime: `node loop-runner.js`;
 - Cadência: 15 minutos após o fim do ciclo anterior;
-- Implementer: até 45 minutos; verifier: até 3 minutos;
+- Implementer: até 45 minutos; verifier: até 8 minutos;
 - Timeout com diff: worktree e patch em `.loop/partial/` são retomados no ciclo seguinte;
 - Tarefa única: o primeiro item `[ ]` da fila sempre tem prioridade;
 - Rotina recorrente: quando a fila não possui `[ ]`, o loop executa no máximo uma rotina `[r]` vencida conforme frequência e limite declarados no brief;
@@ -14,6 +14,7 @@
 - Entrega interrompida: branch e metadados ficam em `delivery_pending`; o ciclo seguinte recupera ou cria o PR sem reimplementar;
 - Conclusão: uma tarefa só recebe resultado final após o PR ser efetivamente mesclado; CI falho deixa a entrega em `delivery_failed` e impede nova implementação;
 - Deduplicação: no máximo um PR aberto por ID semântico de tarefa;
+- Revisão interrompida: timeout ou resposta inválida deixa o worktree em `verifier_pending`; o ciclo seguinte repete somente o verifier, sem chamar o implementer ou alterar o diff;
 - GitHub e modelo: erros transitórios recebem retry com backoff; criação de PR usa REST como fallback;
 - Escalonamento: dois timeouts, 24h de trabalho parcial ou três ciclos consecutivos com falha; erro de créditos abre o circuit breaker imediatamente;
 - Modelo: configurado no OpenCode;
@@ -39,6 +40,7 @@ origin/main
 - `loop-gate.json` bloqueia secrets, infraestrutura, dependências e configuração do loop;
 - erro, timeout ou resposta inválida do verifier falha fechada: sem PR;
 - o verifier pode ler o estado completo do worktree e não deve exigir que conteúdo já presente na base reapareça no diff;
+- `scripts/validate-electoral-data.js` fornece ao verifier relatório protegido de IDs relacionados, URLs canônicas, cargos, estágios e evidências;
 - testes locais incluem `test:loop`, TypeScript e build antes da revisão e da criação do PR;
 - PR aberto da mesma tarefa, CI falho ou circuit breaker bloqueiam novas chamadas de agente até ação humana;
 - `.loop-pause` pausa novas execuções;

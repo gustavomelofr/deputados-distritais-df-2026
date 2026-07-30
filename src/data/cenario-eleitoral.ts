@@ -16,8 +16,8 @@ import { PessoaEleitoral } from '@/types';
 //    inferida só por mandato atual. Estágios anteriores ao registro no TSE
 //    nunca são "registro_oficial".
 //
-// A base ainda não inclui deputado distrital, senador, deputado federal nem
-// foto desses nomes — estes ficam para os próximos itens da P3/P4.
+// A base ainda não inclui deputado distrital, deputado federal nem foto
+// desses nomes — estes ficam para os próximos itens da P3/P4.
 // ---------------------------------------------------------------------------
 
 export const cenarioEleitoral: PessoaEleitoral[] = [
@@ -430,6 +430,367 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         descricao:
           'Partido Novo oficializou a candidatura de Kiko Caputo ao governo do DF e de Sebastião Coelho ao Senado em convenção estadual.',
         dataEvidencia: '2026-07-21',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Senado pelo DF — duas vagas em disputa
+  //
+  // Critério: pré-candidatura declarada, anúncio partidário ou movimentação
+  // pública com evidência suficiente (fonte específica, URL, data). Cada
+  // registro aponta para notícia já validada em src/data/noticias.ts; sem
+  // inferência por mandato atual nem por presença em pesquisa (brief).
+  // Estágios anteriores ao registro no TSE nunca são "registro_oficial".
+  // ---------------------------------------------------------------------------
+
+  // 13. Leila Barros (PDT) — pré-candidata à reeleição ao Senado, declarada
+  //     pela própria parlamentar e com apoios da Federação Brasil da
+  //     Esperança e da Federação PSOL-Rede.
+  {
+    id: 'leila-barros',
+    slug: 'leila-barros',
+    nome: 'Leila Barros',
+    nomeCompleto: 'Leila do Vôlei',
+    cargo: 'senador',
+    partido: 'PDT',
+    estagio: 'pre_candidatura_declarada',
+    noticiasRelacionadas: ['n30', 'n43', 'n53'],
+    evidencias: [
+      {
+        id: 'e-leila-barros-n30',
+        pessoaId: 'leila-barros',
+        cargo: 'senador',
+        estagio: 'pre_candidatura_declarada',
+        partido: 'PDT',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/04/22/senadora-leila-do-volei-lanca-pre-candidatura-a-reeleicao-com-frente-ampla-no-distrito-federal/',
+        descricao:
+          'A senadora Leila do Vôlei (PDT) anunciou pré-candidatura à reeleição em evento com lideranças de oposição, incluindo os deputados distritais Gabriel Magno (PT) e Paula Belmonte (PSDB).',
+        dataEvidencia: '2026-04-22',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-leila-barros-n43',
+        pessoaId: 'leila-barros',
+        cargo: 'senador',
+        estagio: 'movimentacao_publica',
+        partido: 'PDT',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.correiobraziliense.com.br/cidades-df/2026/07/7467965-unidade-da-esquerda-marca-convencao-do-psol.html',
+        descricao:
+          'A Federação PSOL-Rede oficializou apoio à pré-candidatura de Leila do Vôlei (PDT) ao Senado em convenção na CLDF.',
+        dataEvidencia: '2026-07-25',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 14. Erika Kokay (PT) — pré-candidata ao Senado pelo PT-DF, anunciada
+  //     em lançamento partidário e homologada pela Federação Brasil da
+  //     Esperança (PT-PV-PCdoB).
+  {
+    id: 'erika-kokay',
+    slug: 'erika-kokay',
+    nome: 'Erika Kokay',
+    nomeCompleto: 'Erika Kokay',
+    cargo: 'senador',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n31', 'n33', 'n44'],
+    evidencias: [
+      {
+        id: 'e-erika-kokay-n33',
+        pessoaId: 'erika-kokay',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/05/19/pt-df-lanca-pre-candidaturas-de-leandro-grass-ao-gdf-e-erika-kokay-ao-senado-nesta-terca-19/',
+        descricao:
+          'PT-DF lançou a pré-candidatura de Erika Kokay ao Senado em evento partidário junto com a pré-candidatura de Leandro Grass ao GDF.',
+        dataEvidencia: '2026-05-19',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-erika-kokay-n44',
+        pessoaId: 'erika-kokay',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Misto Brasil',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://mistobrasil.com/2026/07/25/federacao-pt-pv-pcdob-define-chapa-majoritaria-no-df/',
+        descricao:
+          'A Federação Brasil da Esperança (PT, PV e PCdoB) homologou Erika Kokay (PT) como pré-candidata ao Senado pelo DF.',
+        dataEvidencia: '2026-07-25',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 15. Bia Kicis (PL) — pré-candidata ao Senado pelo PL-DF, indicada pelo
+  //     ex-presidente Bolsonaro em fevereiro de 2026 e confirmada em
+  //     cobertura posterior do partido.
+  {
+    id: 'bia-kicis',
+    slug: 'bia-kicis',
+    nome: 'Bia Kicis',
+    nomeCompleto: 'Bia Kicis',
+    cargo: 'senador',
+    partido: 'PL',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n32', 'n39', 'n49'],
+    evidencias: [
+      {
+        id: 'e-bia-kicis-n32',
+        pessoaId: 'bia-kicis',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PL',
+        fonte: 'Poder360',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.poder360.com.br/poder-eleicoes/bolsonaro-indica-michelle-e-bia-kicis-para-o-senado-no-df-pelo-pl/',
+        descricao:
+          'Ex-presidente Jair Bolsonaro sinalizou que os nomes do PL para o Senado pelo DF serão Michelle Bolsonaro e a deputada federal Bia Kicis (PL-DF).',
+        dataEvidencia: '2026-02-21',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-bia-kicis-n39',
+        pessoaId: 'bia-kicis',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PL',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://newblogs.correiobraziliense.com.br/emaltanapolitica/convencao-do-pl-df-para-anunciar-candidaturas-sera-em-5-de-agosto/',
+        descricao:
+          'O presidente do PL no DF, Bia Kicis, convocou convenção para 5 de agosto, último dia do calendário eleitoral, para oficializar candidaturas ao Senado (incluindo a própria pré-candidatura).',
+        dataEvidencia: '2026-07-15',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 16. Michelle Bolsonaro (PL) — pré-candidata ao Senado pelo PL-DF,
+  //     indicada por Bolsonaro e mantida como aposta do partido para a
+  //     chapa ao Senado em coberturas independentes.
+  {
+    id: 'michelle-bolsonaro',
+    slug: 'michelle-bolsonaro',
+    nome: 'Michelle Bolsonaro',
+    nomeCompleto: 'Michelle Bolsonaro',
+    cargo: 'senador',
+    partido: 'PL',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n32', 'n39', 'n49'],
+    evidencias: [
+      {
+        id: 'e-michelle-n32',
+        pessoaId: 'michelle-bolsonaro',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PL',
+        fonte: 'Poder360',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.poder360.com.br/poder-eleicoes/bolsonaro-indica-michelle-e-bia-kicis-para-o-senado-no-df-pelo-pl/',
+        descricao:
+          'Ex-presidente Jair Bolsonaro sinalizou que os nomes do PL para o Senado pelo DF serão Michelle Bolsonaro e Bia Kicis.',
+        dataEvidencia: '2026-02-21',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-michelle-n39',
+        pessoaId: 'michelle-bolsonaro',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PL',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://newblogs.correiobraziliense.com.br/emaltanapolitica/convencao-do-pl-df-para-anunciar-candidaturas-sera-em-5-de-agosto/',
+        descricao:
+          'O PL-DF manteve a pré-candidatura de Michelle Bolsonaro ao Senado na convocação da convenção partidária para 5 de agosto, com senador Izalci Lucas como alternativa em caso de desistência.',
+        dataEvidencia: '2026-07-15',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 17. Sebastião Coelho (Novo) — pré-candidato ao Senado pelo Novo,
+  //     oficializado em convenção estadual em 20 de julho de 2026.
+  {
+    id: 'sebastiao-coelho',
+    slug: 'sebastiao-coelho',
+    nome: 'Sebastião Coelho',
+    nomeCompleto: 'Sebastião Coelho',
+    cargo: 'senador',
+    partido: 'Novo',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n50', 'n62'],
+    evidencias: [
+      {
+        id: 'e-sebastiao-coelho-n50',
+        pessoaId: 'sebastiao-coelho',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'Novo',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/colunas/grande-angular/novo-oficializa-candidaturas-de-kiko-caputo-e-sebastiao-coelho-no-df',
+        descricao:
+          'Partido Novo oficializou, em convenção estadual realizada em 20 de julho, a candidatura de Sebastião Coelho ao Senado pelo DF.',
+        dataEvidencia: '2026-07-21',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 18. Tiago Tarsis (Agir) — pré-candidato ao Senado pelo Agir-DF,
+  //     oficializado em convenção em 20 de julho de 2026.
+  {
+    id: 'tiago-tarsis',
+    slug: 'tiago-tarsis',
+    nome: 'Tiago Tarsis',
+    nomeCompleto: 'Tiago Tarsis',
+    cargo: 'senador',
+    partido: 'Agir',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n26', 'n84'],
+    evidencias: [
+      {
+        id: 'e-tiago-tarsis-n26',
+        pessoaId: 'tiago-tarsis',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'Agir',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/07/20/agir-lanca-elisson-ferreira-como-candidato-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'O Agir confirmou, em convenção em Brasília, a chapa com Tiago Tarsis para a disputa ao Senado pelo DF.',
+        dataEvidencia: '2026-07-20',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-tiago-tarsis-n84',
+        pessoaId: 'tiago-tarsis',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'Agir',
+        fonte: 'GPS Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://gpsbrasilia.com.br/agir-df-oficializa-elisson-ferreira-tarsis/',
+        descricao:
+          'O Agir-DF oficializou em convenção em 20 de julho a candidatura de Tiago Tarsis ao Senado, em chapa pura sem coligações anunciadas.',
+        dataEvidencia: '2026-07-20',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 19. Guilherme Amorim (UP) — pré-candidato ao Senado pela Unidade
+  //     Popular, homologado em convenção distrital no DF em 23 de julho.
+  {
+    id: 'guilherme-amorim',
+    slug: 'guilherme-amorim',
+    nome: 'Guilherme Amorim',
+    nomeCompleto: 'Guilherme Amorim',
+    cargo: 'senador',
+    partido: 'UP',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n42'],
+    evidencias: [
+      {
+        id: 'e-guilherme-amorim-n42',
+        pessoaId: 'guilherme-amorim',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'UP',
+        fonte: 'NC News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ncnews.com.br/2026/07/23/up-homologa-candidaturas-e-aprova-programa-de-governo-em-convencao-distrital-no-df/',
+        descricao:
+          'A Unidade Popular oficializou em convenção no Sindsep-DF a candidatura de Guilherme Amorim ao Senado pelo DF.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 20. Paulo Octávio (PSD) — pré-candidato ao Senado pelo PSD-DF,
+  //     apresentado em matéria sobre a aliança do ex-governador Arruda
+  //     para 2026; sustentado por uma reportagem adicional (n62).
+  {
+    id: 'paulo-octavio',
+    slug: 'paulo-octavio',
+    nome: 'Paulo Octávio',
+    nomeCompleto: 'Paulo Octávio',
+    cargo: 'senador',
+    partido: 'PSD',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n100', 'n62'],
+    evidencias: [
+      {
+        id: 'e-paulo-octavio-n100',
+        pessoaId: 'paulo-octavio',
+        cargo: 'senador',
+        estagio: 'movimentacao_publica',
+        partido: 'PSD',
+        fonte: 'ND Mais',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ndmais.com.br/politica/arruda-pode-disputar-o-gdf-em-2026-entenda-o-caso/',
+        descricao:
+          'Matéria sobre a viabilidade jurídica da pré-candidatura de Arruda registra Paulo Octávio (PSD) como pré-candidato ao Senado pelo DF.',
+        dataEvidencia: '2026-07-20',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-paulo-octavio-n62',
+        pessoaId: 'paulo-octavio',
+        cargo: 'senador',
+        estagio: 'movimentacao_publica',
+        partido: 'PSD',
+        fonte: 'Clica DF',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://clicadf.com.br/partidos-e-federacoes-vao-definir-nos-proximos-15-dias-as-selecoes-que-vao-entrar-em-campo-para-disputar-as-eleicoes-em-4-de-outubro/',
+        descricao:
+          'Clica DF registra a expectativa de definição da chapa do PSD/Avante ao Senado, no contexto da aliança com Arruda para o GDF.',
+        dataEvidencia: '2026-07-20',
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },

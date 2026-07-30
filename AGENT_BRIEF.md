@@ -212,7 +212,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
   Critério: identidade, fonte, licença/base de uso, validade e data de verificação registradas.
   Evidência: `src/data/auditoria-fotos.ts` registra 10 itens (ids 1–10, slugs e nomes) com fonte CLDF, URL da fonte na CLDF (https://www.cl.df.gov.br/deputados-2023-2026), licença `institucional_oficial`, validade `valida` e `verificadaEm` em 2026-07-30; `test/photo-audit.test.js` valida ordem, slug canônico, HTTPS, host CLDF, licença e data, e rejeita duplicatas/ausências.
 
-- [ ] Auditar fotos dos deputados distritais 11–20.
+- [x] Auditar fotos dos deputados distritais 11–20.
   Critério: mesmos requisitos do lote anterior.
 
 - [ ] Auditar fotos dos deputados distritais 21–24.

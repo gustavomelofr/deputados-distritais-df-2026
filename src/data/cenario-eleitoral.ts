@@ -1129,4 +1129,164 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     coletadaEm: '2026-07-28',
     verificadaEm: '2026-07-30',
   },
+
+  // 31. Thiago Manzoni (PL) — deputado distrital que pleiteia vaga na Câmara
+  //     dos Deputados, conforme reportagem do Brasil de Fato DF.
+  {
+    id: 'thiago-manzoni',
+    slug: 'thiago-manzoni',
+    nome: 'Thiago Manzoni',
+    nomeCompleto: 'Thiago Manzoni de Oliveira',
+    cargo: 'deputado_federal',
+    partido: 'PL',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n57'],
+    evidencias: [
+      {
+        id: 'e-thiago-manzoni-n57',
+        pessoaId: 'thiago-manzoni',
+        cargo: 'deputado_federal',
+        estagio: 'movimentacao_publica',
+        partido: 'PL',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que o deputado distrital Thiago Manzoni (PL) pleiteia vaga na Câmara dos Deputados nas eleições de 2026.',
+        dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 32. Daniel Donizet (MDB) — deputado distrital que pleiteia vaga na Câmara
+  //     dos Deputados, conforme reportagem do Brasil de Fato DF.
+  {
+    id: 'daniel-donizet',
+    slug: 'daniel-donizet',
+    nome: 'Daniel Donizet',
+    nomeCompleto: 'Daniel Donizet de Oliveira',
+    cargo: 'deputado_federal',
+    partido: 'MDB',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n57'],
+    evidencias: [
+      {
+        id: 'e-daniel-donizet-n57',
+        pessoaId: 'daniel-donizet',
+        cargo: 'deputado_federal',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que o deputado distrital Daniel Donizet (MDB) pleiteia vaga na Câmara dos Deputados nas eleições de 2026.',
+        dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 33. Juliana dos Tigrados (PV) — candidata a deputado federal lançada
+  //     pelo PV-DF em convenção distrital.
+  {
+    id: 'juliana-dos-tigrados',
+    slug: 'juliana-dos-tigrados',
+    nome: 'Juliana dos Tigrados',
+    nomeCompleto: 'Juliana dos Tigrados',
+    cargo: 'deputado_federal',
+    partido: 'PV',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n54'],
+    evidencias: [
+      {
+        id: 'e-juliana-tigrados-n54',
+        pessoaId: 'juliana-dos-tigrados',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PV',
+        fonte: 'Notícias do Planalto',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://noticiasdoplanalto.com.br/pv-df-confirma-candidaturas-e-apoia-chapa-de-leandro-grass/',
+        descricao:
+          'O PV-DF confirmou, em convenção distrital, o lançamento de Juliana dos Tigrados como candidata à Câmara dos Deputados, ao lado de Reginaldo Veras (reeleição).',
+        dataEvidencia: '2026-07-24',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 34. Ruth Venceremos (PT) — pré-candidata a deputado federal, integrante
+  //     da nominata do PT-DF aprovada em maio de 2026.
+  {
+    id: 'ruth-venceremos',
+    slug: 'ruth-venceremos',
+    nome: 'Ruth Venceremos',
+    nomeCompleto: 'Ruth Venceremos',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n89'],
+    evidencias: [
+      {
+        id: 'e-ruth-venceremos-n89',
+        pessoaId: 'ruth-venceremos',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/distrito-federal/pt-df-lanca-pre-candidaturas-a-camara-dos-deputados-veja-a-lista-de-nomes',
+        descricao:
+          'O PT-DF aprovou nominata com Ruth Venceremos entre os sete pré-candidatos à Câmara dos Deputados.',
+        dataEvidencia: '2026-05-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 35. Vanessa Bicho Negrini (PT) — pré-candidata a deputado federal,
+  //     integrante da nominata do PT-DF aprovada em maio de 2026.
+  {
+    id: 'vanessa-bicho-negrini',
+    slug: 'vanessa-bicho-negrini',
+    nome: 'Vanessa Bicho Negrini',
+    nomeCompleto: 'Vanessa Bicho Negrini',
+    cargo: 'deputado_federal',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n89'],
+    evidencias: [
+      {
+        id: 'e-vanessa-bicho-negrini-n89',
+        pessoaId: 'vanessa-bicho-negrini',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/distrito-federal/pt-df-lanca-pre-candidaturas-a-camara-dos-deputados-veja-a-lista-de-nomes',
+        descricao:
+          'O PT-DF aprovou nominata com Vanessa Bicho Negrini entre os sete pré-candidatos à Câmara dos Deputados.',
+        dataEvidencia: '2026-05-16',
+        coletadaEm: '2026-07-30',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
 ];

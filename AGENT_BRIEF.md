@@ -200,7 +200,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Ampliar nomes para deputado distrital.
   Critério: até 10 nomes adicionais, incluindo novos nomes quando sustentados por fonte.
 
-- [ ] Criar histórico de evidências por pessoa.
+- [x] Criar histórico de evidências por pessoa.
   Critério: preservar mudança de estágio, partido ou cargo com fonte e data, sem apagar o registro anterior.
 
 - [ ] Preparar integração com DivulgaCand/TSE.

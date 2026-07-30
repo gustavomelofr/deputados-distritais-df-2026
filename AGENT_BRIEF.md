@@ -194,7 +194,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 - [x] Ampliar nomes para deputado federal pelo DF.
   Critério: até 10 nomes adicionais, sem inferir candidatura apenas por mandato atual.
 
-- [ ] Mapear nomes para deputado distrital.
+- [x] Mapear nomes para deputado distrital.
   Critério: lote inicial de até 10 nomes, incluindo incumbentes somente quando houver evidência eleitoral.
 
 - [ ] Ampliar nomes para deputado distrital.

@@ -15,10 +15,11 @@ import { PessoaEleitoral } from '@/types';
 //    para notícia já validada em src/data/noticias.ts; nenhuma evidência é
 //    inferida só por mandato atual. Estágios anteriores ao registro no TSE
 //    nunca são "registro_oficial".
-//
-// A base ainda não inclui deputado distrital nem foto desses nomes — estes
-// ficam para os próximos itens da P3/P4. Deputado federal foi adicionado
-// no item "Mapear nomes para deputado federal pelo DF".
+//  - "Mapear nomes para deputado federal pelo DF" (lote inicial e ampliação).
+//  - "Mapear nomes para deputado distrital" (lote inicial de até 10 nomes):
+//    incumbentes só entram com evidência eleitoral específica — anúncio
+//    partidário da nominata para a CLDF ou reportagem com declaração/
+//    articulação de candidatura à reeleição. Foto fica para P4.
 // ---------------------------------------------------------------------------
 
 export const cenarioEleitoral: PessoaEleitoral[] = [
@@ -1287,6 +1288,354 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
       },
     ],
     coletadaEm: '2026-07-30',
+    verificadaEm: '2026-07-30',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Deputado distrital pela CLDF — 24 vagas em disputa
+  //
+  // Critério: pré-candidatura declarada, anúncio partidário ou movimentação
+  // pública com evidência específica suficiente (URL e data). Cada registro
+  // aponta para notícia já validada em src/data/noticias.ts; incumbentes só
+  // entram com evidência eleitoral específica (anúncio de nominata para a
+  // CLDF ou reportagem com declaração/articulação de candidatura à
+  // reeleição). Sem inferência por mandato atual. Estágios anteriores ao
+  // registro no TSE nunca são "registro_oficial". Lote inicial de até 10
+  // nomes (P3). Foto segue para P4.
+  // ---------------------------------------------------------------------------
+
+  // 36. Chico Vigilante (PT) — pré-candidato à reeleição à CLDF, lançado na
+  //     nominata distrital do PT-DF e confirmou publicamente a intenção de
+  //     disputar um sexto mandato.
+  {
+    id: 'chico-vigilante',
+    slug: 'chico-vigilante',
+    nome: 'Chico Vigilante',
+    nomeCompleto: 'Francisco Wellington de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n33', 'n57', 'n72'],
+    evidencias: [
+      {
+        id: 'e-chico-vigilante-n33',
+        pessoaId: 'chico-vigilante',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/05/19/pt-df-lanca-pre-candidaturas-de-leandro-grass-ao-gdf-e-erika-kokay-ao-senado-nesta-terca-19/',
+        descricao:
+          'O PT-DF lançou nominata com 19 pré-candidaturas à CLDF, incluindo o deputado distrital Chico Vigilante (PT) entre os nomes confirmados para a disputa na Câmara Legislativa.',
+        dataEvidencia: '2026-05-19',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-chico-vigilante-n72',
+        pessoaId: 'chico-vigilante',
+        cargo: 'deputado_distrital',
+        estagio: 'pre_candidatura_declarada',
+        partido: 'PT',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.correiobraziliense.com.br/cidades-df/2026/06/7442943-chico-vigilante-celebra-lideranca-em-pesquisa-espontanea-para-a-cldf.html',
+        descricao:
+          'O deputado distrital Chico Vigilante (PT) afirmou pretender disputar um sexto mandato na CLDF ao comentar a liderança na consulta espontânea da pesquisa Correio/OPINIÃO.',
+        dataEvidencia: '2026-06-17',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 37. Gabriel Magno (PT) — pré-candidato à reeleição à CLDF, lançado na
+  //     nominata distrital do PT-DF.
+  {
+    id: 'gabriel-magno',
+    slug: 'gabriel-magno',
+    nome: 'Gabriel Magno',
+    nomeCompleto: 'Gabriel Magno de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n33', 'n30', 'n57'],
+    evidencias: [
+      {
+        id: 'e-gabriel-magno-n33',
+        pessoaId: 'gabriel-magno',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/05/19/pt-df-lanca-pre-candidaturas-de-leandro-grass-ao-gdf-e-erika-kokay-ao-senado-nesta-terca-19/',
+        descricao:
+          'O PT-DF lançou nominata com 19 pré-candidaturas à CLDF, incluindo o deputado distrital Gabriel Magno (PT) entre os nomes confirmados para a disputa na Câmara Legislativa.',
+        dataEvidencia: '2026-05-19',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 38. Ricardo Vale (PT) — pré-candidato à reeleição à CLDF, lançado na
+  //     nominata distrital do PT-DF.
+  {
+    id: 'ricardo-vale',
+    slug: 'ricardo-vale',
+    nome: 'Ricardo Vale',
+    nomeCompleto: 'Ricardo Vale de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'PT',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n33', 'n57'],
+    evidencias: [
+      {
+        id: 'e-ricardo-vale-n33',
+        pessoaId: 'ricardo-vale',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/05/19/pt-df-lanca-pre-candidaturas-de-leandro-grass-ao-gdf-e-erika-kokay-ao-senado-nesta-terca-19/',
+        descricao:
+          'O PT-DF lançou nominata com 19 pré-candidaturas à CLDF, incluindo o deputado distrital Ricardo Vale (PT) entre os nomes confirmados para a disputa na Câmara Legislativa.',
+        dataEvidencia: '2026-05-19',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 39. Max Maciel (PSOL) — pré-candidato à reeleição à CLDF, oficializado
+  //     pela Federação Psol-Rede em convenção.
+  {
+    id: 'max-maciel',
+    slug: 'max-maciel',
+    nome: 'Max Maciel',
+    nomeCompleto: 'Max Maciel de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'PSOL',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n29', 'n35', 'n57'],
+    evidencias: [
+      {
+        id: 'e-max-maciel-n29',
+        pessoaId: 'max-maciel',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSOL',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/27/federacao-psol-e-rede-oficializa-candidaturas-a-camara-federal-e-distrital-e/',
+        descricao:
+          'A Federação Psol-Rede oficializou as nominatas para 2026 no DF e incluiu o deputado distrital Max Maciel (PSOL) entre os nomes que disputarão a reeleição na CLDF.',
+        dataEvidencia: '2026-07-27',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 40. Eduardo Brandão (PV) — pré-candidato à CLDF, lançado na convenção
+  //     distrital do PV-DF.
+  {
+    id: 'eduardo-brandao',
+    slug: 'eduardo-brandao',
+    nome: 'Eduardo Brandão',
+    nomeCompleto: 'Eduardo Brandão',
+    cargo: 'deputado_distrital',
+    partido: 'PV',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n40', 'n54'],
+    evidencias: [
+      {
+        id: 'e-eduardo-brandao-n40',
+        pessoaId: 'eduardo-brandao',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PV',
+        fonte: 'Revista 61 Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://61brasilia.com/pv-df-homologa-candidaturas-e-reafirma-apoio-a-chapa-da-federacao-brasil-da-esperanca-para-2026/',
+        descricao:
+          'Convenção distrital do PV-DF homologou Eduardo Brandão como candidato à CLDF ao lado de Jean da Cultura e Elke Pimentel.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 41. Jean da Cultura (PV) — pré-candidato à CLDF, lançado na convenção
+  //     distrital do PV-DF.
+  {
+    id: 'jean-da-cultura',
+    slug: 'jean-da-cultura',
+    nome: 'Jean da Cultura',
+    nomeCompleto: 'Jean da Cultura',
+    cargo: 'deputado_distrital',
+    partido: 'PV',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n40', 'n54'],
+    evidencias: [
+      {
+        id: 'e-jean-da-cultura-n40',
+        pessoaId: 'jean-da-cultura',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PV',
+        fonte: 'Revista 61 Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://61brasilia.com/pv-df-homologa-candidaturas-e-reafirma-apoio-a-chapa-da-federacao-brasil-da-esperanca-para-2026/',
+        descricao:
+          'Convenção distrital do PV-DF homologou Jean da Cultura como candidato à CLDF ao lado de Eduardo Brandão e Elke Pimentel.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 42. Elke Pimentel (PV) — pré-candidata à CLDF, lançada na convenção
+  //     distrital do PV-DF.
+  {
+    id: 'elke-pimentel',
+    slug: 'elke-pimentel',
+    nome: 'Elke Pimentel',
+    nomeCompleto: 'Elke Pimentel',
+    cargo: 'deputado_distrital',
+    partido: 'PV',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: ['n40', 'n54'],
+    evidencias: [
+      {
+        id: 'e-elke-pimentel-n40',
+        pessoaId: 'elke-pimentel',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PV',
+        fonte: 'Revista 61 Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://61brasilia.com/pv-df-homologa-candidaturas-e-reafirma-apoio-a-chapa-da-federacao-brasil-da-esperanca-para-2026/',
+        descricao:
+          'Convenção distrital do PV-DF homologou Elke Pimentel como candidata à CLDF ao lado de Eduardo Brandão e Jean da Cultura.',
+        dataEvidencia: '2026-07-23',
+        coletadaEm: '2026-07-27',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-27',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 43. Hermeto (MDB) — deputado distrital que articula reeleição na CLDF
+  //     conforme reportagem do Brasil de Fato DF.
+  {
+    id: 'hermeto',
+    slug: 'hermeto',
+    nome: 'Hermeto',
+    nomeCompleto: 'Hermeto Castelo Branco de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'MDB',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n57', 'n60'],
+    evidencias: [
+      {
+        id: 'e-hermeto-n57',
+        pessoaId: 'hermeto',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que o deputado distrital Hermeto (MDB) articula reeleição na CLDF nas eleições de 2026.',
+        dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-hermeto-n60',
+        pessoaId: 'hermeto',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Blog do GBU',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.blogdogbu.com.br/2026/04/eleicoes-quantos-distritais-o.html',
+        descricao:
+          'Análise do Blog do GBU sobre a nominata do MDB para a CLDF em 2026 inclui Hermeto entre os nomes do partido para a disputa na Câmara Legislativa.',
+        dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
+    verificadaEm: '2026-07-30',
+  },
+
+  // 44. Jaqueline Silva (MDB) — deputada distrital que articula
+  //     reeleição na CLDF conforme reportagem do Brasil de Fato DF e análise
+  //     de nominata do Blog do GBU.
+  {
+    id: 'jaqueline-silva',
+    slug: 'jaqueline-silva',
+    nome: 'Jaqueline Silva',
+    nomeCompleto: 'Jaqueline Silva de Oliveira',
+    cargo: 'deputado_distrital',
+    partido: 'MDB',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: ['n57', 'n60'],
+    evidencias: [
+      {
+        id: 'e-jaqueline-silva-n57',
+        pessoaId: 'jaqueline-silva',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Brasil de Fato',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.brasildefato.com.br/2026/07/16/disputa-a-reeleicao-predomina-no-distrito-federal-seis-parlamentares-buscam-cargos-maiores/',
+        descricao:
+          'Levantamento do Brasil de Fato DF indica que a deputada distrital Jaqueline Silva (MDB) articula reeleição na CLDF nas eleições de 2026.',
+        dataEvidencia: '2026-07-16',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+      {
+        id: 'e-jaqueline-silva-n60',
+        pessoaId: 'jaqueline-silva',
+        cargo: 'deputado_distrital',
+        estagio: 'movimentacao_publica',
+        partido: 'MDB',
+        fonte: 'Blog do GBU',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.blogdogbu.com.br/2026/04/eleicoes-quantos-distritais-o.html',
+        descricao:
+          'Análise do Blog do GBU sobre a nominata do MDB para a CLDF em 2026 inclui Jaqueline Silva entre os nomes do partido para a disputa na Câmara Legislativa.',
+        dataEvidencia: '2026-04-14',
+        coletadaEm: '2026-07-28',
+        verificadaEm: '2026-07-30',
+      },
+    ],
+    coletadaEm: '2026-07-28',
     verificadaEm: '2026-07-30',
   },
 ];

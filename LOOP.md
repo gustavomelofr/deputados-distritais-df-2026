@@ -12,11 +12,13 @@
 - Espera: se nenhuma rotina estiver vencida, o estado é `waiting`, sem worktree ou chamada de agente;
 - Idle: usado somente quando não existem tarefas únicas nem rotinas recorrentes configuradas;
 - Entrega interrompida: branch e metadados ficam em `delivery_pending`; o ciclo seguinte recupera ou cria o PR sem reimplementar;
+- Conclusão: uma tarefa só recebe resultado final após o PR ser efetivamente mesclado; CI falho deixa a entrega em `delivery_failed` e impede nova implementação;
+- Deduplicação: no máximo um PR aberto por ID semântico de tarefa;
 - GitHub e modelo: erros transitórios recebem retry com backoff; criação de PR usa REST como fallback;
-- Escalonamento: dois timeouts ou 24h de trabalho parcial;
+- Escalonamento: dois timeouts, 24h de trabalho parcial ou três ciclos consecutivos com falha; erro de créditos abre o circuit breaker imediatamente;
 - Modelo: configurado no OpenCode;
 - Tentativas: no máximo 2 por tarefa;
-- Custo: sem teto diário por decisão do operador; duração e resultados ficam em `.loop/run-log.jsonl`.
+- Custo: duração e resultados ficam em `.loop/run-log.jsonl`; o circuit breaker limita repetição inútil, embora não exista teto monetário diário.
 
 ## Fluxo obrigatório
 
@@ -36,6 +38,9 @@ origin/main
 ## Guardrails
 - `loop-gate.json` bloqueia secrets, infraestrutura, dependências e configuração do loop;
 - erro, timeout ou resposta inválida do verifier falha fechada: sem PR;
+- o verifier pode ler o estado completo do worktree e não deve exigir que conteúdo já presente na base reapareça no diff;
+- testes locais incluem `test:loop`, TypeScript e build antes da revisão e da criação do PR;
+- PR aberto da mesma tarefa, CI falho ou circuit breaker bloqueiam novas chamadas de agente até ação humana;
 - `.loop-pause` pausa novas execuções;
 - `waiting` e `idle` não desligam o serviço;
 - cada Telegram contém tarefa, `Resumo:`, resultado e PR/ação necessária quando aplicável;

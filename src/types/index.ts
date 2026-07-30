@@ -236,3 +236,13 @@ export interface NoticiaEleitoral {
   coletadaEm: string;
   verificadaEm: string;
 }
+
+// ---------------------------------------------------------------------------
+// DivulgaCand/TSE — integração com dados oficiais de candidaturas 2026
+// ---------------------------------------------------------------------------
+
+/** Estado de disponibilidade do sistema DivulgaCand/TSE para a eleição. */
+export type DisponibilidadeDivulgaCand =
+  | { status: 'indisponivel'; ano: number; verificadoEm: string; motivo: string }
+  | { status: 'disponivel'; ano: number; verificadoEm: string; codigoEleicao: number }
+  | { status: 'erro_rede'; ano: number; verificadoEm: string; motivo: string };

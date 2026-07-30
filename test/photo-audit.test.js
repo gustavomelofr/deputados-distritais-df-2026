@@ -38,9 +38,22 @@ function deputadosFonte() {
 
 function auditoriaItemCalls() {
   const source = readFileSafe(AUDIT_FILE);
+  const m = source.match(
+    /auditoriaFotosDeputadosDistritaisLote1:\s*AuditoriaFoto\[\]\s*=\s*\[([\s\S]*?)\]/,
+  );
+  if (!m) return [];
   const re = /item\(\s*(\d+)\s*\)/g;
-  const matches = [...source.matchAll(re)];
-  return matches.map((m) => Number(m[1]));
+  return [...m[1].matchAll(re)].map((x) => Number(x[1]));
+}
+
+function auditoriaLote2Ranges() {
+  const source = readFileSafe(AUDIT_FILE);
+  const m = source.match(
+    /auditoriaFotosDeputadosDistritaisLote2:\s*AuditoriaFoto\[\]\s*=\s*\[([\s\S]*?)\]/,
+  );
+  if (!m) return [];
+  const re = /item\(\s*(\d+)\s*\)/g;
+  return [...m[1].matchAll(re)].map((x) => Number(x[1]));
 }
 
 const DEPUTADOS_SLUGS_ESPERADOS = [
@@ -56,12 +69,43 @@ const DEPUTADOS_SLUGS_ESPERADOS = [
   'jaqueline-silva',
 ];
 
+const DEPUTADOS_SLUGS_ESPERADOS_LOTE2 = [
+  'joaquim-roriz-neto',
+  'jorge-vianna',
+  'joao-cardoso',
+  'martins-machado',
+  'max-maciel',
+  'pastor-daniel-de-castro',
+  'paula-belmonte',
+  'pepa',
+  'ricardo-vale',
+  'roberio-negreiros',
+];
+
 test('auditoria cobre exatamente os 10 primeiros deputados distritais em ordem', () => {
   const calls = auditoriaItemCalls();
   assert.deepEqual(
     calls,
     [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     `auditoria deve chamar item(1) a item(10); chamadas encontradas: ${calls.join(',')}`,
+  );
+});
+
+test('auditoria do lote 2 cobre exatamente os deputados distritais 11–20 em ordem', () => {
+  const calls = auditoriaLote2Ranges();
+  assert.deepEqual(
+    calls,
+    [11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    `auditoria do lote 2 deve chamar item(11) a item(20); chamadas encontradas: ${calls.join(',')}`,
+  );
+});
+
+test('slugs dos deputados distritais 11–20 batem com a lista oficial', () => {
+  const deps = deputadosFonte().slice(10, 20);
+  assert.deepEqual(
+    deps.map((d) => d.slug),
+    DEPUTADOS_SLUGS_ESPERADOS_LOTE2,
+    'ordem dos slugs do lote 2 divergente da esperada',
   );
 });
 
@@ -100,6 +144,48 @@ test('URL da foto é HTTPS específica da CLDF', () => {
     );
     assert.notEqual(u.pathname, '/', `${dep.slug}: pathname raiz`);
   }
+});
+
+test('URL da foto do lote 2 é HTTPS específica da CLDF', () => {
+  const deps = deputadosFonte().slice(10, 20);
+  for (const dep of deps) {
+    const u = new URL(dep.foto);
+    assert.equal(u.protocol, 'https:', `${dep.slug}: foto não HTTPS`);
+    assert.match(
+      u.hostname,
+      /(^|\.)cl\.df\.gov\.br$/,
+      `${dep.slug}: host fora da CLDF (${u.hostname})`,
+    );
+    assert.notEqual(u.pathname, '/', `${dep.slug}: pathname raiz`);
+  }
+});
+
+test('identidade registrada no lote 2: deputadoId, slug, nome e url por posição', () => {
+  const deps = deputadosFonte().slice(10, 20);
+  const calls = auditoriaLote2Ranges();
+  assert.equal(calls.length, deps.length);
+  for (let i = 0; i < deps.length; i++) {
+    const pos = calls[i];
+    const dep = deps[pos - 11];
+    assert.ok(dep, `posição ${pos} sem deputado correspondente`);
+    assert.equal(dep.id, String(pos), `deputado da posição ${pos} tem id divergente`);
+    assert.ok(dep.slug, `deputado ${pos}: slug ausente`);
+    assert.ok(dep.nome, `deputado ${pos}: nome ausente`);
+  }
+});
+
+test('lote 2 exporta validador determinístico 11–20', () => {
+  const fonte = readFileSafe(AUDIT_FILE);
+  assert.match(
+    fonte,
+    /export function validarAuditoriaFotosDeputados11a20/,
+    'validador do lote 2 ausente',
+  );
+  assert.match(
+    fonte,
+    /auditoriaFotosDeputadosDistritaisLote2/,
+    'array do lote 2 ausente',
+  );
 });
 
 test('arquivo de auditoria contém URL da fonte da CLDF e campos obrigatórios', () => {

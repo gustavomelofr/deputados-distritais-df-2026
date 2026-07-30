@@ -101,6 +101,32 @@ export const auditoriaFotosDeputadosDistritaisLote1: AuditoriaFoto[] = [
   item(10),
 ];
 
+// ---------------------------------------------------------------------------
+// Auditoria de fotografias dos deputados distritais — P4 do AGENT_BRIEF.md.
+//
+// Lote 2: deputados distritais 11–20 (ordenados por id em src/data/deputados.ts).
+// Critério: mesmos requisitos do lote anterior — identidade, fonte, licença/
+// base de uso, validade e data de verificação registradas; fonte CLDF; URL
+// da fonte na CLDF (https://www.cl.df.gov.br/deputados-2023-2026); licença
+// `institucional_oficial`; validade `valida`; `verificadaEm` em 2026-07-30.
+// Sem hotlink de imprensa sem licença. Quando a pessoa não consta na base
+// eleitoral de 2026 (cenario-eleitoral.ts), registra-se "sem mapeamento
+// eleitoral 2026" — o critério de foto só é aplicável a nomes monitorados.
+// ---------------------------------------------------------------------------
+
+export const auditoriaFotosDeputadosDistritaisLote2: AuditoriaFoto[] = [
+  item(11),
+  item(12),
+  item(13),
+  item(14),
+  item(15),
+  item(16),
+  item(17),
+  item(18),
+  item(19),
+  item(20),
+];
+
 /**
  * Validador determinístico da auditoria. Garante que cada item cumpre o
  * critério do brief para P4 — fotos dos deputados distritais 1–10:
@@ -202,4 +228,18 @@ export function validarAuditoriaFotosDeputados1a10(
     }
   }
   return erros;
+}
+
+/**
+ * Validador determinístico da auditoria do lote 2 (deputados distritais
+ * 11–20). Garante que cada item cumpre o critério de P4 do brief:
+ * identidade, fonte, licença/base de uso, validade e data de verificação.
+ *
+ * Retorna lista vazia quando a auditoria cumpre o critério.
+ */
+export function validarAuditoriaFotosDeputados11a20(
+  auditoria: AuditoriaFoto[] = auditoriaFotosDeputadosDistritaisLote2,
+  hoje: string = VERIFICADA_EM,
+): string[] {
+  return validarAuditoriaFotosDeputados1a10(auditoria, hoje);
 }

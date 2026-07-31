@@ -34,6 +34,14 @@ import {
   type FiltrosExploracao,
   type ItemExploracao,
 } from '@/lib/exploracao-cargo';
+import {
+  classesEstadoFoto,
+  classesEstadoLinkOficial,
+  rotuloEstadoFoto,
+  rotuloEstadoLinkOficial,
+  type EstadoFoto,
+  type EstadoLinkOficial,
+} from '@/lib/perfil-eleitoral';
 
 // Reexporta a API pública para preservar compatibilidade com imports
 // existentes (página /eleicoes-2026 e testes determinísticos).
@@ -373,6 +381,8 @@ export function ExploracaoPorCargo({
             <li
               key={item.id}
               className="rounded-lg border border-zinc-200 bg-zinc-50 p-4"
+              data-estado-foto={item.estadoFoto}
+              data-estado-link={item.estadoLinkOficial}
             >
               <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
                 <h3 className="font-semibold text-zinc-900 text-sm">
@@ -397,6 +407,20 @@ export function ExploracaoPorCargo({
               <p className="text-sm text-zinc-600 leading-relaxed mb-3">
                 {item.descricao}
               </p>
+              <div className="flex flex-wrap items-center gap-1.5 mb-3">
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${classesEstadoFoto(item.estadoFoto)}`}
+                  aria-label={`Estado da foto: ${rotuloEstadoFoto(item.estadoFoto)}`}
+                >
+                  {rotuloEstadoFoto(item.estadoFoto)}
+                </span>
+                <span
+                  className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${classesEstadoLinkOficial(item.estadoLinkOficial)}`}
+                  aria-label={`Estado do link oficial: ${rotuloEstadoLinkOficial(item.estadoLinkOficial)}`}
+                >
+                  {rotuloEstadoLinkOficial(item.estadoLinkOficial)}
+                </span>
+              </div>
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="text-xs text-zinc-500">
                   <span className="text-zinc-600">Fonte:</span>{' '}

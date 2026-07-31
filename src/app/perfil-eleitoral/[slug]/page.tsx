@@ -27,14 +27,21 @@ import { auditoriaInstagramNomesMonitoradosLote1 } from '@/data/auditoria-instag
 import { vinculosEleitorais } from '@/data/vinculos-eleitorais';
 import { cenarioEleitoral } from '@/data/cenario-eleitoral';
 import {
+  classesEstadoFoto,
+  classesEstadoLinkOficial,
   classesEstagioPerfil,
+  estadoFotoParaPerfil,
+  estadoLinkOficialParaPerfil,
   formatarDataPerfil,
   linksOficiaisParaPerfil,
   perfilEleitoralDePessoa,
   pessoaEleitoralPorSlug,
   rotuloCargo,
+  rotuloEstadoFoto,
+  rotuloEstadoLinkOficial,
   rotuloEstagio,
   rotuloFonteCategoria,
+  rotuloLicencaFoto,
   slugsPerfilEleitoral,
   type ItemTimeline,
 } from '@/lib/perfil-eleitoral';
@@ -169,21 +176,43 @@ export default async function PerfilEleitoralPage({ params }: Props) {
               className="h-full w-full object-cover"
             />
           </div>
+          <p className="mt-2 max-w-[10rem]">
+            <span
+              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${classesEstadoFoto(
+                estadoFotoParaPerfil(perfil.foto),
+              )}`}
+              data-estado-foto={estadoFotoParaPerfil(perfil.foto)}
+              aria-label={`Estado da foto: ${rotuloEstadoFoto(estadoFotoParaPerfil(perfil.foto))}`}
+            >
+              {rotuloEstadoFoto(estadoFotoParaPerfil(perfil.foto))}
+            </span>
+          </p>
           {perfil.foto.placeholder ? (
             <p className="text-xs text-zinc-400 mt-2 max-w-[10rem] leading-tight">
               Placeholder honesto — foto não verificada para o cargo
-              pretendido em 2026.
+              pretendido em 2026. Base de uso:{' '}
+              <strong className="text-zinc-500">
+                {rotuloLicencaFoto(perfil.foto.licenca)}
+              </strong>
+              .
             </p>
           ) : (
             <p className="text-xs text-zinc-400 mt-2 max-w-[10rem] leading-tight">
-              Foto: <a
+              Foto:{' '}
+              <a
                 href={perfil.foto.urlFonte}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >{perfil.foto.fonte}</a>
-              {perfil.foto.credito ? null : null}
+              >
+                {perfil.foto.fonte}
+              </a>
               {' '}· verificada em {perfil.foto.verificadaEm}
+              {' '}· base de uso:{' '}
+              <strong className="text-zinc-500">
+                {rotuloLicencaFoto(perfil.foto.licenca)}
+              </strong>
+              .
             </p>
           )}
         </div>
@@ -524,7 +553,9 @@ export default async function PerfilEleitoralPage({ params }: Props) {
         </h2>
         <p className="text-sm text-zinc-500 leading-relaxed mb-4">
           Apenas links confirmados em fonte institucional. Sem hotlink de
-          imprensa sem licença. Quando a lista está vazia, o motivo é
+          imprensa sem licença. Cada item mostra o estado documental
+          (confirmado em fonte institucional ou registrado em declaração
+          pública) e a fonte. Quando a lista está vazia, o motivo é
           ausência de fonte oficial que publique o link.
         </p>
         {perfil.linksOficiais.length === 0 ? (
@@ -537,20 +568,47 @@ export default async function PerfilEleitoralPage({ params }: Props) {
             </p>
           </div>
         ) : (
-          <ul className="flex flex-wrap gap-2">
-            {perfil.linksOficiais.map((l, i) => (
-              <li key={`${l.url}-${i}`}>
-                <a
-                  href={l.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Abrir ${l.rotulo} de ${perfil.identidade.nome} (fonte: ${l.fonte}) em nova aba`}
-                  className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium px-3 py-1 hover:bg-blue-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          <ul className="space-y-3 list-none pl-0">
+            {perfil.linksOficiais.map((l, i) => {
+              const estado = estadoLinkOficialParaPerfil(l);
+              return (
+                <li
+                  key={`${l.url}-${i}`}
+                  className="rounded-lg border border-zinc-200 bg-zinc-50 p-3"
+                  data-estado-link={estado}
                 >
-                  {l.rotulo}
-                </a>
-              </li>
-            ))}
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <a
+                      href={l.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Abrir ${l.rotulo} de ${perfil.identidade.nome} (fonte: ${l.fonte}) em nova aba`}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 text-blue-700 text-sm font-medium px-3 py-1 hover:bg-blue-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      {l.rotulo}
+                    </a>
+                    <span
+                      className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${classesEstadoLinkOficial(estado)}`}
+                      aria-label={`Estado do link: ${rotuloEstadoLinkOficial(estado)}`}
+                    >
+                      {rotuloEstadoLinkOficial(estado)}
+                    </span>
+                  </div>
+                  <p className="text-xs text-zinc-500">
+                    <span className="text-zinc-600">Fonte:</span>{' '}
+                    <a
+                      href={l.urlFonte}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Abrir fonte "${l.fonte}" do link em nova aba`}
+                      className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      {l.fonte}
+                    </a>
+                  </p>
+                </li>
+              );
+            })}
           </ul>
         )}
       </section>

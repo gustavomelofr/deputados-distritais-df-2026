@@ -259,6 +259,29 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
   Critério: hierarquia clara e acessível sem remover acesso à atividade legislativa histórica.
   Evidência: `src/components/site-nav.tsx` reorganiza os 10 itens em 3 grupos editoriais (`eleicoes`, `cldf`, `geral`) declarados em `NAV_GROUPS`, com cada `navItems` carregando o campo `group`; no desktop cada grupo é renderizado em um `<li>` com `aria-label` e separado por um divisor visual vertical; no menu disclosure mobile cada grupo recebe um cabeçalho `<h2>` visível; nenhuma rota é removida (as 5 rotas históricas da CLDF — `/deputados-distritais`, `/atividade-legislativa`, `/comparar`, `/analise`, `/monitor-instagram` — permanecem acessíveis no grupo `cldf`); o foco eleitoral (`/eleicoes-2026`, `/cenario-2026`) vem primeiro no grupo `eleicoes`; `test/site-nav.test.js` adiciona 15 asserções determinísticas que validam 3 grupos na ordem correta, 10 hrefs preservados, sitemap coerente, classificação correta de cada rota em seu grupo, ordem editorial (eleições → CLDF → geral), `<h2>` por grupo no mobile, `aria-label`/`aria-current`/`role="menu"`/`role="menuitem"` preservados, helper `grupoDoItem` e invariante de 1 group por item — todas passam (15/15); nenhum dado eleitoral, pessoa, foto ou notícia é inventado.
 
+### P6 — Evolução do site de nomes monitorados
+
+- [ ] Ampliar a transparência dos perfis eleitorais.
+  Critério: `/perfil-eleitoral/[slug]` exibe uma timeline cronológica de evidências e notícias relacionadas, com cargo, estágio, `publicadaEm`, `coletadaEm`, `verificadaEm`, fonte e URL específica; ausência de dado usa estado honesto; nenhuma evidência nova pode ser inventada ou apagar histórico.
+
+- [ ] Modelar vínculos eleitorais e anúncios conflitantes.
+  Critério: tipos e dados suportam chapas, alianças ou vínculos anunciados com pessoas, papel, status, período, fonte, URL e evidência relacionada; versões conflitantes permanecem separadas e identificadas, sem transformar anúncio em registro oficial nem inferir vínculo sem fonte.
+
+- [ ] Exibir chapas, vínculos e divergências no hub e nos perfis.
+  Critério: a interface mostra a origem, a data e o status de cada anúncio, diferencia confirmação de divergência e oferece estado vazio quando não houver relação verificável; a navegação permanece acessível em desktop e mobile.
+
+- [ ] Criar comparação eleitoral em `/comparar-eleitoral`.
+  Critério: preservar `/comparar` como comparação legislativa; a nova rota aceita somente pessoas do mesmo cargo e compara estágio, partido, evidências, datas de verificação e fontes, sem ranking, nota ou inferência de intenção de voto; links de evidência e estados vazio, erro e carregamento são acessíveis.
+
+- [ ] Tornar busca e filtros eleitorais compartilháveis por URL.
+  Critério: cargo, partido, estágio, data e busca textual podem ser codificados em parâmetros estáveis, restaurados ao abrir a URL e removidos por “limpar filtros”; a renderização permanece segura contra parâmetros desconhecidos e consistente entre servidor, cliente, desktop e mobile.
+
+- [ ] Explicitar o estado de fotos e links oficiais.
+  Critério: cards e perfis distinguem foto licenciada, placeholder, pendente de verificação externa e link oficial confirmado; cada item mostra fonte e data quando disponíveis, não coleta posts ou métricas de Instagram e não cria URL ou foto sem fonte.
+
+- [ ] Fazer auditoria final de acessibilidade, responsividade e SEO das páginas eleitorais.
+  Critério: headings, landmarks, foco de teclado, labels, contraste, estados vazios e mensagens de erro funcionam em mobile e desktop; cada rota possui título, descrição e canonical coerentes, sem alterar o conteúdo factual ou remover rotas históricas.
+
 ## Rotinas recorrentes
 
 Estas rotinas só ficam elegíveis quando não houver item `[ ]` na fila acima. Uma execução normal mantém `[r]`. Se uma rotina ficar estruturalmente bloqueada, altere para `[!]` em PR revisado e documente o motivo.

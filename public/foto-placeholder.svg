@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="ph-titulo ph-desc">
+  <title id="ph-titulo">Placeholder de fotografia</title>
+  <desc id="ph-desc">Imagem neutra usada quando não há foto verificada disponível. Não representa a pessoa.</desc>
+  <rect width="240" height="240" fill="#e4e4e7"/>
+  <g fill="#a1a1aa">
+    <circle cx="120" cy="96" r="40"/>
+    <path d="M40 220c0-44 36-80 80-80s80 36 80 80v20H40z"/>
+  </g>
+  <text x="120" y="232" text-anchor="middle" font-family="ui-sans-serif, system-ui, sans-serif" font-size="14" fill="#52525b">sem foto verificada</text>
+</svg>

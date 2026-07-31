@@ -5,7 +5,12 @@ import { cenarioEleitoral } from '@/data/cenario-eleitoral';
 import { vinculosEleitorais } from '@/data/vinculos-eleitorais';
 import { estadoInicial as divulgacandInicial } from '@/lib/divulgacand';
 import { ExploracaoPorCargo } from '@/components/exploracao-cargo';
-import { pessoaParaItem, type ItemExploracao } from '@/lib/exploracao-cargo';
+import {
+  pessoaParaItem,
+  parsearFiltrosBusca,
+  type FiltrosExploracao,
+  type ItemExploracao,
+} from '@/lib/exploracao-cargo';
 import {
   agruparDivergencias,
   classesStatusVinculo,
@@ -180,7 +185,23 @@ function listaPessoas(
     .join(' · ');
 }
 
-export default function Eleicoes2026Page() {
+interface Props {
+  /**
+   * Parâmetros de URL consumidos pela seção de exploração por cargo.
+   * Defesa contra payload adversário é feita em
+   * `parsearFiltrosBusca` (lib/exploracao-cargo.ts).
+   */
+  searchParams: Promise<{
+    cargo?: string;
+    partido?: string;
+    estagio?: string;
+    data?: string;
+    q?: string;
+  }>;
+}
+
+export default async function Eleicoes2026Page({ searchParams }: Props) {
+  const searchParamsResolvidos = await searchParams;
   // Estado do DivulgaCand em build time (rede é vedada neste ciclo).
   // O estado é factual e estável: 2026 ainda não disponível.
   const divulgacand = divulgacandInicial();
@@ -205,6 +226,16 @@ export default function Eleicoes2026Page() {
   const itensExploracao: ItemExploracao[] = cenarioEleitoral
     .map(pessoaParaItem)
     .filter((i): i is ItemExploracao => i !== null);
+
+  // Filtros iniciais vindos da URL — parseados de forma defensiva na
+  // lib (parâmetros desconhecidos ou inválidos são descartados sem
+  // quebrar a renderização). O componente client usa esses valores
+  // como ponto de partida do estado e mantém a URL sincronizada a
+  // partir daí.
+  const { filtros: filtrosIniciais } = parsearFiltrosBusca(
+    searchParamsResolvidos,
+    itensExploracao,
+  );
 
   // Vínculos para a seção de chapas/alianças/divergências do hub.
   // Derivado de vinculosEleitorais cruzado com cenarioEleitoral — nada é
@@ -400,8 +431,12 @@ export default function Eleicoes2026Page() {
       </section>
 
       {/* Exploração por cargo — filtros interativos (cargo, partido,
-          estágio, data). Hidrata com a base eleitoral independente. */}
-      <ExploracaoPorCargo itens={itensExploracao} />
+          estágio, data). Hidrata com a base eleitoral independente e
+          com os filtros restaurados da URL via server-side parse. */}
+      <ExploracaoPorCargo
+        itens={itensExploracao}
+        filtrosIniciais={filtrosIniciais}
+      />
 
       {/* Chapas, vínculos e divergências — chapas majoritárias, alianças,
           federações, apoios, frentes e versões conflitantes preservadas

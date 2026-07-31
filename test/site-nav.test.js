@@ -57,11 +57,12 @@ test('cada item de navegação declara seu grupo editorial', () => {
   }
 });
 
-test('nenhuma rota foi removida: 10 hrefs distintos preservados', () => {
+test('nenhuma rota foi removida: 11 hrefs distintos preservados', () => {
   const src = read(NAV_FILE);
   const expectedHrefs = [
     '/deputados-distritais',
     '/comparar',
+    '/comparar-eleitoral',
     '/atividade-legislativa',
     '/analise',
     '/noticias',
@@ -77,7 +78,6 @@ test('nenhuma rota foi removida: 10 hrefs distintos preservados', () => {
       `rota '${href}' deve permanecer na navegação`
     );
   }
-  // Sitemap deve continuar declarando todas essas rotas também.
   const sitemap = fs.readFileSync(
     path.join(ROOT, 'src/app/sitemap.ts'),
     'utf8'
@@ -277,7 +277,6 @@ test('cada grupo tem ao menos 1 item (não há grupos vazios)', () => {
 
 test('todos os itens estão associados a exatamente um grupo', () => {
   const src = read(NAV_FILE);
-  // Cada NavItem deve ter um único campo group: '<id>'.
   const itemCount = (src.match(/href:\s*'\//g) || []).length;
   const groupCount = (
     src.match(/group:\s*'(eleicoes|cldf|geral)'/g) || []
@@ -287,7 +286,5 @@ test('todos os itens estão associados a exatamente um grupo', () => {
     groupCount,
     `cada href deve ter exatamente um group: esperado ${itemCount} === ${groupCount}`
   );
-  // E o número de itens em navItems deve bater com o número de hrefs
-  // total (10).
-  assert.equal(itemCount, 10, `esperado 10 hrefs, encontrado ${itemCount}`);
+  assert.equal(itemCount, 11, `esperado 11 hrefs, encontrado ${itemCount}`);
 });

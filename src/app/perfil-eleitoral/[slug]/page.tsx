@@ -24,6 +24,8 @@ import { notFound } from 'next/navigation';
 import type { PessoaEleitoral } from '@/types';
 import { noticias } from '@/data/noticias';
 import { auditoriaInstagramNomesMonitoradosLote1 } from '@/data/auditoria-instagram';
+import { vinculosEleitorais } from '@/data/vinculos-eleitorais';
+import { cenarioEleitoral } from '@/data/cenario-eleitoral';
 import {
   classesEstagioPerfil,
   formatarDataPerfil,
@@ -36,6 +38,16 @@ import {
   slugsPerfilEleitoral,
   type ItemTimeline,
 } from '@/lib/perfil-eleitoral';
+import {
+  classesStatusVinculo,
+  classesTipoVinculo,
+  formatarDataVinculo,
+  rotuloStatusVinculo,
+  rotuloTipoVinculo,
+  statusIndicamConflito,
+  vinculosParaPessoa,
+  type ItemVinculoHub,
+} from '@/lib/vinculos-hub';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -108,6 +120,21 @@ export default async function PerfilEleitoralPage({ params }: Props) {
     pessoa,
     noticias,
     auditoriaInstagram,
+  );
+
+  // Vínculos nos quais a pessoa monitorada aparece. Derivado da base
+  // independente `vinculosEleitorais` cruzada com `cenarioEleitoral`.
+  // Quando vazio, a UI exibe estado honesto.
+  const vinculosPessoa: ItemVinculoHub[] = vinculosParaPessoa(
+    pessoa.id,
+    vinculosEleitorais,
+    cenarioEleitoral,
+  );
+
+  // Versões conflitantes são preservadas; aqui apenas marcamos quais
+  // itens têm divergência para diferenciá-los visualmente.
+  const vinculosConflitantes = vinculosPessoa.filter((v) =>
+    statusIndicamConflito(v.status),
   );
 
   // Documento auxiliar para o link oficial não repetir imports extra.
@@ -355,6 +382,132 @@ export default async function PerfilEleitoralPage({ params }: Props) {
               </li>
             ))}
           </ol>
+        )}
+      </section>
+
+      {/* Chapas, vínculos e divergências — quando a pessoa aparece em algum
+          anúncio de chapa, apoio, federação, coligação ou frente, listamos
+          cada relação com papel, status, fonte, URL e datas. Versões
+          conflitantes para o mesmo papel permanecem separadas e visíveis. */}
+      <section
+        aria-labelledby="titulo-vinculos"
+        className="rounded-xl border border-zinc-200 bg-white p-6 mb-8"
+      >
+        <h2
+          id="titulo-vinculos"
+          className="text-lg font-semibold text-zinc-900 mb-3"
+        >
+          Chapas, vínculos e divergências
+        </h2>
+        <p className="text-sm text-zinc-500 leading-relaxed mb-4">
+          {vinculosPessoa.length === 0
+            ? 'Nenhuma chapa, aliança ou divergência verificável para esta pessoa no momento. A ausência é um estado honesto — não significa ausência de articulação.'
+            : 'Cada bloco mostra papel, tipo, status, partido ou federação, fonte e URL específica. Quando existem versões conflitantes para o mesmo papel, ambas permanecem visíveis em vez de serem reduzidas a uma única chapa.'}
+        </p>
+
+        {vinculosPessoa.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4">
+            <p className="text-sm text-zinc-500 leading-relaxed">
+              {`Esta pessoa ainda não aparece em ${'chapas, apoios, federações, coligações ou frentes'} com fonte específica. O registro é atualizado assim que a fonte é localizada.`}
+            </p>
+          </div>
+        ) : (
+          <>
+            {vinculosConflitantes.length > 0 && (
+              <p
+                className="text-xs font-semibold text-orange-800 uppercase tracking-wider mb-3"
+                role="note"
+              >
+                {vinculosConflitantes.length} versão
+                {vinculosConflitantes.length !== 1 ? 's' : ''} divergente
+                {vinculosConflitantes.length !== 1 ? 's' : ''} preservada
+                {vinculosConflitantes.length !== 1 ? 's' : ''}
+              </p>
+            )}
+            <ol className="space-y-4 list-none pl-0">
+              {vinculosPessoa.map((v) => (
+                <li
+                  key={v.id}
+                  className={`rounded-lg border p-4 ${
+                    statusIndicamConflito(v.status)
+                      ? 'border-orange-200 bg-orange-50'
+                      : 'border-zinc-200 bg-zinc-50'
+                  }`}
+                >
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <span
+                      className={`rounded-full text-xs font-medium px-2 py-0.5 ${classesTipoVinculo(
+                        v.tipo,
+                      )}`}
+                    >
+                      {rotuloTipoVinculo(v.tipo)}
+                    </span>
+                    <span
+                      className={`rounded-full text-xs font-medium px-2 py-0.5 ${classesStatusVinculo(
+                        v.status,
+                      )}`}
+                    >
+                      {rotuloStatusVinculo(v.status)}
+                    </span>
+                    {v.partidoOuFederacao && (
+                      <span className="rounded-full bg-zinc-100 text-zinc-700 text-xs font-medium px-2 py-0.5">
+                        {v.partidoOuFederacao}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm font-semibold text-zinc-900 mb-1">
+                    {v.pessoas
+                      .map((p) =>
+                        p.id === pessoa.id
+                          ? `${p.nome} (${p.papel})`
+                          : p.nome
+                      )
+                      .join(' · ')}
+                  </p>
+                  <p className="text-xs text-zinc-500 mb-2">
+                    {v.cargos
+                      .map((c) => rotuloCargo(c))
+                      .join(' · ')}{' '}
+                    · Início: {formatarDataVinculo(v.inicioEm)}
+                    {v.fimEm && (
+                      <> · Fim: {formatarDataVinculo(v.fimEm)}</>
+                    )}
+                    {!v.fimEm && (
+                      <>
+                        {' '}
+                        · Vigente na verificação (
+                        {formatarDataVinculo(v.verificadaEm)})
+                      </>
+                    )}
+                  </p>
+                  <p className="text-sm text-zinc-700 leading-relaxed mb-2">
+                    {v.descricao}
+                  </p>
+                  <p className="text-xs text-zinc-500">
+                    <span className="text-zinc-600">Fonte:</span>{' '}
+                    <a
+                      href={v.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Abrir fonte "${v.fonte}" do vínculo em nova aba`}
+                      className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      {v.fonte}
+                    </a>
+                    <span className="ml-1">
+                      ({rotuloFonteCategoria(v.fonteCategoria)})
+                    </span>
+                    {statusIndicamConflito(v.status) && (
+                      <span className="ml-2 text-orange-700 font-medium">
+                        Esta versão está em conflito com outra registrada
+                        para o mesmo papel.
+                      </span>
+                    )}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </>
         )}
       </section>
 

@@ -2,9 +2,23 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import type { CargoEleitoral, PessoaEleitoral } from '@/types';
 import { cenarioEleitoral } from '@/data/cenario-eleitoral';
+import { vinculosEleitorais } from '@/data/vinculos-eleitorais';
 import { estadoInicial as divulgacandInicial } from '@/lib/divulgacand';
 import { ExploracaoPorCargo } from '@/components/exploracao-cargo';
 import { pessoaParaItem, type ItemExploracao } from '@/lib/exploracao-cargo';
+import {
+  agruparDivergencias,
+  classesStatusVinculo,
+  classesTipoVinculo,
+  formatarDataVinculo,
+  rotuloStatusVinculo,
+  rotuloTipoVinculo,
+  statusIndicamConflito,
+  totalDivergencias,
+  vinculosParaHub,
+  type ItemVinculoHub,
+} from '@/lib/vinculos-hub';
+import { rotuloFonteCategoria } from '@/lib/perfil-eleitoral';
 
 // Página geral "Eleições 2026 no DF" — hub da cobertura eleitoral do
 // Distrito Federal. Oferece caminhos para os quatro grupos de cargos em
@@ -130,6 +144,42 @@ function formatarNumero(n: number): string {
   return n.toLocaleString('pt-BR');
 }
 
+/** Rótulo curto do cargo, usado em resumos de vínculos. */
+function rotuloCargoSimples(cargo: CargoEleitoral): string {
+  switch (cargo) {
+    case 'governador':
+      return 'Governador';
+    case 'vice_governador':
+      return 'Vice-governador';
+    case 'senador':
+      return 'Senador';
+    case 'deputado_federal':
+      return 'Deputado federal';
+    case 'deputado_distrital':
+      return 'Deputado distrital';
+  }
+}
+
+/**
+ * Formata a lista de pessoas de um vínculo em uma string humana-legível,
+ * preservando a ordem de declaração na fonte. Cada pessoa é nomeada como
+ * `Nome (Papel)` ou apenas `Nome` quando o papel é `integrante`/`mencionado`.
+ * Quando há 3+ pessoas, todas são listadas sem truncamento para preservar
+ * o conteúdo da fonte.
+ */
+function listaPessoas(
+  pessoas: ReadonlyArray<{ nome: string; papel: string }>,
+): string {
+  return pessoas
+    .map((p) => {
+      if (p.papel === 'integrante' || p.papel === 'mencionado') {
+        return p.nome;
+      }
+      return `${p.nome} (${p.papel})`;
+    })
+    .join(' · ');
+}
+
 export default function Eleicoes2026Page() {
   // Estado do DivulgaCand em build time (rede é vedada neste ciclo).
   // O estado é factual e estável: 2026 ainda não disponível.
@@ -155,6 +205,16 @@ export default function Eleicoes2026Page() {
   const itensExploracao: ItemExploracao[] = cenarioEleitoral
     .map(pessoaParaItem)
     .filter((i): i is ItemExploracao => i !== null);
+
+  // Vínculos para a seção de chapas/alianças/divergências do hub.
+  // Derivado de vinculosEleitorais cruzado com cenarioEleitoral — nada é
+  // inventado: pessoas, partidos, datas e fontes vêm da base.
+  const vinculosHub: ItemVinculoHub[] = vinculosParaHub(
+    vinculosEleitorais,
+    cenarioEleitoral,
+  );
+  const gruposDivergencia = agruparDivergencias(vinculosHub);
+  const totalDivergenciasCount = totalDivergencias(vinculosHub);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
@@ -342,6 +402,165 @@ export default function Eleicoes2026Page() {
       {/* Exploração por cargo — filtros interativos (cargo, partido,
           estágio, data). Hidrata com a base eleitoral independente. */}
       <ExploracaoPorCargo itens={itensExploracao} />
+
+      {/* Chapas, vínculos e divergências — chapas majoritárias, alianças,
+          federações, apoios, frentes e versões conflitantes preservadas
+          como registros separados. Mostra fonte, data, status e URL
+          específica; diferencia confirmação de divergência e exibe estado
+          vazio honesto quando não há relação verificável. */}
+      <section
+        className="rounded-xl border border-zinc-200 bg-white p-6 mb-10"
+        aria-labelledby="heading-vinculos"
+      >
+        <h2
+          id="heading-vinculos"
+          className="text-xl font-semibold text-zinc-900 mb-2"
+        >
+          Chapas, vínculos e divergências
+        </h2>
+        <p className="text-sm text-zinc-500 mb-5 leading-relaxed">
+          Chapas majoritárias, federações, apoios, coligações e frentes
+          anunciados em fonte específica. Cada registro preserva versão
+          conflitante em vez de reduzi-las a uma única chapa — quando duas
+          fontes divergem para o mesmo papel, ambas permanecem visíveis com
+          seus respectivos status documental, fonte e URL.
+        </p>
+
+        {vinculosHub.length === 0 ? (
+          <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4">
+            <p className="text-sm text-zinc-600 leading-relaxed">
+              Nenhuma chapa, aliança ou divergência verificável registrada
+              no momento. O DivulgaCand/TSE 2026 segue{' '}
+              <strong>indisponível</strong> e nenhuma chapa majoritária
+              conta com registro oficial até a publicação desta página.
+            </p>
+          </div>
+        ) : (
+          <>
+            <p
+              className="text-xs text-zinc-500 mb-4 leading-relaxed"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              <span className="font-semibold text-zinc-700">
+                {vinculosHub.length}
+              </span>{' '}
+              vínculo{vinculosHub.length !== 1 ? 's' : ''} anunciado
+              {vinculosHub.length !== 1 ? 's' : ''} em fonte específica.
+              {totalDivergenciasCount > 0 && (
+                <>
+                  {' '}
+                  <span className="font-semibold text-orange-700">
+                    {totalDivergenciasCount}
+                  </span>{' '}
+                  divergência{totalDivergenciasCount !== 1 ? 's' : ''}{' '}
+                  preservada{totalDivergenciasCount !== 1 ? 's' : ''} entre
+                  versões conflitantes.
+                </>
+              )}
+            </p>
+
+            <div className="space-y-4">
+              {gruposDivergencia.map((grupo) => {
+                const divergente = grupo.versoes.length > 1;
+                return (
+                  <article
+                    key={grupo.grupoId}
+                    className={`rounded-xl border p-5 ${
+                      divergente
+                        ? 'border-orange-200 bg-orange-50'
+                        : 'border-zinc-200 bg-zinc-50'
+                    }`}
+                    aria-labelledby={`heading-vinculo-${grupo.grupoId}`}
+                  >
+                    {divergente && (
+                      <p className="text-xs font-semibold text-orange-800 uppercase tracking-wider mb-2">
+                        Versões divergentes preservadas
+                      </p>
+                    )}
+                    <ul className="space-y-3 list-none pl-0">
+                      {grupo.versoes.map((item) => (
+                        <li
+                          key={item.id}
+                          className="rounded-lg border border-zinc-200 bg-white p-4"
+                        >
+                          <div className="flex flex-wrap items-center gap-2 mb-2">
+                            <span
+                              className={`rounded-full text-xs font-medium px-2 py-0.5 ${classesTipoVinculo(
+                                item.tipo,
+                              )}`}
+                            >
+                              {rotuloTipoVinculo(item.tipo)}
+                            </span>
+                            <span
+                              className={`rounded-full text-xs font-medium px-2 py-0.5 ${classesStatusVinculo(
+                                item.status,
+                              )}`}
+                            >
+                              {rotuloStatusVinculo(item.status)}
+                            </span>
+                            {item.partidoOuFederacao && (
+                              <span className="rounded-full bg-zinc-100 text-zinc-700 text-xs font-medium px-2 py-0.5">
+                                {item.partidoOuFederacao}
+                              </span>
+                            )}
+                          </div>
+                          <h3
+                            id={`heading-vinculo-${item.id}`}
+                            className="text-sm font-semibold text-zinc-900 mb-1"
+                          >
+                            {listaPessoas(item.pessoas)}
+                          </h3>
+                          <p className="text-xs text-zinc-500 mb-2">
+                            {item.cargos
+                              .map((c) => rotuloCargoSimples(c))
+                              .join(' · ')}{' '}
+                            · Início: {formatarDataVinculo(item.inicioEm)}
+                            {item.fimEm && (
+                              <> · Fim: {formatarDataVinculo(item.fimEm)}</>
+                            )}
+                            {!item.fimEm && (
+                              <>
+                                {' '}
+                                · Vigente na verificação (
+                                {formatarDataVinculo(item.verificadaEm)})
+                              </>
+                            )}
+                          </p>
+                          <p className="text-sm text-zinc-700 leading-relaxed mb-2">
+                            {item.descricao}
+                          </p>
+                          <p className="text-xs text-zinc-500">
+                            <span className="text-zinc-600">Fonte:</span>{' '}
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              aria-label={`Abrir fonte "${item.fonte}" do vínculo em nova aba`}
+                              className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                            >
+                              {item.fonte}
+                            </a>
+                            <span className="ml-1">
+                              ({rotuloFonteCategoria(item.fonteCategoria)})
+                            </span>
+                            {statusIndicamConflito(item.status) && (
+                              <span className="ml-2 text-orange-700 font-medium">
+                                Esta versão está em conflito com outra
+                                registrada para o mesmo papel.
+                              </span>
+                            )}
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                  </article>
+                );
+              })}
+            </div>
+          </>
+        )}
+      </section>
 
       {/* Metodologia visível — sempre acessível nesta página */}
       <section

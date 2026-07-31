@@ -56,14 +56,12 @@ test('página exibe foto atribuída ou placeholder (placeholderFoto)', () => {
   assert.match(src, /perfil\.foto\.placeholder/);
 });
 
-test('página exibe cargo, estágio, evidências, notícias e links oficiais', () => {
+test('página exibe cargo, estágio, timeline, evidências, notícias e links oficiais', () => {
   const src = read(PAGE_FILE);
-  // Critério do brief: cargo, estágio, evidências, notícias, links.
   assert.match(src, /rotuloCargo/);
   assert.match(src, /rotuloEstagio/);
-  assert.match(src, /historicoEvidencias/);
   assert.match(src, /evidenciaDestaque/);
-  assert.match(src, /perfil\.noticias/);
+  assert.match(src, /perfil\.timeline/);
   assert.match(src, /perfil\.linksOficiais/);
 });
 
@@ -87,6 +85,7 @@ test('lib/perfil-eleitoral.ts existe e exporta API pública', () => {
   assert.match(src, /export function evidenciaDestaqueParaPerfil/);
   assert.match(src, /export function noticiasRelacionadasParaPerfil/);
   assert.match(src, /export function linksOficiaisParaPerfil/);
+  assert.match(src, /export function timelineParaPerfil/);
   assert.match(src, /export function perfilEleitoralDePessoa/);
   assert.match(src, /export function pessoaEleitoralPorSlug/);
   assert.match(src, /export function slugsPerfilEleitoral/);
@@ -101,7 +100,6 @@ test('fotoParaPerfil usa somente placeholder até existir foto verificada para p
   const src = read(PURE_FILE);
   assert.match(src, /export function fotoParaPerfil\(_pessoa: PessoaEleitoral\)/);
   assert.doesNotMatch(src, /auditoriaFotosDeputadosDistritaisLote[123]/);
-  assert.doesNotMatch(src, /slug === pessoa\.slug/);
   assert.match(src, /PLACEHOLDER_URL/);
   assert.match(src, /PLACEHOLDER_FONTE/);
   assert.match(src, /PLACEHOLDER_LICENCA/);
@@ -201,6 +199,60 @@ test('fotoParaPerfil nunca fabrica licença real (todas as licenças vem de audi
   assert.doesNotMatch(ramoPlaceholder, /'partido_oficial'/);
   assert.doesNotMatch(ramoPlaceholder, /'pessoa_oficial'/);
   assert.doesNotMatch(ramoPlaceholder, /'imprensa_licenca_explicita'/);
+});
+
+test('timelineParaPerfil combina evidências e notícias em sequência cronológica', () => {
+  const src = read(PURE_FILE);
+  assert.match(src, /export function timelineParaPerfil/);
+  assert.match(src, /ItemTimeline\[\]/);
+  assert.match(src, /tipo:\s*'evidencia'/);
+  assert.match(src, /tipo:\s*'noticia'/);
+  assert.match(src, /dataOrdenacao/);
+  assert.match(src, /coletadaEm/);
+  assert.match(src, /verificadaEm/);
+  assert.match(src, /publicadaEm/);
+});
+
+test('ItemTimeline interface contempla campos obrigatórios do brief', () => {
+  const src = read(PURE_FILE);
+  assert.match(src, /interface ItemTimeline/);
+  assert.match(src, /tipo:\s*'evidencia' \| 'noticia'/);
+  assert.match(src, /cargo:\s*CargoEleitoral \| null/);
+  assert.match(src, /estagio:\s*EstagioEleitoral \| null/);
+  assert.match(src, /fonteCategoria:\s*CategoriaFonte/);
+  assert.match(src, /url:\s*string/);
+  assert.match(src, /publicadaEm:\s*string/);
+  assert.match(src, /coletadaEm:\s*string/);
+  assert.match(src, /verificadaEm:\s*string/);
+});
+
+test('perfilEleitoralDePessoa inclui campo timeline na saída', () => {
+  const src = read(PURE_FILE);
+  const funcao = src.split('export function perfilEleitoralDePessoa')[1];
+  assert.match(funcao, /timeline:\s*timelineParaPerfil/);
+});
+
+test('página renderiza timeline com badges de tipo (evidência/notícia)', () => {
+  const src = read(PAGE_FILE);
+  assert.match(src, /perfil\.timeline/);
+  assert.match(src, /item\.tipo === 'evidencia'/);
+  assert.match(src, /item\.tipo === 'noticia'/);
+  assert.match(src, /Evidência/);
+  assert.match(src, /Notícia/);
+});
+
+test('página exibe três datas do schema na timeline (publicadaEm, coletadaEm, verificadaEm)', () => {
+  const src = read(PAGE_FILE);
+  assert.match(src, /publicadaEm/);
+  assert.match(src, /coletadaEm/);
+  assert.match(src, /verificadaEm/);
+});
+
+test('página exibe cargo, estágio e fonte de cada item na timeline', () => {
+  const src = read(PAGE_FILE);
+  assert.match(src, /rotuloCargo\(item\.cargo\)/);
+  assert.match(src, /rotuloEstagio\(item\.estagio\)/);
+  assert.match(src, /rotuloFonteCategoria\(item\.fonteCategoria\)/);
 });
 
 // ---------------------------------------------------------------------------

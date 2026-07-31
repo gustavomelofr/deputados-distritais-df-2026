@@ -238,6 +238,99 @@ export interface NoticiaEleitoral {
 }
 
 // ---------------------------------------------------------------------------
+// Vínculos eleitorais — chapas, alianças, apoios, federações e coalizões
+// anunciados para 2026 no DF
+//
+// Modela as relações declaradas entre pessoas, partidos e federações sem
+// transformar anúncio em registro oficial nem inferir vínculo sem fonte.
+// Versões conflitantes (ex.: Dora Gomes vs Tetê Monteiro como vice na mesma
+// chapa) permanecem como registros separados, identificados pelo
+// `grupoDivergencia`, e o `status` descreve o estado documental do anúncio
+// conforme a fonte:
+//   - 'anunciado'        : declaração pública ou homologação em convenção;
+//   - 'ratificado'       : confirmada por fonte posterior independente;
+//   - 'contestado'       : anúncio substituído ou despublicado por nova
+//                          declaração do mesmo emissor (divergência interna);
+//   - 'divergente'       : coexiste com outro anúncio incompatível para o
+//                          mesmo papel sem despublicação explícita;
+//   - 'encerrado'        : substituído por outro vínculo ou retirado.
+//
+// `tipo` separa o formato do vínculo:
+//   - 'chapa'            : composição titular/vice em uma disputa majoritária;
+//   - 'apoio'            : endosso de uma legenda à candidatura de outra;
+//   - 'federacao'        : federação partidária homologada pelo TSE;
+//   - 'coligacao'        : coligação majoritária registrada para o pleito;
+//   - 'frente'           : frente política informal sem registro no TSE.
+//
+// Cada vínculo aponta para um `evidenciaApoioId` (id de EvidenciaEleitoral)
+// ou para uma fonte direta com URL e data, preservando a cadeia de prova.
+// O período (`inicioEm`, `fimEm`) usa ISO 8601 (AAAA-MM-DD); `fimEm`
+// ausente significa "vigente na última verificação".
+// ---------------------------------------------------------------------------
+
+/** Tipo de vínculo eleitoral entre pessoas, partidos ou federações. */
+export type TipoVinculoEleitoral =
+  | 'chapa'
+  | 'apoio'
+  | 'federacao'
+  | 'coligacao'
+  | 'frente';
+
+/** Status documental do anúncio conforme a fonte. */
+export type StatusVinculoEleitoral =
+  | 'anunciado'
+  | 'ratificado'
+  | 'contestado'
+  | 'divergente'
+  | 'encerrado';
+
+/** Papel desempenhado por uma pessoa dentro do vínculo. */
+export type PapelVinculoEleitoral =
+  | 'titular'
+  | 'vice'
+  | 'apoiador'
+  | 'integrante'
+  | 'indicado'
+  | 'mencionado';
+
+/** Vínculo eleitoral — chapa, aliança, apoio, federação ou coalizão. */
+export interface ParticipacaoVinculo {
+  pessoaId: string;
+  papel: PapelVinculoEleitoral;
+}
+
+/** Vínculo eleitoral declarado. */
+export interface VinculoEleitoral {
+  id: string;
+  tipo: TipoVinculoEleitoral;
+  status: StatusVinculoEleitoral;
+  /** Pessoas vinculadas (papel por pessoa). */
+  pessoas: ParticipacaoVinculo[];
+  /** Cargos cobertos pelo vínculo. */
+  cargos: CargoEleitoral[];
+  /** Partido(s) ou federação emissora do anúncio (texto livre factual). */
+  partidoOuFederacao?: string;
+  /** Identificador do grupo de versões conflitantes (opcional). */
+  grupoDivergencia?: string;
+  /** Início do vínculo em ISO 8601 (AAAA-MM-DD). */
+  inicioEm: string;
+  /** Fim do vínculo em ISO 8601 (AAAA-MM-DD). Ausente = vigente na verificação. */
+  fimEm?: string;
+  fonte: string;
+  fonteCategoria: CategoriaFonte;
+  /** URL específica da matéria/item onde o vínculo foi anunciado. */
+  url: string;
+  /** Descrição factual; não pode acrescentar fatos ausentes na fonte. */
+  descricao: string;
+  /** ID da EvidenciaEleitoral que sustenta o vínculo (opcional). */
+  evidenciaApoioId?: string;
+  /** IDs de notícias relacionadas (somente quando citadas na mesma fonte). */
+  noticiasRelacionadas: string[];
+  coletadaEm: string;
+  verificadaEm: string;
+}
+
+// ---------------------------------------------------------------------------
 // DivulgaCand/TSE — integração com dados oficiais de candidaturas 2026
 // ---------------------------------------------------------------------------
 

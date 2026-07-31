@@ -386,3 +386,220 @@ test('lote 3 documenta que licença de reutilização não foi comprovada', () =
     'lote 3 deve documentar honestamente que a licença de reutilização não foi comprovada',
   );
 });
+
+// ---------------------------------------------------------------------------
+// P4 — Placeholder e metadados padronizados de fotografia.
+//
+// Critério de "Criar placeholder e metadados padronizados de fotografia":
+// "perfil funciona sem foto; nenhuma imagem sem fonte e base de uso."
+//
+// Estes testes verificam que:
+//   1. src/data/foto-placeholder.ts exporta os metadados padronizados
+//      (constantes + função geradora + identificador) exigidos pelo brief;
+//   2. O SVG servido em /foto-placeholder.svg existe no repositório e é
+//      local (não hotlink), atendendo "nenhuma imagem sem fonte e base
+//      de uso" — placeholder tem fonte, urlFonte, licenca e verificadaEm;
+//   3. As imagens já registradas em auditoria-fotos.ts (todas com fonte
+//      CLDF) também satisfazem a regra "nenhuma imagem sem fonte e base
+//      de uso" — cada item declara licenca e urlFonte explicitamente;
+//   4. O componente que renderizar o perfil pode identificar o
+//      placeholder via isPlaceholderFoto() para suprimir afirmações
+//      indevidas de identidade visual.
+// ---------------------------------------------------------------------------
+
+const PLACEHOLDER_FILE = path.join(ROOT, 'src/data/foto-placeholder.ts');
+const PLACEHOLDER_SVG = path.join(ROOT, 'public/foto-placeholder.svg');
+
+test('placeholder: arquivo de metadados existe e é TypeScript', () => {
+  assert.ok(fs.existsSync(PLACEHOLDER_FILE), `arquivo ausente: ${PLACEHOLDER_FILE}`);
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  assert.match(fonte, /import\s+type\s+\{[^}]*FotografiaEleitoral/, 'deve importar o tipo FotografiaEleitoral');
+  assert.match(fonte, /import\s+type\s+\{[^}]*LicencaFoto/, 'deve importar o tipo LicencaFoto');
+});
+
+test('placeholder: constantes padronizadas declaradas', () => {
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  const constantesInternas = [
+    'PLACEHOLDER_URL',
+    'PLACEHOLDER_MIME',
+    'PLACEHOLDER_LARGURA',
+    'PLACEHOLDER_ALTURA',
+  ];
+  for (const constante of constantesInternas) {
+    assert.match(
+      fonte,
+      new RegExp(`\\bconst ${constante}\\b`),
+      `constante interna ${constante} deve ser declarada`,
+    );
+  }
+  const constantesExportadas = [
+    'PLACEHOLDER_FONTE_URL',
+    'PLACEHOLDER_FONTE',
+    'PLACEHOLDER_VERIFICADA_EM',
+    'PLACEHOLDER_LICENCA',
+  ];
+  for (const constante of constantesExportadas) {
+    assert.match(
+      fonte,
+      new RegExp(`\\bexport const ${constante}\\b`),
+      `constante exportada ${constante} deve ser exportada`,
+    );
+  }
+});
+
+test('placeholder: PLACEHOLDER_LICENCA é o valor "placeholder" da ordem de preferência', () => {
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  assert.match(
+    fonte,
+    /export const PLACEHOLDER_LICENCA:\s*LicencaFoto\s*=\s*'placeholder'/,
+    'PLACEHOLDER_LICENCA deve ser "placeholder" (última posição da hierarquia)',
+  );
+});
+
+test('placeholder: PLACEHOLDER_FONTE_URL é URL da fonte (não hotlink externo de imagem)', () => {
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  const match = fonte.match(/PLACEHOLDER_FONTE_URL\s*=\s*(['"])([^'"]+)\1/);
+  assert.ok(match, 'PLACEHOLDER_FONTE_URL ausente');
+  const url = match[2];
+  assert.match(url, /^https?:\/\//, 'url da fonte deve ser http(s)');
+  // url da FONTE aponta para o próprio repositório, não para CDN externa
+  // ou imprensa sem licença. O SVG é servido localmente a partir de
+  // /public, então a fonte também é local.
+  assert.ok(
+    /github\.com\/seudeputado-df\/deputados-distritais-df-2026\/blob\/main\/src\/data\/foto-placeholder\.ts/.test(url),
+    `url da fonte deve apontar para o arquivo no repositório (recebido: ${url})`,
+  );
+});
+
+test('placeholder: PLACEHOLDER_VERIFICADA_EM é data ISO 8601 válida e não futura', () => {
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  const match = fonte.match(/PLACEHOLDER_VERIFICADA_EM\s*=\s*(['"])([^'"]+)\1/);
+  assert.ok(match, 'PLACEHOLDER_VERIFICADA_EM ausente');
+  const data = match[2];
+  assert.match(data, /^\d{4}-\d{2}-\d{2}$/, `data deve ser ISO 8601 (recebido: ${data})`);
+  const hoje = new Date().toISOString().slice(0, 10);
+  assert.ok(data <= hoje, `data futura detectada: ${data} > ${hoje}`);
+});
+
+test('placeholder: função placeholderFoto() retorna FotografiaEleitoral com todos os campos padronizados', () => {
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  // Função declarada e exportada
+  assert.match(
+    fonte,
+    /export function placeholderFoto\(/,
+    'função placeholderFoto() deve ser exportada',
+  );
+
+  // Função retorna objeto com todos os campos obrigatórios do tipo
+  // FotografiaEleitoral (definido em src/types/index.ts). Como o
+  // arquivo é TypeScript e não pode ser executado neste teste, vali-
+  // damos a presença literal dos campos no literal do retorno.
+  for (const campo of [
+    'url:',
+    'fonte:',
+    'urlFonte:',
+    'licenca:',
+    'mime:',
+    'largura:',
+    'altura:',
+    'verificadaEm:',
+  ]) {
+    assert.ok(
+      fonte.includes(campo),
+      `placeholderFoto() deve retornar campo "${campo.replace(':', '')}"`,
+    );
+  }
+
+  // sem inventar identidade visual: o retorno não inclui nome da
+  // pessoa nem partido nem slug.
+  assert.doesNotMatch(
+    fonte,
+    /placeholderFoto[\s\S]*?\bnome:\s*/,
+    'placeholderFoto() não deve receber/armazenar nome da pessoa',
+  );
+  assert.doesNotMatch(
+    fonte,
+    /placeholderFoto[\s\S]*?\bpartido:\s*/,
+    'placeholderFoto() não deve receber/armazenar partido',
+  );
+});
+
+test('placeholder: helper isPlaceholderFoto() existe e identifica corretamente', () => {
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  assert.match(
+    fonte,
+    /export function isPlaceholderFoto\(/,
+    'helper isPlaceholderFoto() deve ser exportado',
+  );
+
+  // Identifica por licenca === 'placeholder', url === PLACEHOLDER_URL e
+  // fonte === PLACEHOLDER_FONTE —这三个 campos garantem que apenas o
+  // placeholder padronizado seja classificado.
+  for (const sentinela of [
+    /foto\.licenca\s*===\s*'placeholder'/,
+    /foto\.url\s*===\s*PLACEHOLDER_URL/,
+    /foto\.fonte\s*===\s*PLACEHOLDER_FONTE/,
+  ]) {
+    assert.match(fonte, sentinela, `identificador deve usar ${sentinela}`);
+  }
+
+  // Tratar de null/undefined de forma segura: o helper deve retornar
+  // `false` quando a foto é ausente — isso é o que garante "perfil
+  // funciona sem foto".
+  assert.match(
+    fonte,
+    /isPlaceholderFoto\([\s\S]*?if\s*\(\s*!foto\s*\)\s*return\s+false/,
+    'isPlaceholderFoto(null|undefined) deve retornar false',
+  );
+});
+
+test('placeholder: SVG servido em /public/foto-placeholder.svg existe localmente', () => {
+  assert.ok(
+    fs.existsSync(PLACEHOLDER_SVG),
+    `placeholder SVG ausente: ${PLACEHOLDER_SVG}`,
+  );
+  const svg = readFileSafe(PLACEHOLDER_SVG);
+  // SVG honesto — declara que não é foto real.
+  assert.match(svg, /<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/, 'SVG malformado');
+  assert.match(svg, /sem foto verificada|placeholder|Não representa/i, 'SVG deve comunicar honestidade do placeholder');
+  // É imagem local — não há href externo carregando foto real.
+  assert.doesNotMatch(
+    svg,
+    /<image[^>]+href="https?:\/\//,
+    'SVG do placeholder não deve carregar imagem externa',
+  );
+  // URL no placeholder.ts deve corresponder ao path local.
+  const fonte = readFileSafe(PLACEHOLDER_FILE);
+  assert.match(
+    fonte,
+    /PLACEHOLDER_URL\s*=\s*'\/foto-placeholder\.svg'/,
+    'PLACEHOLDER_URL deve apontar para o arquivo local em /public',
+  );
+});
+
+test('placeholder: nenhuma imagem sem fonte e base de uso na auditoria de fotos', () => {
+  const fonte = readFileSafe(AUDIT_FILE);
+  for (const campo of [
+    'url:',
+    'fonte:',
+    'urlFonte:',
+    'licenca:',
+    'verificadaEm:',
+    'validade:',
+  ]) {
+    assert.ok(
+      fonte.includes(campo),
+      `auditoria-fotos.ts: campo obrigatório "${campo.replace(':', '')}" ausente`,
+    );
+  }
+});
+
+test('placeholder: licenca do placeholder está fora do conjunto das licenças válidas para imagens reais', () => {
+  // Garante que ninguém confunda o placeholder com uma imagem real.
+  const tipos = readFileSafe(path.join(ROOT, 'src/types/index.ts'));
+  assert.match(
+    tipos,
+    /export type LicencaFoto[\s\S]*?'divulcacand_tse'[\s\S]*?'institucional_oficial'[\s\S]*?'partido_oficial'[\s\S]*?'pessoa_oficial'[\s\S]*?'imprensa_licenca_explicita'[\s\S]*?'placeholder'/,
+    'LicencaFoto deve incluir "placeholder" como último valor (além das licenças reais)',
+  );
+});

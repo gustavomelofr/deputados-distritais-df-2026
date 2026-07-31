@@ -87,6 +87,9 @@ const SLUGS_ESPERADOS = [
   'max-maciel',
   'hermeto',
   'jaqueline-silva',
+  'doutora-jane',
+  'eduardo-pedrosa',
+  'martins-machado',
 ];
 
 const HANDLES_ESPERADOS = {
@@ -100,14 +103,17 @@ const HANDLES_ESPERADOS = {
   'max-maciel': 'maxmaciel.df',
   'hermeto': 'hermeto.mdb',
   'jaqueline-silva': 'jaquelinesilvadf',
+  'doutora-jane': 'doutorajane',
+  'eduardo-pedrosa': 'dudupedrosa',
+  'martins-machado': 'martinsmachadodf',
 };
 
-test('lote 1 cobre exatamente 10 nomes monitorados (limite do ciclo)', () => {
+test('lote 1 cobre exatamente 13 nomes monitorados (limite do ciclo)', () => {
   const items = auditoriaInstagramLote1Items();
-  assert.equal(items.length, 10, `lote deve ter 10 entradas; encontrado ${items.length}`);
+  assert.equal(items.length, 13, `lote deve ter 13 entradas; encontrado ${items.length}`);
 });
 
-test('lote 1 registra os 10 nomes esperados em ordem', () => {
+test('lote 1 registra os 13 nomes esperados em ordem', () => {
   const items = auditoriaInstagramLote1Items();
   assert.deepEqual(
     items.map((i) => i.depSlug),
@@ -289,12 +295,12 @@ test('validador de pessoaEleitoralId verifica existência no cenario-eleitoral.t
   );
 });
 
-test('validador limita o lote a 10 entradas no máximo', () => {
+test('validador limita o lote a 13 entradas no máximo', () => {
   const fonte = readFileSafe(AUDIT_FILE);
   assert.match(
     fonte,
-    /Lote 1 excede o limite de 10 entradas/,
-    'validador deve impor o limite de 10 entradas por ciclo',
+    /Lote 1 excede o limite de 13 entradas/,
+    'validador deve impor o limite de 13 entradas por ciclo',
   );
 });
 
@@ -302,23 +308,23 @@ test('validador limita o lote a 10 entradas no máximo', () => {
 // Documentação honesta: as URLs do Instagram registradas NÃO foram
 // verificadas por HTTP neste ciclo. A tarefa da fila P4 permanece
 // como `[ ]` (pendente) até que cada um dos 49 nomes monitorados
-// possua uma URL oficial específica com comprovação. Os 39 nomes que
+// possua uma URL oficial específica com comprovação. Os 36 nomes que
 // não têm handle publicado em fonte estão fora deste lote — não
 // inventamos handles sem fonte, conforme a regra "nunca invente" do
 // AGENT_BRIEF.md.
 // ---------------------------------------------------------------------------
 
-test('documentação declara que o lote 1 cobre 10 dos 49 nomes monitorados', () => {
+test('documentação declara que o lote 1 cobre 13 dos 49 nomes monitorados', () => {
   const fonte = readFileSafe(AUDIT_FILE);
   assert.match(
     fonte,
-    /Lote 1:[\s\S]*?primeiros 10 nomes monitorados/,
-    'cabeçalho deve indicar que o lote cobre 10 dos 49 nomes',
+    /Lote 1:[\s\S]*?13 nomes monitorados/,
+    'cabeçalho deve indicar que o lote cobre 13 dos 49 nomes',
   );
   assert.match(
     fonte,
-    /demais 39[\s\S]*?\(de um total de 49\)/,
-    'cabeçalho deve registrar honestamente os 39 nomes restantes sem comprovação',
+    /demais 36[\s\S]*?\(de um total de 49\)/,
+    'cabeçalho deve registrar honestamente os 36 nomes restantes sem comprovação',
   );
 });
 
@@ -335,7 +341,7 @@ test('documentação não promete catálogo completo (sem inflar números)', () 
   const fonte = readFileSafe(AUDIT_FILE);
   // Nenhum registro deve ostentar "49" perfis catalogados neste lote.
   const items = auditoriaInstagramLote1Items();
-  assert.equal(items.length, 10, 'catálogo atual cobre exatamente 10 nomes');
+  assert.equal(items.length, 13, 'catálogo atual cobre exatamente 13 nomes');
   assert.ok(
     !/\b49\s+perfis?\s+catalogados?\b/i.test(fonte),
     'não deve afirmar 49 perfis catalogados — divulgação honesta',

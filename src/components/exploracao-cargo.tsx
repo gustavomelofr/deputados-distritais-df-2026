@@ -1,24 +1,24 @@
-// Exploração por cargo — página interativa em /eleicoes-2026.
+// Exploração por cargo — componente interativo em /eleicoes-2026.
 //
-// Filtros: cargo, partido, estágio e data (a partir de "dataEvidencia" da
-// evidência mais recente de cada pessoa). Funciona em desktop (grid
-// horizontal de selects) e em mobile (selects empilhados, ordem de leitura
-// preservada). Os dados são derivados apenas da base eleitoral
-// independente (src/data/cenario-eleitoral.ts) — não inventa nomes,
-// partidos, cargos, estágios ou datas.
+// Filtros: cargo, partido, estágio, data e busca textual (case-
+// insensitive e sem acentos). Funciona em desktop (grid horizontal)
+// e em mobile (selects empilhados, ordem de leitura preservada).
 //
-// Toda interação é client-side: a base já foi validada em build time pelo
-// validarCenarioEleitoral. Não fazemos fetch nem build pesado aqui.
+// Os filtros são codificados em URL via `?cargo=&partido=&estagio=&data=&q=`
+// e restaurados ao abrir a URL. Parâmetros desconhecidos ou inválidos
+// são descartados (defesa contra payload adversário). Os dados são
+// derivados apenas da base eleitoral independente
+// (src/data/cenario-eleitoral.ts) — não inventa nomes, partidos,
+// cargos, estágios ou datas.
 //
-// As funções puras (pessoaParaItem, formatarDataExploracao,
-// classesEstagio, ROTULOS_*) ficam em src/lib/exploracao-cargo.ts para
-// que possam ser usadas também pelo server component da página
-// /eleicoes-2026 durante o prerender. Este arquivo só reexporta o que a
-// página e os testes precisam e define o componente React.
+// Toda a lógica pura (parse, serialize, validação, normalização) fica
+// em src/lib/exploracao-cargo.ts para que testes e outros componentes
+// possam consumi-la sem dependência de React.
 
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import type { CargoEleitoral, EstagioEleitoral } from '@/types';
 import {
   ROTULOS_CARGO,
@@ -27,6 +27,11 @@ import {
   pessoaParaItem,
   formatarDataExploracao,
   classesEstagio,
+  FILTROS_VAZIOS,
+  aplicarFiltrosExploracao,
+  filtrosAtivos,
+  serializarFiltrosBusca,
+  type FiltrosExploracao,
   type ItemExploracao,
 } from '@/lib/exploracao-cargo';
 
@@ -39,6 +44,11 @@ export {
   pessoaParaItem,
   formatarDataExploracao,
   classesEstagio,
+  FILTROS_VAZIOS,
+  aplicarFiltrosExploracao,
+  filtrosAtivos,
+  serializarFiltrosBusca,
+  type FiltrosExploracao,
   type ItemExploracao,
 };
 
@@ -49,6 +59,12 @@ export interface ExploracaoPorCargoProps {
    * manipulação de dados.
    */
   itens: ItemExploracao[];
+  /**
+   * Filtros iniciais já validados pelo server (parsing defensivo em
+   * /eleicoes-2026/page.tsx). O componente usa esses valores como ponto
+   * de partida do estado, compartilhando o estado com a URL.
+   */
+  filtrosIniciais?: FiltrosExploracao;
 }
 
 const ORDEM_CARGOS: CargoEleitoral[] = [
@@ -74,15 +90,33 @@ const ORDEM_ESTAGIOS: EstagioEleitoral[] = [
 const classesSelect =
   'w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1';
 
-export function ExploracaoPorCargo({ itens }: ExploracaoPorCargoProps) {
-  const [cargoFiltro, setCargoFiltro] = useState<'todos' | CargoEleitoral>(
-    'todos'
+export function ExploracaoPorCargo({
+  itens,
+  filtrosIniciais = FILTROS_VAZIOS,
+}: ExploracaoPorCargoProps) {
+  const router = useRouter();
+  const [cargoFiltro, setCargoFiltro] = useState<
+    'todos' | CargoEleitoral
+  >(filtrosIniciais.cargo);
+  const [partidoFiltro, setPartidoFiltro] = useState<string>(
+    filtrosIniciais.partido,
   );
-  const [partidoFiltro, setPartidoFiltro] = useState<'todos' | string>('todos');
-  const [estagioFiltro, setEstagioFiltro] = useState<'todos' | EstagioEleitoral>(
-    'todos'
+  const [estagioFiltro, setEstagioFiltro] = useState<
+    'todos' | EstagioEleitoral
+  >(filtrosIniciais.estagio);
+  const [dataFiltro, setDataFiltro] = useState<string>(filtrosIniciais.data);
+  const [buscaFiltro, setBuscaFiltro] = useState<string>(
+    filtrosIniciais.busca,
   );
-  const [dataFiltro, setDataFiltro] = useState<'todas' | string>('todas');
+
+  // Bloqueia primeira emissão de URL sincronizada: o SSR já pintou
+  // com os filtros iniciais, então só sincronizamos após a hidratação
+  // inicial. Isso evita redirecionar a página antes mesmo do usuário
+  // interagir.
+  const hidratado = useRef(false);
+  useEffect(() => {
+    hidratado.current = true;
+  }, []);
 
   // Partidos distintos — derivados da base, garantindo que partidos só
   // apareçam se houver pelo menos uma pessoa monitorada.
@@ -102,32 +136,46 @@ export function ExploracaoPorCargo({ itens }: ExploracaoPorCargoProps) {
     return [...set].sort((a, b) => b.localeCompare(a));
   }, [itens]);
 
+  const estadoAtual = useMemo<FiltrosExploracao>(
+    () => ({
+      cargo: cargoFiltro,
+      partido: partidoFiltro,
+      estagio: estagioFiltro,
+      data: dataFiltro,
+      busca: buscaFiltro,
+    }),
+    [cargoFiltro, partidoFiltro, estagioFiltro, dataFiltro, buscaFiltro],
+  );
+
   const itensFiltrados = useMemo(() => {
-    return itens
-      .filter((i) => cargoFiltro === 'todos' || i.cargo === cargoFiltro)
-      .filter(
-        (i) => partidoFiltro === 'todos' || i.partido === partidoFiltro
-      )
-      .filter((i) => estagioFiltro === 'todos' || i.estagio === estagioFiltro)
-      .filter((i) => dataFiltro === 'todas' || i.dataEvidencia === dataFiltro)
-      .sort((a, b) => b.dataEvidencia.localeCompare(a.dataEvidencia));
-  }, [itens, cargoFiltro, partidoFiltro, estagioFiltro, dataFiltro]);
+    return aplicarFiltrosExploracao(itens, estadoAtual).sort((a, b) =>
+      b.dataEvidencia.localeCompare(a.dataEvidencia),
+    );
+  }, [itens, estadoAtual]);
+
+  // Sincroniza o estado com a URL após a hidratação. Usa router.replace
+  // (não push) para não empilhar histórico a cada troca de select.
+  // Também evita disparar durante a primeira hidratação: o estado já
+  // vem da URL nesse momento.
+  useEffect(() => {
+    if (!hidratado.current) return;
+    const qs = serializarFiltrosBusca(estadoAtual);
+    const url = qs ? `/eleicoes-2026${qs}` : '/eleicoes-2026';
+    router.replace(url, { scroll: false });
+  }, [estadoAtual, router]);
 
   const totalFiltrados = itensFiltrados.length;
   const totalGeral = itens.length;
 
-  const filtrosAtivos =
-    cargoFiltro !== 'todos' ||
-    partidoFiltro !== 'todos' ||
-    estagioFiltro !== 'todos' ||
-    dataFiltro !== 'todas';
+  const temFiltroAtivo = filtrosAtivos(estadoAtual);
 
-  function limparFiltros() {
-    setCargoFiltro('todos');
-    setPartidoFiltro('todos');
-    setEstagioFiltro('todos');
-    setDataFiltro('todas');
-  }
+  const limparFiltros = useCallback(() => {
+    setCargoFiltro(FILTROS_VAZIOS.cargo);
+    setPartidoFiltro(FILTROS_VAZIOS.partido);
+    setEstagioFiltro(FILTROS_VAZIOS.estagio);
+    setDataFiltro(FILTROS_VAZIOS.data);
+    setBuscaFiltro(FILTROS_VAZIOS.busca);
+  }, []);
 
   return (
     <section
@@ -142,9 +190,11 @@ export function ExploracaoPorCargo({ itens }: ExploracaoPorCargoProps) {
           Exploração por cargo
         </h2>
         <p className="text-sm text-zinc-500 leading-relaxed">
-          Filtre por cargo, partido, estágio de evidência ou data da fonte
-          mais recente. Os registros vêm da base eleitoral independente —
-          sem classificação por palavra-chave de notícia.
+          Filtre por cargo, partido, estágio de evidência, data da fonte
+          mais recente ou busca textual por nome. Os registros vêm da base
+          eleitoral independente — sem classificação por palavra-chave de
+          notícia. Os filtros podem ser compartilhados copiando a URL
+          desta página.
         </p>
       </header>
 
@@ -252,6 +302,26 @@ export function ExploracaoPorCargo({ itens }: ExploracaoPorCargoProps) {
         </div>
       </div>
 
+      {/* Busca textual livre — full-width para acomodar frases longas.
+          case-insensitive e sem acentos; vide aplicarFiltrosExploracao. */}
+      <div className="mb-4">
+        <label
+          htmlFor="filtro-busca"
+          className="block text-xs font-semibold text-zinc-600 mb-1"
+        >
+          Buscar por nome ou partido
+        </label>
+        <input
+          id="filtro-busca"
+          type="search"
+          value={buscaFiltro}
+          onChange={(e) => setBuscaFiltro(e.target.value)}
+          placeholder="Ex.: Celina, PT, PSDB…"
+          aria-label="Buscar por nome ou partido na exploração eleitoral"
+          className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-800 shadow-sm placeholder:text-zinc-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+        />
+      </div>
+
       {/* Linha de estado: total + limpar filtros quando aplicável. */}
       <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
         <p
@@ -263,7 +333,7 @@ export function ExploracaoPorCargo({ itens }: ExploracaoPorCargoProps) {
           de {totalGeral} registro{totalGeral !== 1 ? 's' : ''} exibido
           {totalFiltrados !== 1 ? 's' : ''}.
         </p>
-        {filtrosAtivos && (
+        {temFiltroAtivo && (
           <button
             type="button"
             onClick={limparFiltros}

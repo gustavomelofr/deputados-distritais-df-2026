@@ -60,6 +60,13 @@ export const navItems: NavItem[] = [
     label: 'Cenário 2026',
   },
   {
+    href: '/comparar-eleitoral',
+    group: 'eleicoes',
+    ariaLabel:
+      'Comparação descritiva entre pessoas monitoradas para o mesmo cargo em 2026 no DF, sem ranking editorial',
+    label: 'Comparar eleitoral',
+  },
+  {
     href: '/deputados-distritais',
     group: 'cldf',
     label: 'Deputados',

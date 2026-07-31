@@ -327,16 +327,25 @@ export function ExploracaoPorCargo({ itens }: ExploracaoPorCargoProps) {
               <p className="text-sm text-zinc-600 leading-relaxed mb-3">
                 {item.descricao}
               </p>
-              <div className="text-xs text-zinc-500">
-                <span className="text-zinc-600">Fonte:</span>{' '}
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="text-xs text-zinc-500">
+                  <span className="text-zinc-600">Fonte:</span>{' '}
+                  <a
+                    href={item.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Abrir fonte "${item.fonte}" para ${item.nome} em nova aba`}
+                    className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  >
+                    {item.fonte}
+                  </a>
+                </div>
                 <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Abrir fonte "${item.fonte}" para ${item.nome} em nova aba`}
-                  className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                  href={`/perfil-eleitoral/${item.slug}`}
+                  aria-label={`Abrir perfil eleitoral individual de ${item.nome}`}
+                  className="text-xs font-semibold text-blue-600 hover:text-blue-500 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
                 >
-                  {item.fonte}
+                  Ver perfil eleitoral →
                 </a>
               </div>
             </li>

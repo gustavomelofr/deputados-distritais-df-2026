@@ -1,10 +1,13 @@
 import type { MetadataRoute } from 'next';
 import { deputados } from '@/data/deputados';
+import { slugsPerfilEleitoral } from '@/lib/perfil-eleitoral';
 
 // Gera /sitemap.xml via convenção de metadados do Next.js App Router.
-// Lista as rotas estáticas do site e os perfis individuais de cada
-// deputado distrital, derivados dos dados reais (fonte: CLDF — P1).
-// Não inventa URLs: todas as rotas correspondem a páginas existentes.
+// Lista as rotas estáticas do site, os perfis individuais de cada
+// deputado distrital (fonte: CLDF — P1) e os perfis eleitorais dos
+// nomes monitorados em /cenario-eleitoral.ts (fonte: base eleitoral
+// independente — P3). Não inventa URLs: todas as rotas correspondem a
+// páginas existentes.
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
 
@@ -80,5 +83,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  return [...rotasEstaticas, ...perfisDeputados];
+  // Perfis eleitorais individuais — rotas dinâmicas reais derivadas da
+  // base eleitoral independente (cenario-eleitoral.ts).
+  const perfisEleitorais: MetadataRoute.Sitemap = slugsPerfilEleitoral().map(
+    (slug) => ({
+      url: `/perfil-eleitoral/${slug}`,
+      lastModified: now,
+      changeFrequency: 'weekly',
+      priority: 0.7,
+    }),
+  );
+
+  return [...rotasEstaticas, ...perfisDeputados, ...perfisEleitorais];
 }

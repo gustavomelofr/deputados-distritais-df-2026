@@ -3,6 +3,8 @@ import Link from 'next/link';
 import type { CargoEleitoral, PessoaEleitoral } from '@/types';
 import { cenarioEleitoral } from '@/data/cenario-eleitoral';
 import { estadoInicial as divulgacandInicial } from '@/lib/divulgacand';
+import { ExploracaoPorCargo } from '@/components/exploracao-cargo';
+import { pessoaParaItem, type ItemExploracao } from '@/lib/exploracao-cargo';
 
 // Página geral "Eleições 2026 no DF" — hub da cobertura eleitoral do
 // Distrito Federal. Oferece caminhos para os quatro grupos de cargos em
@@ -145,6 +147,14 @@ export default function Eleicoes2026Page() {
     (acc, p) => acc + p.evidencias.length,
     0
   );
+
+  // Itens da exploração por cargo — derivados da base eleitoral
+  // independente. Apenas pessoas com evidência entram na exploração; o
+  // componente de filtros opera sobre essa lista pura, sem inventar nomes,
+  // partidos, cargos, estágios ou datas.
+  const itensExploracao: ItemExploracao[] = cenarioEleitoral
+    .map(pessoaParaItem)
+    .filter((i): i is ItemExploracao => i !== null);
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-12">
@@ -328,6 +338,10 @@ export default function Eleicoes2026Page() {
           })}
         </div>
       </section>
+
+      {/* Exploração por cargo — filtros interativos (cargo, partido,
+          estágio, data). Hidrata com a base eleitoral independente. */}
+      <ExploracaoPorCargo itens={itensExploracao} />
 
       {/* Metodologia visível — sempre acessível nesta página */}
       <section

@@ -117,6 +117,28 @@ export interface LinkOficialPerfil {
 }
 
 /**
+ * Item unificado da timeline cronológica — combina evidências e notícias
+ * em uma única sequência temporal. Cada item preserva sua origem (evidência
+ * ou notícia) e todos os campos de data exigidos pelo brief.
+ */
+export interface ItemTimeline {
+  tipo: 'evidencia' | 'noticia';
+  id: string;
+  dataOrdenacao: string;
+  cargo: CargoEleitoral | null;
+  estagio: EstagioEleitoral | null;
+  partido: string | null;
+  titulo: string;
+  descricao: string;
+  fonte: string;
+  fonteCategoria: CategoriaFonte;
+  url: string;
+  publicadaEm: string;
+  coletadaEm: string;
+  verificadaEm: string;
+}
+
+/**
  * Agregação completa do perfil eleitoral individual. Todos os campos são
  * derivados de dados já validados; nada é inventado. Quem consome decide
  * a apresentação visual.
@@ -130,6 +152,8 @@ export interface PerfilEleitoral {
   evidenciaDestaque: EvidenciaEleitoral;
   noticias: NoticiaRelacionada[];
   linksOficiais: LinkOficialPerfil[];
+  /** Timeline cronológica unificada de evidências e notícias. */
+  timeline: ItemTimeline[];
   /**
    * Total de evidências registradas para esta pessoa. Útil para mostrar a
    * evolução histórica em uma única linha ("X evidências com fonte e data").
@@ -321,6 +345,70 @@ export function linksOficiaisParaPerfil(
 }
 
 /**
+ * Constrói a timeline cronológica unificada de evidências e notícias
+ * relacionadas ao perfil. Combina ambos os tipos em uma única sequência
+ * ordenada por data (mais antiga → mais recente), preservando todos os
+ * campos de data exigidos pelo brief (publicadaEm/coletadaEm/verificadaEm).
+ *
+ * Regras:
+ *  - Apenas itens já presentes em `pessoa.evidencias` e nas notícias
+ *    relacionadas são incluídos — nada é inventado.
+ *  - A ordenação é determinística: ISO 8601 (localeCompare preserva ordem
+ *    cronológica em formato aaaa-mm-dd); empate fica pela ordem de aparição.
+ *  - Campos ausentes usam string vazia (estado honesto para a UI).
+ */
+export function timelineParaPerfil(
+  pessoa: PessoaEleitoral,
+  noticias: ReadonlyArray<Noticia | NoticiaEleitoral>,
+): ItemTimeline[] {
+  const itens: ItemTimeline[] = [];
+
+  for (const ev of pessoa.evidencias) {
+    itens.push({
+      tipo: 'evidencia',
+      id: ev.id,
+      dataOrdenacao: ev.dataEvidencia,
+      cargo: ev.cargo,
+      estagio: ev.estagio,
+      partido: ev.partido ?? null,
+      titulo: ev.descricao,
+      descricao: ev.descricao,
+      fonte: ev.fonte,
+      fonteCategoria: ev.fonteCategoria,
+      url: ev.url,
+      publicadaEm: ev.dataEvidencia,
+      coletadaEm: ev.coletadaEm,
+      verificadaEm: ev.verificadaEm,
+    });
+  }
+
+  const noticiasRelacionadas = noticiasRelacionadasParaPerfil(
+    pessoa,
+    noticias,
+  );
+  for (const n of noticiasRelacionadas) {
+    itens.push({
+      tipo: 'noticia',
+      id: n.id,
+      dataOrdenacao: n.publicadaEm,
+      cargo: pessoa.cargo,
+      estagio: null,
+      partido: pessoa.partido ?? null,
+      titulo: n.titulo,
+      descricao: n.resumo,
+      fonte: n.fonte,
+      fonteCategoria: n.fonteCategoria,
+      url: n.url,
+      publicadaEm: n.publicadaEm,
+      coletadaEm: '',
+      verificadaEm: '',
+    });
+  }
+
+  return itens.sort((a, b) => a.dataOrdenacao.localeCompare(b.dataOrdenacao));
+}
+
+/**
  * Constrói o perfil agregado completo de uma pessoa. Quando a pessoa não é
  * encontrada em `cenarioEleitoral`, retorna `null` (quem chama decide o 404).
  */
@@ -345,6 +433,7 @@ export function perfilEleitoralDePessoa(
     evidenciaDestaque: destaque,
     noticias: noticiasRelacionadasParaPerfil(pessoa, noticias),
     linksOficiais: linksOficiaisParaPerfil(pessoa, auditoriaInstagram),
+    timeline: timelineParaPerfil(pessoa, noticias),
     totalEvidencias: pessoa.evidencias.length,
     dataEvidenciaMaisRecente: destaque.dataEvidencia,
   };

@@ -34,6 +34,7 @@ import {
   rotuloEstagio,
   rotuloFonteCategoria,
   slugsPerfilEleitoral,
+  type ItemTimeline,
 } from '@/lib/perfil-eleitoral';
 
 interface Props {
@@ -237,127 +238,123 @@ export default async function PerfilEleitoralPage({ params }: Props) {
         </p>
       </section>
 
-      {/* Histórico completo de evidências (P3) */}
+      {/* Timeline cronológica unificada — evidências e notícias */}
       <section
-        aria-labelledby="titulo-historico"
+        aria-labelledby="titulo-timeline"
         className="rounded-xl border border-zinc-200 bg-white p-6 mb-8"
       >
         <h2
-          id="titulo-historico"
+          id="titulo-timeline"
           className="text-lg font-semibold text-zinc-900 mb-3"
         >
-          Histórico de evidências
+          Timeline de evidências e notícias
         </h2>
         <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-          Lista cronológica das evidências registradas para esta pessoa. A
-          ordem cronológica preserva mudança de estágio, partido ou cargo sem
-          apagar o registro anterior.
+          Sequência cronológica que combina evidências eleitorais e notícias
+          relacionadas. Cada item exibe as três datas do schema —{' '}
+          <code className="text-xs bg-zinc-100 px-1 py-0.5 rounded">publicadaEm</code>,{' '}
+          <code className="text-xs bg-zinc-100 px-1 py-0.5 rounded">coletadaEm</code>{' '}
+          e{' '}
+          <code className="text-xs bg-zinc-100 px-1 py-0.5 rounded">verificadaEm</code>{' '}
+          — além de cargo, estágio, fonte e URL específica. A ordem cronológica
+          preserva mudança de estágio, partido ou cargo sem apagar o registro
+          anterior.
         </p>
-        <ol className="space-y-4 list-decimal pl-5">
-          {perfil.historicoEvidencias
-            .slice()
-            .sort((a, b) => a.dataEvidencia.localeCompare(b.dataEvidencia))
-            .map((ev) => (
-              <li key={ev.id}>
-                <div className="flex flex-wrap items-center gap-2 text-sm mb-1">
-                  <strong className="text-zinc-800">
-                    {formatarDataPerfil(ev.dataEvidencia)}
-                  </strong>
-                  <span
-                    className={`rounded-full text-xs font-medium px-2 py-0.5 ${classesEstagioPerfil(
-                      ev.estagio,
-                    )}`}
-                  >
-                    {rotuloEstagio(ev.estagio)}
-                  </span>
-                  {ev.partido && (
-                    <span className="rounded-full bg-zinc-100 text-zinc-700 text-xs font-medium px-2 py-0.5">
-                      {ev.partido}
-                    </span>
-                  )}
-                </div>
-                <p className="text-sm text-zinc-700 leading-relaxed mb-1">
-                  {ev.descricao}
-                </p>
-                <p className="text-xs text-zinc-500">
-                  Fonte:{' '}
-                  <a
-                    href={ev.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Abrir fonte "${ev.fonte}" da evidência de ${formatarDataPerfil(
-                      ev.dataEvidencia,
-                    )} em nova aba`}
-                    className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                  >
-                    {ev.fonte}
-                  </a>
-                </p>
-              </li>
-            ))}
-        </ol>
-      </section>
-
-      {/* Notícias relacionadas */}
-      <section
-        aria-labelledby="titulo-noticias"
-        className="rounded-xl border border-zinc-200 bg-white p-6 mb-8"
-      >
-        <h2
-          id="titulo-noticias"
-          className="text-lg font-semibold text-zinc-900 mb-3"
-        >
-          Notícias relacionadas
-        </h2>
-        <p className="text-sm text-zinc-500 leading-relaxed mb-4">
-          Apenas matérias da base validada (P1) explicitamente associadas a
-          esta pessoa em cenario-eleitoral.ts. Quando a lista está vazia, o
-          motivo é ausência de vínculo direto na fonte — não ausência de
-          cobertura.
-        </p>
-        {perfil.noticias.length === 0 ? (
+        {perfil.timeline.length === 0 ? (
           <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-4">
             <p className="text-sm text-zinc-500 leading-relaxed">
-              Nenhuma notícia da base validada está explicitamente
-              associada a esta pessoa no momento. A ausência aqui não
-              significa ausência de cobertura jornalística — apenas que
-              nenhuma matéria foi marcada como relacionada na coleta
-              atual.
+              Nenhuma evidência ou notícia associada a esta pessoa no momento.
+              A ausência aqui é um estado honesto — não significa ausência de
+              cobertura jornalística.
             </p>
           </div>
         ) : (
-          <ul className="space-y-3">
-            {perfil.noticias.map((n) => (
+          <ol className="space-y-5 list-none pl-0">
+            {perfil.timeline.map((item: ItemTimeline) => (
               <li
-                key={n.id}
+                key={`${item.tipo}-${item.id}`}
                 className="rounded-lg border border-zinc-200 bg-zinc-50 p-4"
               >
-                <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
-                  <h3 className="font-semibold text-zinc-900 text-sm">
-                    {n.titulo}
-                  </h3>
-                  <span className="text-xs text-zinc-400 whitespace-nowrap">
-                    {formatarDataPerfil(n.publicadaEm)}
+                <div className="flex flex-wrap items-center gap-2 text-sm mb-1">
+                  <span
+                    className={`rounded-full text-xs font-medium px-2 py-0.5 ${
+                      item.tipo === 'evidencia'
+                        ? 'bg-indigo-100 text-indigo-700'
+                        : 'bg-emerald-100 text-emerald-700'
+                    }`}
+                  >
+                    {item.tipo === 'evidencia' ? 'Evidência' : 'Notícia'}
+                  </span>
+                  <strong className="text-zinc-800">
+                    {formatarDataPerfil(item.dataOrdenacao)}
+                  </strong>
+                  {item.estagio && (
+                    <span
+                      className={`rounded-full text-xs font-medium px-2 py-0.5 ${classesEstagioPerfil(
+                        item.estagio,
+                      )}`}
+                    >
+                      {rotuloEstagio(item.estagio)}
+                    </span>
+                  )}
+                  {item.cargo && (
+                    <span className="rounded-full bg-blue-100 text-blue-700 text-xs font-medium px-2 py-0.5">
+                      {rotuloCargo(item.cargo)}
+                    </span>
+                  )}
+                  {item.partido && (
+                    <span className="rounded-full bg-zinc-200 text-zinc-700 text-xs font-medium px-2 py-0.5">
+                      {item.partido}
+                    </span>
+                  )}
+                </div>
+                <h3 className="font-semibold text-zinc-900 text-sm mb-1">
+                  {item.tipo === 'noticia' ? item.titulo : null}
+                </h3>
+                <p className="text-sm text-zinc-700 leading-relaxed mb-2">
+                  {item.descricao}
+                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-500 mb-1">
+                  <span>
+                    <span className="text-zinc-600">Fonte:</span>{' '}
+                    <a
+                      href={item.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Abrir fonte "${item.fonte}" em nova aba`}
+                      className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      {item.fonte}
+                    </a>
+                    <span className="ml-1">({rotuloFonteCategoria(item.fonteCategoria)})</span>
                   </span>
                 </div>
-                <p className="text-xs text-zinc-500 mb-2">
-                  Fonte:{' '}
-                  <a
-                    href={n.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`Abrir notícia "${n.titulo}" de ${n.fonte} em nova aba`}
-                    className="text-blue-600 hover:underline rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                  >
-                    {n.fonte}
-                  </a>
-                </p>
-                <p className="text-sm text-zinc-600 leading-relaxed">
-                  {n.resumo}
-                </p>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-zinc-400">
+                  {item.publicadaEm && (
+                    <span>
+                      Publicada: {formatarDataPerfil(item.publicadaEm)}
+                    </span>
+                  )}
+                  {item.coletadaEm && (
+                    <span>
+                      Coletada: {formatarDataPerfil(item.coletadaEm)}
+                    </span>
+                  )}
+                  {item.verificadaEm && (
+                    <span>
+                      Verificada: {formatarDataPerfil(item.verificadaEm)}
+                    </span>
+                  )}
+                  {!item.coletadaEm && !item.verificadaEm && (
+                    <span>
+                      Datas de coleta e verificação não disponíveis para
+                      notícias.
+                    </span>
+                  )}
+                </div>
               </li>
             ))}
-          </ul>
+          </ol>
         )}
       </section>
 

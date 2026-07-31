@@ -35,16 +35,16 @@ import { deputados } from '@/data/deputados';
 //                     neste ciclo (rede/build vedados pelas regras de
 //                     operação do loop).
 //
-// Lote 1: primeiros 10 nomes monitorados (em ordem de cenario-eleitoral.ts)
-// cujas 5 fontes permitidas PUBLICAM um handle verificável. Os demais 39
-// nomes monitorados (de um total de 49) NÃO são registrados sem evidência
+// Lote 1: 13 nomes monitorados (em ordem de cenario-eleitoral.ts) cujas 5
+// fontes permitidas PUBLICAM um handle verificável. Os demais 36 nomes
+// monitorados (de um total de 49) NÃO são registrados sem evidência
 // suficiente — o feedback do verifier exige "URL oficial específica que
 // exiba ou vincule o handle e confirme a existência do perfil" e instrui
 // "remova registros sem essa comprovação". Inventar handles sem fonte é
 // vedado pelo brief ("nunca invente").
 //
 // Tarefa permanece como `[ ]` (pendente) na fila P4 do AGENT_BRIEF.md
-// porque 39 dos 49 nomes monitorados ainda não têm URL oficial com
+// porque 36 dos 49 nomes monitorados ainda não têm URL oficial com
 // comprovação. Conforme o feedback, o checkbox só será marcado como
 // concluído quando cada perfil tiver uma URL específica que exiba ou
 // vincule o handle e confirme a existência do perfil.
@@ -123,6 +123,9 @@ const PERFIS_INSTAGRAM_CLDF: Array<{
   { depSlug: 'max-maciel', handle: 'maxmaciel.df' },
   { depSlug: 'hermeto', handle: 'hermeto.mdb' },
   { depSlug: 'jaqueline-silva', handle: 'jaquelinesilvadf' },
+  { depSlug: 'doutora-jane', handle: 'doutorajane' },
+  { depSlug: 'eduardo-pedrosa', handle: 'dudupedrosa' },
+  { depSlug: 'martins-machado', handle: 'martinsmachadodf' },
 ];
 
 const handleParaUrl = (handle: string): string =>
@@ -165,8 +168,11 @@ const item = (depSlug: string, handle: string): AuditoriaInstagram => {
 /**
  * Lote 1 do catálogo oficial de Instagram dos nomes monitorados.
  * Ordem: posição em cenario-eleitoral.ts (fonte primária do nome
- * monitorado), filtrada pelos 10 primeiros monitorados cujo handle
- * consta em `deputados.ts` (cadastro CLDF).
+ * monitorado), filtrada pelos 13 monitorados cujo handle consta em
+ * `deputados.ts` (cadastro CLDF). Os demais 36 nomes monitorados
+ * (de um total de 49) ficam fora deste lote até existir fonte
+ * oficial que publique o handle (CLDF, TSE/DivulgaCand, partido ou
+ * página pessoal/assessoria).
  */
 export const auditoriaInstagramNomesMonitoradosLote1: AuditoriaInstagram[] =
   PERFIS_INSTAGRAM_CLDF.map((p) => item(p.depSlug, p.handle));
@@ -292,8 +298,8 @@ export function validarAuditoriaInstagramNomesMonitoradosLote1(
   for (const item of itens) {
     erros.push(...validarItemAuditoriaInstagram(item, ctx));
   }
-  if (itens.length > 10) {
-    erros.push(`Lote 1 excede o limite de 10 entradas (encontradas ${itens.length}).`);
+  if (itens.length > 13) {
+    erros.push(`Lote 1 excede o limite de 13 entradas (encontradas ${itens.length}).`);
   }
   for (const it of itens) {
     if (it.verificadaEm && it.verificadaEm > hoje) {

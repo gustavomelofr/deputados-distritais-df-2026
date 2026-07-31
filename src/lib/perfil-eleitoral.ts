@@ -25,6 +25,7 @@ import type {
   NoticiaEleitoral,
   PessoaEleitoral,
 } from '@/types';
+import type { ValidadeFoto } from '@/data/auditoria-fotos';
 import {
   PLACEHOLDER_FONTE,
   PLACEHOLDER_FONTE_URL,
@@ -60,6 +61,17 @@ export interface IdentidadePerfil {
  * Foto atribuída ao perfil, sempre presente. Pode ser uma foto real
  * (atribuída via auditoria) ou o placeholder honesto desta constante.
  * O consumidor sabe diferenciar pelo campo `placeholder: boolean`.
+ *
+ * O campo `validade` espelha a taxonomia de `ValidadeFoto` da auditoria
+ * de fotos: `valida` quando a foto foi verificada deterministicamente
+ * (HTTP/MIME/dimensões), `invalida` quando a verificação falhou e
+ * `pendente_verificacao_externa` quando a fonte institucional é
+ * conhecida mas a confirmação automatizada HTTP não foi executada
+ * (regra do loop — rede/build vedados). O placeholder deste módulo
+ * usa `pendente_verificacao_externa` porque o arquivo SVG é parte do
+ * repositório (não há dependência externa), mas o estado editorial
+ * permanece "pendente" para refletir a ausência de foto verificada
+ * para a pessoa e o contexto eleitoral/cargo monitorado.
  */
 export interface FotoPerfil {
   /** Fonte humana-legível da foto. */
@@ -76,6 +88,12 @@ export interface FotoPerfil {
   altura: number | null;
   /** Licença/base de uso conforme ordem de preferência do brief. */
   licenca: FotografiaEleitoral['licenca'];
+  /**
+   * Validade da foto conforme taxonomia de `ValidadeFoto`. O placeholder
+   * honesto deste módulo usa `pendente_verificacao_externa` enquanto não
+   * houver foto verificada especificamente para a pessoa e o contexto.
+   */
+  validade: ValidadeFoto;
   /** Data de verificação editorial (ISO 8601). */
   verificadaEm: string;
   /** Crédito/observação registrada na estrutura de origem. */
@@ -178,6 +196,12 @@ export interface PerfilEleitoral {
  *     O vínculo automático por slug com a auditoria CLDF foi removido para
  *     evitar retrato de mandato em exercício como foto de pré-candidatura.
  *
+ *   - `validade` é sempre `pendente_verificacao_externa` no placeholder:
+ *     a fonte é conhecida (repositório local) e a licença é declarada
+ *     (`placeholder`), mas a confirmação automática HTTP/MIME/dimensões
+ *     específicas para esta pessoa e contexto ainda não foi executada —
+ *     regra de operação do loop veda rede/build neste ciclo.
+ *
  * Nenhuma foto é fabricada. A proveniência do placeholder permanece no objeto.
  */
 export function fotoParaPerfil(_pessoa: PessoaEleitoral): FotoPerfil {
@@ -189,6 +213,7 @@ export function fotoParaPerfil(_pessoa: PessoaEleitoral): FotoPerfil {
     largura: PLACEHOLDER_LARGURA,
     altura: PLACEHOLDER_ALTURA,
     licenca: PLACEHOLDER_LICENCA,
+    validade: 'pendente_verificacao_externa',
     verificadaEm: PLACEHOLDER_VERIFICADA_EM,
     credito:
       'Foto pendente de verificação para o cargo pretendido em 2026 — placeholder honesto. Nenhuma foto institucional ou de imprensa com licença explícita foi anexada ao registro atual.',
@@ -534,4 +559,168 @@ export function rotuloFonteCategoria(c: CategoriaFonte): string {
     case 'google_news_rss':
       return 'Google News RSS';
   }
+}
+
+// ---------------------------------------------------------------------------
+// Estado de fotos e links oficiais — P6 do AGENT_BRIEF.md.
+//
+// A tarefa "Explicitar o estado de fotos e links oficiais" exige que cards
+// e perfis diferenciem visualmente quatro estados:
+//
+//   1. Foto licenciada e verificada (qualquer licença diferente de
+//      `placeholder` e validade confirmada);
+//   2. Placeholder honesto (licença `placeholder`);
+//   3. Foto pendente de verificação externa (validade
+//      `pendente_verificacao_externa`);
+//   4. Link oficial confirmado em fonte institucional vs. link registrado
+//      em declaração pública (declaração_pessoa/partido_oficial).
+//
+// A regra editorial continua sendo: nada de hotlink de imprensa sem
+// licença; placeholder honesto sempre que não houver foto verificada
+// para a pessoa e o contexto eleitoral/cargo monitorado.
+// ---------------------------------------------------------------------------
+
+/** Estados canônicos do estado de foto para cards e perfis. */
+export type EstadoFoto = 'licenciada' | 'placeholder' | 'pendente';
+
+/**
+ * Resolve o estado editorial de uma foto atribuída a partir dos campos
+ * `licenca`, `placeholder` e `validade` de `FotoPerfil`. Puro, sem I/O —
+ * usado pela UI para renderizar o badge correspondente.
+ *
+ * Ordem de decisão (cada caso domina o anterior):
+ *   1. `pendente_verificacao_externa` na validade → estado `pendente`
+ *      (a fonte é conhecida mas a confirmação automática não foi
+ *      executada neste ciclo — regra do loop veda rede/build);
+ *   2. `placeholder: true` ou `licenca === 'placeholder'` → estado
+ *      `placeholder` (foto genérica do repositório);
+ *   3. caso contrário → estado `licenciada` (foto com licença real,
+ *      ainda que esteja aguardando validação automática específica).
+ */
+export function estadoFotoParaPerfil(foto: FotoPerfil): EstadoFoto {
+  if (foto.validade === 'pendente_verificacao_externa') {
+    return 'pendente';
+  }
+  if (foto.placeholder || foto.licenca === 'placeholder') {
+    return 'placeholder';
+  }
+  return 'licenciada';
+}
+
+/** Rótulo humano-legível do estado da foto. */
+export function rotuloEstadoFoto(estado: EstadoFoto): string {
+  switch (estado) {
+    case 'licenciada':
+      return 'Foto licenciada';
+    case 'placeholder':
+      return 'Placeholder honesto';
+    case 'pendente':
+      return 'Foto pendente de verificação externa';
+  }
+}
+
+/** Classes Tailwind para badge do estado da foto. */
+export function classesEstadoFoto(estado: EstadoFoto): string {
+  switch (estado) {
+    case 'licenciada':
+      return 'bg-green-100 text-green-800';
+    case 'placeholder':
+      return 'bg-zinc-200 text-zinc-700';
+    case 'pendente':
+      return 'bg-amber-100 text-amber-800';
+  }
+}
+
+/** Rótulo humano-legível da licença/base de uso da fotografia. */
+export function rotuloLicencaFoto(
+  licenca: FotoPerfil['licenca'],
+): string {
+  switch (licenca) {
+    case 'divulcacand_tse':
+      return 'DivulgaCand/TSE';
+    case 'institucional_oficial':
+      return 'Página institucional oficial';
+    case 'partido_oficial':
+      return 'Site oficial do partido';
+    case 'pessoa_oficial':
+      return 'Site/assessoria da pessoa';
+    case 'imprensa_licenca_explicita':
+      return 'Imprensa com licença explícita';
+    case 'placeholder':
+      return 'Placeholder (sem foto verificada)';
+  }
+}
+
+/**
+ * Estado editorial do link oficial. Distingue:
+ *   - `confirmado_institucional` : link cuja fonte é CLDF, TSE/DivulgaCand,
+ *     partido oficial ou página da pessoa (auditado em P4);
+ *   - `declaracao_publica` : link registrado a partir de declaração
+ *     pública/partido (origem em `pessoa.linksOficiais` P3);
+ *   - `desconhecido` : fallback defensivo quando a fonte não se encaixa
+ *     nos dois casos acima.
+ */
+export type EstadoLinkOficial =
+  | 'confirmado_institucional'
+  | 'declaracao_publica'
+  | 'desconhecido';
+
+/**
+ * Resolve o estado editorial de um link oficial a partir da `fonte`
+ * registrada no perfil. A auditoria de Instagram (P4) usa como fonte a
+ * CLDF para os perfis auditados, e a auditoria institucional aparece
+ * com a mesma procedência.
+ */
+export function estadoLinkOficialParaPerfil(
+  link: LinkOficialPerfil,
+): EstadoLinkOficial {
+  const fonte = link.fonte.toLowerCase();
+  if (
+    fonte.includes('cldf') ||
+    fonte.includes('cl.df.gov.br') ||
+    fonte.includes('tse') ||
+    fonte.includes('divulgacand') ||
+    fonte.includes('senado') ||
+    fonte.includes('câmara') ||
+    fonte.includes('camara')
+  ) {
+    return 'confirmado_institucional';
+  }
+  if (
+    fonte.includes('declaração') ||
+    fonte.includes('declaracao') ||
+    fonte.includes('partido')
+  ) {
+    return 'declaracao_publica';
+  }
+  return 'desconhecido';
+}
+
+/** Rótulo humano-legível do estado do link oficial. */
+export function rotuloEstadoLinkOficial(estado: EstadoLinkOficial): string {
+  switch (estado) {
+    case 'confirmado_institucional':
+      return 'Link oficial confirmado em fonte institucional';
+    case 'declaracao_publica':
+      return 'Link registrado em declaração pública';
+    case 'desconhecido':
+      return 'Fonte do link não classificada';
+  }
+}
+
+/** Classes Tailwind para badge do estado do link oficial. */
+export function classesEstadoLinkOficial(estado: EstadoLinkOficial): string {
+  switch (estado) {
+    case 'confirmado_institucional':
+      return 'bg-green-100 text-green-800';
+    case 'declaracao_publica':
+      return 'bg-blue-100 text-blue-800';
+    case 'desconhecido':
+      return 'bg-zinc-200 text-zinc-700';
+  }
+}
+
+/** Classes Tailwind para badge de pendência de verificação (placeholder). */
+export function classesPendenciaPlaceholder(): string {
+  return 'bg-zinc-200 text-zinc-700';
 }

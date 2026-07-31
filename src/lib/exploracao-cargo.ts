@@ -17,6 +17,15 @@ import type {
   EstagioEleitoral,
   PessoaEleitoral,
 } from '@/types';
+import {
+  estadoFotoParaPerfil,
+  fotoParaPerfil,
+  type EstadoFoto,
+  type EstadoLinkOficial,
+  estadoLinkOficialParaPerfil,
+  linksOficiaisParaPerfil,
+  type LinkOficialPerfil,
+} from '@/lib/perfil-eleitoral';
 
 export interface ItemExploracao {
   id: string;
@@ -31,6 +40,21 @@ export interface ItemExploracao {
   fonte: string;
   url: string;
   descricao: string;
+  /**
+   * Estado editorial da foto atribuída à pessoa (licenciada/placeholder/
+   * pendente). Derivado de `fotoParaPerfil` + `estadoFotoParaPerfil` —
+   * hoje todos os cards exibem `pendente` porque a foto verificada
+   * especificamente para a pessoa e o contexto eleitoral/cargo ainda
+   * não foi anexada (regra do loop veda rede/build neste ciclo).
+   */
+  estadoFoto: EstadoFoto;
+  /**
+   * Estado editorial do link oficial mais representativo da pessoa
+   * (confirmado_institucional/declaracao_publica/desconhecido). Quando
+   * a pessoa não tem link oficial catalogado, o estado é `desconhecido`
+   * — estado honesto, sem inventar URL.
+   */
+  estadoLinkOficial: EstadoLinkOficial;
 }
 
 /**
@@ -354,12 +378,24 @@ export const DESCRICOES_ESTAGIO: Record<EstagioEleitoral, string> = {
 /**
  * Converte uma PessoaEleitoral em ItemExploracao. Pureza: só lê os campos
  * já validados — não infere nem acrescenta dados.
+ *
+ * O estado da foto é derivado de `fotoParaPerfil` + `estadoFotoParaPerfil`
+ * (placeholder honesto com validade `pendente_verificacao_externa` hoje).
+ * O estado do link oficial é derivado do primeiro link catalogado da
+ * pessoa (via `linksOficiaisParaPerfil` com auditoria vazia — só links
+ * do próprio registro `pessoa.linksOficiais`); quando não há link, o
+ * estado é `desconhecido` (estado honesto, sem inventar URL).
  */
 export function pessoaParaItem(p: PessoaEleitoral): ItemExploracao | null {
   if (!p.evidencias || p.evidencias.length === 0) return null;
   const maisRecente = p.evidencias
     .slice()
     .sort((a, b) => b.dataEvidencia.localeCompare(a.dataEvidencia))[0];
+  const foto = fotoParaPerfil(p);
+  const estadoFoto = estadoFotoParaPerfil(foto);
+  const links: LinkOficialPerfil[] = linksOficiaisParaPerfil(p, []);
+  const estadoLinkOficial: EstadoLinkOficial =
+    links.length > 0 ? estadoLinkOficialParaPerfil(links[0]) : 'desconhecido';
   return {
     id: p.id,
     nome: p.nome,
@@ -371,6 +407,8 @@ export function pessoaParaItem(p: PessoaEleitoral): ItemExploracao | null {
     fonte: maisRecente.fonte,
     url: maisRecente.url,
     descricao: maisRecente.descricao,
+    estadoFoto,
+    estadoLinkOficial,
   };
 }
 

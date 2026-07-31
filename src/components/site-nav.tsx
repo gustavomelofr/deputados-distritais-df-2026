@@ -56,6 +56,12 @@ export const navItems: NavItem[] = [
     label: 'Cenário 2026',
   },
   {
+    href: '/eleicoes-2026',
+    ariaLabel:
+      'Eleições 2026 no DF: hub geral da cobertura com caminhos para governo, Senado, deputado federal e deputado distrital',
+    label: 'Eleições 2026',
+  },
+  {
     href: '/monitor-instagram',
     ariaLabel:
       'Radar Instagram dos deputados distritais: posts e atividade nas redes sociais',

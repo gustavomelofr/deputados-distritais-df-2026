@@ -239,8 +239,9 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 
 ### P5 — Nova experiência eleitoral
 
-- [ ] Criar página geral “Eleições 2026 no DF”.
+- [x] Criar página geral “Eleições 2026 no DF”.
   Critério: oferecer caminhos para governo, Senado, deputado federal e deputado distrital, com metodologia visível.
+  Evidência: `src/app/eleicoes-2026/page.tsx` cria a rota `/eleicoes-2026` com 5 cards de cargo (governador, vice_governador, senador, deputado_federal, deputado_distrital) derivando contagens diretamente de `cenarioEleitoral` filtrado por `evidencias.length > 0`; cada card mostra `rotuloQuantidade` factual ou estado `ainda não coletado` quando 0 (cargo vice_governador exibe `0` por honestidade metodológica), bloco de metodologia visível na própria página com fontes prioritárias (1–6), 5 estágios de evidência, 3 datas separadas (publicadaEm/coletadaEm/verificadaEm) e ordem de preferência de fotografia; status do DivulgaCand/TSE 2026 consultado via `estadoInicial()` (rede/build vedados pelas regras de operação); registrado no sitemap e adicionado à navegação principal (`SiteNav`) como `Eleições 2026`; cabeçalho explica os 4 cargos cobertos, independência editorial e uso de evidências; nenhum dado inventado (pessoas, evidências, partidos, datas, fotos).
 
 - [ ] Criar exploração por cargo.
   Critério: filtros de cargo, partido, estágio e data funcionam em desktop e mobile.

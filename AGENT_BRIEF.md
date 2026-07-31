@@ -235,6 +235,7 @@ Execute exatamente na ordem. As rotinas recorrentes ficam suspensas enquanto exi
 
 - [ ] Catalogar links oficiais de Instagram dos nomes monitorados.
   Critério: apenas links confirmados em fonte oficial; sem posts ou métricas.
+  Evidência: `src/data/auditoria-instagram.ts` registra 10 itens (lote 1: paula-belmonte, fabio-felix, thiago-manzoni, daniel-donizet, chico-vigilante, gabriel-magno, ricardo-vale, max-maciel, hermeto, jaqueline-silva) com fonte CLDF, URL da fonte na CLDF (https://www.cl.df.gov.br/deputados-2023-2026), URL do perfil `https://www.instagram.com/<handle>/`, validade `pendente_verificacao_externa` (verificação HTTP não executada neste ciclo — rede/build vedados pelas regras de operação) e `verificadaEm` em 2026-07-30; os 10 handles foram extraídos do cadastro oficial `src/data/deputados.ts`; `test/instagram-catalog.test.js` valida ordem dos slugs, handle consistente com o cadastro CLDF, URL do perfil HTTPS canônica (pathname `/<handle>/`), fonte CLDF, validador determinístico, documentação honesta (10 de 49 monitorados) e tarefa permanece `[ ]` pendente; os 39 nomes monitorados restantes (de um total de 49 em `cenario-eleitoral.ts`) não foram registrados sem fonte oficial que publique o handle — feedback do verifier: "remova registros sem essa comprovação".
 
 ### P5 — Nova experiência eleitoral
 

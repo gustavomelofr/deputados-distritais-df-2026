@@ -100,7 +100,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     cargo: 'governador',
     partido: 'PT',
     estagio: 'anunciado_pelo_partido',
-    noticiasRelacionadas: ['n33', 'n44', 'n40', 'n43'],
+    noticiasRelacionadas: ['n33', 'n44', 'n40', 'n43', 'n53'],
     evidencias: [
       {
         id: 'e-leandro-grass-n33',
@@ -117,9 +117,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-27',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-leandro-grass-n53',
+        pessoaId: 'leandro-grass',
+        cargo: 'governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'NC News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ncnews.com.br/2026/07/25/psol-e-rede-oficializam-candidaturas-no-df-anunciam-apoio-a-leandro-grass-e-entregam-carta-de-compromisso-politico/',
+        descricao:
+          'NC News registra que a Federação PSOL-Rede, em convenção de 25 de julho, oficializou apoio formal à pré-candidatura de Leandro Grass (PT) ao GDF no bloco progressista com PT, PV, PCdoB e PDT.',
+        dataEvidencia: '2026-07-25',
+        coletadaEm: '2026-08-01',
+        verificadaEm: '2026-08-01',
+      },
     ],
     coletadaEm: '2026-07-27',
-    verificadaEm: '2026-07-30',
+    verificadaEm: '2026-08-01',
   },
 
   // 4. Dora Gomes (PV) — anunciada pelo PV-DF para vice de Leandro Grass.
@@ -509,7 +524,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     cargo: 'senador',
     partido: 'PT',
     estagio: 'anunciado_pelo_partido',
-    noticiasRelacionadas: ['n31', 'n33', 'n44'],
+    noticiasRelacionadas: ['n31', 'n33', 'n44', 'n53'],
     evidencias: [
       {
         id: 'e-erika-kokay-n33',
@@ -541,9 +556,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-27',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-erika-kokay-n53',
+        pessoaId: 'erika-kokay',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PT',
+        fonte: 'NC News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://ncnews.com.br/2026/07/25/psol-e-rede-oficializam-candidaturas-no-df-anunciam-apoio-a-leandro-grass-e-entregam-carta-de-compromisso-politico/',
+        descricao:
+          'NC News registra que a Federação PSOL-Rede, em convenção de 25 de julho, declarou apoio formal à pré-candidatura de Erika Kokay (PT) ao Senado pelo DF no palanque comum com Leila Barros (PDT).',
+        dataEvidencia: '2026-07-25',
+        coletadaEm: '2026-08-01',
+        verificadaEm: '2026-08-01',
+      },
     ],
     coletadaEm: '2026-07-27',
-    verificadaEm: '2026-07-30',
+    verificadaEm: '2026-08-01',
   },
 
   // 15. Bia Kicis (PL) — pré-candidata ao Senado pelo PL-DF, indicada pelo
@@ -885,7 +915,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     cargo: 'deputado_federal',
     partido: 'PSOL',
     estagio: 'anunciado_pelo_partido',
-    noticiasRelacionadas: ['n29'],
+    noticiasRelacionadas: ['n29', 'n45'],
     evidencias: [
       {
         id: 'e-fabio-felix-n29',
@@ -902,9 +932,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-27',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-fabio-felix-n45',
+        pessoaId: 'fabio-felix',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSOL',
+        fonte: 'Jornal de Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://jornaldebrasilia.com.br/brasilia/psol-abre-mao-de-candidatura-propria-e-aposta-em-frente-de-esquerda-com-leandro-grass-no-df/',
+        descricao:
+          'Jornal de Brasília registra que a Federação PSOL-Rede, em convenção de 25 de julho na CLDF, lançou Fábio Felix como candidato a deputado federal no bloco progressista de apoio a Leandro Grass ao GDF.',
+        dataEvidencia: '2026-07-25',
+        coletadaEm: '2026-08-01',
+        verificadaEm: '2026-08-01',
+      },
     ],
     coletadaEm: '2026-07-27',
-    verificadaEm: '2026-07-30',
+    verificadaEm: '2026-08-01',
   },
 
   // 24. Izalci Lucas (PL) — pré-candidato a deputado federal, desistiu da
@@ -1426,7 +1471,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     cargo: 'deputado_distrital',
     partido: 'PSOL',
     estagio: 'anunciado_pelo_partido',
-    noticiasRelacionadas: ['n29', 'n35', 'n57'],
+    noticiasRelacionadas: ['n29', 'n35', 'n45', 'n57'],
     evidencias: [
       {
         id: 'e-max-maciel-n29',
@@ -1443,9 +1488,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-27',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-max-maciel-n45',
+        pessoaId: 'max-maciel',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSOL',
+        fonte: 'Jornal de Brasília',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://jornaldebrasilia.com.br/brasilia/psol-abre-mao-de-candidatura-propria-e-aposta-em-frente-de-esquerda-com-leandro-grass-no-df/',
+        descricao:
+          'Jornal de Brasília registra que a Federação PSOL-Rede, em convenção de 25 de julho, confirmou a inclusão do deputado distrital Max Maciel (PSOL) na nominata para a disputa da reeleição à CLDF.',
+        dataEvidencia: '2026-07-25',
+        coletadaEm: '2026-08-01',
+        verificadaEm: '2026-08-01',
+      },
     ],
     coletadaEm: '2026-07-27',
-    verificadaEm: '2026-07-30',
+    verificadaEm: '2026-08-01',
   },
 
   // 40. Eduardo Brandão (PV) — pré-candidato à CLDF, lançado na convenção

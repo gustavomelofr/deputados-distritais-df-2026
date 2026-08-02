@@ -280,7 +280,7 @@ test('componente ExploracaoPorCargo linka cada item ao perfil eleitoral', () => 
 // Determinismo: contagens esperadas em build time
 // ---------------------------------------------------------------------------
 
-test('base eleitoral possui 49 perfis possíveis (1 por pessoa com evidência)', () => {
+test('base eleitoral possui 55 perfis possíveis (1 por pessoa com evidência)', () => {
   const src = read(BASE_FILE);
   const match = src.match(
     /cenarioEleitoral: PessoaEleitoral\[\] = \[([\s\S]*?)\n\]\;/,
@@ -290,8 +290,8 @@ test('base eleitoral possui 49 perfis possíveis (1 por pessoa com evidência)',
   const slugs = [...body.matchAll(/\bslug:\s*'([^']+)'/g)].map((m) => m[1]);
   assert.equal(
     new Set(slugs).size,
-    49,
-    `esperado 49 slugs únicos, encontrado ${new Set(slugs).size}`,
+    55,
+    `esperado 55 slugs únicos, encontrado ${new Set(slugs).size}`,
   );
 });
 

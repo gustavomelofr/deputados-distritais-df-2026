@@ -212,7 +212,7 @@ test('página deriva itensExploracao da base via pessoaParaItem', () => {
   );
 });
 
-test('base eleitoral possui 49 pessoas com evidência (49 monitoradas)', () => {
+test('base eleitoral possui 55 pessoas com evidência (55 monitoradas)', () => {
   const src = read(BASE_FILE);
   // Cada pessoa é declarada com id: '<slug>'. Contamos as ocorrências de
   // 'id:' dentro de blocos que não estão em evidências (evidências também
@@ -231,8 +231,8 @@ test('base eleitoral possui 49 pessoas com evidência (49 monitoradas)', () => {
   const slugsUnicos = new Set(slugs);
   assert.equal(
     slugsUnicos.size,
-    49,
-    `esperado 49 pessoas únicas, encontrado ${slugsUnicos.size}`
+    55,
+    `esperado 55 pessoas únicas, encontrado ${slugsUnicos.size}`
   );
 });
 

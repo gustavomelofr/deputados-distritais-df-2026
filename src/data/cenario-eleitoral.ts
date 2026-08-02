@@ -27,7 +27,8 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
   // Governador e vice-governador do DF — evidências em src/data/noticias.ts
   // ---------------------------------------------------------------------------
 
-  // 1. Celina Leão (PP) — pré-candidata à reeleição ao GDF, anunciada pelo PP.
+  // 1. Celina Leão (PP) — candidata à reeleição ao GDF, oficializada pela
+  //    Federação União Progressista em convenção de 2 de agosto de 2026.
   {
     id: 'celina-leao',
     slug: 'celina-leao',
@@ -36,7 +37,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     cargo: 'governador',
     partido: 'PP',
     estagio: 'anunciado_pelo_partido',
-    noticiasRelacionadas: ['n48', 'n90', 'n94', 'n95'],
+    noticiasRelacionadas: ['n48', 'n90', 'n93', 'n94', 'n95'],
     evidencias: [
       {
         id: 'e-celina-leao-n48',
@@ -53,13 +54,29 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-celina-leao-convencao-uniao-progressista-2026-08-02',
+        pessoaId: 'celina-leao',
+        cargo: 'governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PP',
+        fonte: 'CNN Brasil',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.cnnbrasil.com.br/eleicoes/pp-confirma-candidatura-de-celina-leao-a-reeleicao-para-o-governo-do-df/',
+        descricao:
+          'A Federação União Progressista (PP e União Brasil), em convenção realizada em 2 de agosto de 2026, oficializou a candidatura da governadora Celina Leão à reeleição ao governo do Distrito Federal, com Gustavo Rocha (Republicanos) como vice; a coligação reúne União Brasil, MDB e Podemos e negocia a adesão do PL.',
+        dataEvidencia: '2026-08-02',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
     ],
-    coletadaEm: '2026-07-28',
-    verificadaEm: '2026-07-30',
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
   },
 
-  // 2. Gustavo Rocha (Republicanos) — pré-candidato a vice-governador na
-  //    chapa de Celina Leão.
+  // 2. Gustavo Rocha (Republicanos) — candidato a vice-governador na chapa
+  //    de Celina Leão, confirmado em convenção da Federação União Progressista
+  //    em 2 de agosto de 2026.
   {
     id: 'gustavo-rocha',
     slug: 'gustavo-rocha',
@@ -85,9 +102,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-gustavo-rocha-convencao-uniao-progressista-2026-08-02',
+        pessoaId: 'gustavo-rocha',
+        cargo: 'vice_governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'Republicanos',
+        fonte: 'CNN Brasil',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.cnnbrasil.com.br/eleicoes/pp-confirma-candidatura-de-celina-leao-a-reeleicao-para-o-governo-do-df/',
+        descricao:
+          'A Federação União Progressista confirmou, em convenção de 2 de agosto de 2026, Gustavo Rocha (Republicanos) como candidato a vice-governador na chapa de Celina Leão ao governo do Distrito Federal.',
+        dataEvidencia: '2026-08-02',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
     ],
-    coletadaEm: '2026-07-28',
-    verificadaEm: '2026-07-30',
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
   },
 
   // 3. Leandro Grass (PT) — pré-candidato ao GDF, lançado pelo PT-DF e
@@ -203,7 +235,9 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
   },
 
   // 6. José Roberto Arruda (PSD) — movimentação pública registrada por duas
-  //    reportagens independentes; sem declaração primária anexada.
+  //    reportagens independentes; oficializado como candidato ao GDF pelo PSD
+  //    em convenção realizada em 1º de agosto de 2026 (estágio atualizado para
+  //    anunciado_pelo_partido, preservando o histórico anterior).
   {
     id: 'jose-roberto-arruda',
     slug: 'jose-roberto-arruda',
@@ -211,7 +245,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     nomeCompleto: 'José Roberto Arruda',
     cargo: 'governador',
     partido: 'PSD',
-    estagio: 'movimentacao_publica',
+    estagio: 'anunciado_pelo_partido',
     noticiasRelacionadas: ['n100', 'n28'],
     evidencias: [
       {
@@ -244,9 +278,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-arruda-convencao-psd-2026-08-01',
+        pessoaId: 'jose-roberto-arruda',
+        cargo: 'governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSD',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/01/psd-lanca-jose-roberto-arruda-como-candidato-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'O PSD confirmou a candidatura de José Roberto Arruda ao governo do Distrito Federal em convenção partidária realizada em 1º de agosto de 2026 em Brasília, com presença de Ronaldo Caiado e Gilberto Kassab; a chapa ainda não tinha vice definido.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
     ],
-    coletadaEm: '2026-07-28',
-    verificadaEm: '2026-07-30',
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
   },
 
   // 7. Ricardo Cappelli (PSB) — pré-candidato ao GDF, anunciado pelo PSB-DF
@@ -627,6 +676,8 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
   // 16. Michelle Bolsonaro (PL) — pré-candidata ao Senado pelo PL-DF,
   //     indicada por Bolsonaro e mantida como aposta do partido para a
   //     chapa ao Senado em coberturas independentes.
+  //     por Bolsonaro e confirmada pela própria ex-primeira-dama em 1º de
+  //     agosto de 2026, com oficialização na convenção do PL.
   {
     id: 'michelle-bolsonaro',
     slug: 'michelle-bolsonaro',
@@ -783,9 +834,10 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     verificadaEm: '2026-07-30',
   },
 
-  // 20. Paulo Octávio (PSD) — pré-candidato ao Senado pelo PSD-DF,
-  //     apresentado em matéria sobre a aliança do ex-governador Arruda
-  //     para 2026; sustentado por uma reportagem adicional (n62).
+  // 20. Paulo Octávio (PSD) — candidato ao Senado pelo PSD-DF, anunciado em
+  //     convenção do partido em 1º de agosto de 2026 junto com Arruda ao GDF
+  //     (estágio atualizado para anunciado_pelo_partido, preservando histórico
+  //     anterior de movimentação pública).
   {
     id: 'paulo-octavio',
     slug: 'paulo-octavio',
@@ -793,7 +845,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     nomeCompleto: 'Paulo Octávio',
     cargo: 'senador',
     partido: 'PSD',
-    estagio: 'movimentacao_publica',
+    estagio: 'anunciado_pelo_partido',
     noticiasRelacionadas: ['n100', 'n62'],
     evidencias: [
       {
@@ -826,9 +878,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-28',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-paulo-octavio-convencao-psd-2026-08-01',
+        pessoaId: 'paulo-octavio',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSD',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/01/psd-lanca-jose-roberto-arruda-como-candidato-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'O PSD anunciou Paulo Octávio como candidato ao Senado Federal pelo DF durante a convenção partidária realizada em 1º de agosto de 2026, na mesma chapa de Arruda ao GDF.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
     ],
-    coletadaEm: '2026-07-28',
-    verificadaEm: '2026-07-30',
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
   },
 
   // ---------------------------------------------------------------------------
@@ -1913,5 +1980,224 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     ],
     coletadaEm: '2026-07-30',
     verificadaEm: '2026-07-30',
+  },
+
+  // ---------------------------------------------------------------------------
+  // Atualização da rotina "evidencias-eleitorais" — ciclo 2026-08-02.
+  // Novas evidências de convenções partidárias realizadas em 1º de agosto de
+  // 2026 (PSTU, Podemos, MDB) confirmadas em fontes específicas com URL e data.
+  // Cada registro preserva o histórico anterior e adiciona evidência nova;
+  // estágios anteriores ao registro no TSE nunca são "registro_oficial".
+  // ---------------------------------------------------------------------------
+
+  // 50. Professor Robson (PSTU) — candidato ao GDF, oficializado em convenção
+  //     do PSTU em 1º de agosto de 2026.
+  {
+    id: 'professor-robson',
+    slug: 'professor-robson',
+    nome: 'Professor Robson',
+    nomeCompleto: 'Robson Raymundo da Silva',
+    cargo: 'governador',
+    partido: 'PSTU',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: [],
+    evidencias: [
+      {
+        id: 'e-professor-robson-convencao-pstu-2026-08-01',
+        pessoaId: 'professor-robson',
+        cargo: 'governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSTU',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/01/pstu-lanca-professor-robson-como-candidato-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'O PSTU confirmou a candidatura de Professor Robson Raymundo ao governo do Distrito Federal em convenção realizada em 1º de agosto de 2026 em Brasília; é a segunda candidatura do docente ao GDF.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+    ],
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
+  },
+
+  // 51. Ricardo Guillen (PSTU) — candidato a vice-governador na chapa de
+  //     Professor Robson, oficializado em convenção em 1º de agosto de 2026.
+  {
+    id: 'ricardo-guillen',
+    slug: 'ricardo-guillen',
+    nome: 'Ricardo Guillen',
+    nomeCompleto: 'Antônio Ricardo Martins Guillen',
+    cargo: 'vice_governador',
+    partido: 'PSTU',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: [],
+    evidencias: [
+      {
+        id: 'e-ricardo-guillen-convencao-pstu-2026-08-01',
+        pessoaId: 'ricardo-guillen',
+        cargo: 'vice_governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSTU',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/01/pstu-lanca-professor-robson-como-candidato-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'O PSTU confirmou, em convenção de 1º de agosto de 2026, o professor aposentado Ricardo Guillen como candidato a vice-governador na chapa de Professor Robson ao GDF.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+    ],
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
+  },
+
+  // 52. Eduardo Zanata (PSTU) — candidato ao Senado pelo PSTU, oficializado
+  //     em convenção em 1º de agosto de 2026.
+  {
+    id: 'eduardo-zanata',
+    slug: 'eduardo-zanata',
+    nome: 'Eduardo Zanata',
+    nomeCompleto: 'Eduardo Zanata',
+    cargo: 'senador',
+    partido: 'PSTU',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: [],
+    evidencias: [
+      {
+        id: 'e-eduardo-zanata-convencao-pstu-2026-08-01',
+        pessoaId: 'eduardo-zanata',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSTU',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/01/pstu-lanca-professor-robson-como-candidato-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'O PSTU escolheu Eduardo Zanata, professor de língua portuguesa e ex-presidente do DCE da UnB, como candidato ao Senado pelo DF em convenção realizada em 1º de agosto de 2026.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+    ],
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
+  },
+
+  // 53. Cristian Viana (Podemos) — candidato ao Senado pelo Podemos-DF,
+  //     lançado em convenção em 1º de agosto de 2026, com apoio à reeleição
+  //     de Celina Leão ao GDF.
+  {
+    id: 'cristian-viana',
+    slug: 'cristian-viana',
+    nome: 'Cristian Viana',
+    nomeCompleto: 'Cristian Viana',
+    cargo: 'senador',
+    partido: 'Podemos',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: [],
+    evidencias: [
+      {
+        id: 'e-cristian-viana-convencao-podemos-2026-08-01',
+        pessoaId: 'cristian-viana',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'Podemos',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/noticia/2026/08/01/podemos-lanca-cristian-viana-como-candidato-ao-senado-federal-pelo-distrito-federal.ghtml',
+        descricao:
+          'O Podemos-DF lançou, em convenção realizada em 1º de agosto de 2026 em Brasília, o presidente regional do partido, Cristian Viana, como candidato ao Senado Federal; esta é a primeira candidatura dele ao Senado. A convenção também confirmou apoio do partido à reeleição da governadora Celina Leão (PP) ao GDF.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+    ],
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
+  },
+
+  // 54. Rafael Prudente (MDB) — candidato à reeleição a deputado federal,
+  //     confirmado em convenção do MDB-DF em 1º de agosto de 2026.
+  {
+    id: 'rafael-prudente',
+    slug: 'rafael-prudente',
+    nome: 'Rafael Prudente',
+    nomeCompleto: 'Rafael Prudente',
+    cargo: 'deputado_federal',
+    partido: 'MDB',
+    estagio: 'anunciado_pelo_partido',
+    noticiasRelacionadas: [],
+    evidencias: [
+      {
+        id: 'e-rafael-prudente-convencao-mdb-2026-08-01',
+        pessoaId: 'rafael-prudente',
+        cargo: 'deputado_federal',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'MDB',
+        fonte: 'Correio Braziliense',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.correiobraziliense.com.br/cidades-df/2026/08/7472109-chegamos-a-uma-convergencia-afirma-rafael-prudente-em-convencao.html',
+        descricao:
+          'Durante a convenção do MDB-DF em 1º de agosto de 2026, na Ascade, Rafael Prudente confirmou que concorrerá à reeleição como deputado federal, descartando momentaneamente a disputa ao Senado, mas deixando em aberto a possibilidade de migração conforme definições do PL-DF.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+    ],
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
+  },
+
+  // 55. Mayara Noronha Rocha (Podemos) — ex-primeira-dama do DF, teve o nome
+  //     aprovado pelo Podemos-DF em convenção de 1º de agosto de 2026 como
+  //     candidata à Câmara dos Deputados, embora ainda não tenha confirmado
+  //     publicamente se registará a candidatura; classificada como
+  //     movimentação pública pelo caráter condicional declarado pela própria.
+  {
+    id: 'mayara-noronha-rocha',
+    slug: 'mayara-noronha-rocha',
+    nome: 'Mayara Noronha Rocha',
+    nomeCompleto: 'Mayara Noronha Rocha',
+    cargo: 'deputado_federal',
+    partido: 'Podemos',
+    estagio: 'movimentacao_publica',
+    noticiasRelacionadas: [],
+    evidencias: [
+      {
+        id: 'e-mayara-noronha-rocha-folha-2026-07-12',
+        pessoaId: 'mayara-noronha-rocha',
+        cargo: 'deputado_federal',
+        estagio: 'movimentacao_publica',
+        partido: 'Podemos',
+        fonte: 'Folha de S.Paulo',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www1.folha.uol.com.br/colunas/painel/2026/07/com-ibaneis-fora-da-disputa-ao-senado-ex-primeira-dama-prepara-candidatura-a-federal.shtml',
+        descricao:
+          'A Folha de S.Paulo registrou em 12 de julho de 2026 que Mayara Noronha Rocha (Podemos), ex-primeira-dama do DF, preparava candidatura a deputada federal após a desistência do marido Ibaneis Rocha à disputa pelo Senado; segundo a matéria, ela ainda não havia decidido publicamente se concorreria.',
+        dataEvidencia: '2026-07-12',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+      {
+        id: 'e-mayara-noronha-rocha-convencao-podemos-2026-08-01',
+        pessoaId: 'mayara-noronha-rocha',
+        cargo: 'deputado_federal',
+        estagio: 'movimentacao_publica',
+        partido: 'Podemos',
+        fonte: 'Metrópoles',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://www.metropoles.com/colunas/grande-angular/podemos-anuncia-apoio-a-celina-leao-e-lanca-cristian-viana-ao-senado',
+        descricao:
+          'O Podemos-DF aprovou em convenção de 1º de agosto de 2026 o nome de Mayara Noronha Rocha, ex-primeira-dama do DF, como candidata a deputada federal, embora ela ainda não tenha decidido publicamente se registrará a candidatura e entrará oficialmente em campanha.',
+        dataEvidencia: '2026-08-01',
+        coletadaEm: '2026-08-02',
+        verificadaEm: '2026-08-02',
+      },
+    ],
+    coletadaEm: '2026-08-02',
+    verificadaEm: '2026-08-02',
   },
 ];

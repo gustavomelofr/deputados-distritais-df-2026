@@ -494,7 +494,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     nomeCompleto: 'Paula Belmonte',
     cargo: 'governador',
     partido: 'PSDB',
-    estagio: 'movimentacao_publica',
+    estagio: 'anunciado_pelo_partido',
     noticiasRelacionadas: ['n34', 'n28'],
     evidencias: [
       {
@@ -542,9 +542,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-08-03',
         verificadaEm: '2026-08-03',
       },
+      {
+        id: 'e-paula-belmonte-convencao-psdb-cidadania-2026-08-04',
+        pessoaId: 'paula-belmonte',
+        cargo: 'governador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PSDB',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/04/psdb-e-cidadania-oficializam-paula-belmonte-como-candidata-ao-governo-do-distrito-federal.ghtml',
+        descricao:
+          'A federação PSDB-Cidadania confirmou, em convenção realizada em 4 de agosto de 2026 em Brasília, a candidatura de Paula Belmonte ao governo do Distrito Federal; a federação não anunciou candidato a vice-governador nem candidaturas ao Senado.',
+        dataEvidencia: '2026-08-04',
+        coletadaEm: '2026-08-05',
+        verificadaEm: '2026-08-05',
+      },
     ],
-    coletadaEm: '2026-08-03',
-    verificadaEm: '2026-08-03',
+    coletadaEm: '2026-08-05',
+    verificadaEm: '2026-08-05',
   },
 
   // 12. Kiko Caputo (Novo) — candidato ao GDF, oficializado em convenção
@@ -614,7 +629,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     nomeCompleto: 'Leila do Vôlei',
     cargo: 'senador',
     partido: 'PDT',
-    estagio: 'pre_candidatura_declarada',
+    estagio: 'anunciado_pelo_partido',
     noticiasRelacionadas: ['n30', 'n43', 'n53'],
     evidencias: [
       {
@@ -662,9 +677,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-08-04',
         verificadaEm: '2026-08-04',
       },
+      {
+        id: 'e-leila-barros-convencao-pdt-g1-2026-08-04',
+        pessoaId: 'leila-barros',
+        cargo: 'senador',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'PDT',
+        fonte: 'G1',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://g1.globo.com/df/distrito-federal/eleicoes/2026/noticia/2026/08/04/pdt-confirma-leila-do-volei-como-candidata-ao-senado-pelo-distrito-federal.ghtml',
+        descricao:
+          'O PDT confirmou, em convenção realizada em 4 de agosto de 2026 em Brasília, a candidatura da senadora Leila do Vôlei (PDT) à reeleição pelo Senado pelo Distrito Federal; o partido não aprovou formalmente apoio a nenhum pré-candidato ao GDF, embora representantes do PT e da Rede (incluindo Leandro Grass) tenham marcado presença.',
+        dataEvidencia: '2026-08-04',
+        coletadaEm: '2026-08-05',
+        verificadaEm: '2026-08-05',
+      },
     ],
-    coletadaEm: '2026-08-04',
-    verificadaEm: '2026-08-04',
+    coletadaEm: '2026-08-05',
+    verificadaEm: '2026-08-05',
   },
 
   // 14. Erika Kokay (PT) — pré-candidata ao Senado pelo PT-DF, anunciada
@@ -2059,7 +2089,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     nomeCompleto: 'Martins Machado de Oliveira',
     cargo: 'deputado_distrital',
     partido: 'Republicanos',
-    estagio: 'movimentacao_publica',
+    estagio: 'anunciado_pelo_partido',
     noticiasRelacionadas: ['n24', 'n60'],
     evidencias: [
       {
@@ -2092,9 +2122,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-30',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-martins-machado-convencao-republicanos-2026-08-03',
+        pessoaId: 'martins-machado',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'Republicanos',
+        fonte: 'Tropical News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://tropicalnews.com.br/convencoes-desenham-o-novo-mapa-politico-das-eleicoes-de-2026-no-distrito-federal/',
+        descricao:
+          'O Republicanos confirmou, em convenção partidária realizada em Brasília, as candidaturas à reeleição dos deputados federais Fred Linhares e Julio Cesar Ribeiro, além do deputado distrital Martins Machado, integrando a aliança com a governadora Celina Leão (PP).',
+        dataEvidencia: '2026-08-03',
+        coletadaEm: '2026-08-05',
+        verificadaEm: '2026-08-05',
+      },
     ],
-    coletadaEm: '2026-07-30',
-    verificadaEm: '2026-07-30',
+    coletadaEm: '2026-08-05',
+    verificadaEm: '2026-08-05',
   },
 
   // 47. Eduardo Pedrosa (União Brasil) — deputado distrital que articula
@@ -2108,7 +2153,7 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
     nomeCompleto: 'Eduardo Pedrosa de Paula',
     cargo: 'deputado_distrital',
     partido: 'União Brasil',
-    estagio: 'movimentacao_publica',
+    estagio: 'anunciado_pelo_partido',
     noticiasRelacionadas: ['n57', 'n60'],
     evidencias: [
       {
@@ -2141,9 +2186,24 @@ export const cenarioEleitoral: PessoaEleitoral[] = [
         coletadaEm: '2026-07-30',
         verificadaEm: '2026-07-30',
       },
+      {
+        id: 'e-eduardo-pedrosa-convencao-uniao-progressista-2026-08-03',
+        pessoaId: 'eduardo-pedrosa',
+        cargo: 'deputado_distrital',
+        estagio: 'anunciado_pelo_partido',
+        partido: 'União Brasil',
+        fonte: 'Tropical News',
+        fonteCategoria: 'veiculo_jornalistico',
+        url: 'https://tropicalnews.com.br/convencoes-desenham-o-novo-mapa-politico-das-eleicoes-de-2026-no-distrito-federal/',
+        descricao:
+          'A Federação União Progressista confirmou, em convenção realizada em Brasília, as nominatas para a Câmara Legislativa e para a Câmara dos Deputados, incluindo Eduardo Pedrosa entre os candidatos à reeleição à CLDF.',
+        dataEvidencia: '2026-08-03',
+        coletadaEm: '2026-08-05',
+        verificadaEm: '2026-08-05',
+      },
     ],
-    coletadaEm: '2026-07-30',
-    verificadaEm: '2026-07-30',
+    coletadaEm: '2026-08-05',
+    verificadaEm: '2026-08-05',
   },
 
   // 48. Christian Sena (UP) — pré-candidato à CLDF, homologado pela
